@@ -18,9 +18,9 @@ and helper classes and definations
 
 //test hash_object
 int main(int argc, char* argv[]){
-    const string content= argv[1];
-    const string hash= hash_object(content);
-    cout << hash << endl;
+    string file_name=argv[2];
+    cout<<file_name<<endl;
+    add(file_name);
     return 0;
 }
 
