@@ -20,6 +20,8 @@ store = header + data
 // #include <iostream>
 #include <fstream>
 #include <bits/stdc++.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 using namespace std;
 
 string hash_object(string content, string type){
@@ -90,21 +92,25 @@ int add(string file_name){
     }
     string sha1=hash_object(content,"blob");
     string path=".git/objects/"+sha1.substr(0,2)+"/"+sha1.substr(2,38);
+    string pathDir=".git/objects/"+sha1.substr(0,2);
     const string store_content = "blob " + std::to_string(content.length())+"\\0";
 
     cout<<path<<endl;
     //create new blob
-    // mkdir(path,"0777");
-
+    char pathname[256];
+    strcpy(pathname, pathDir.c_str());
+    cout <<pathname<< endl;
+    mkdir(pathname,0777);
+    cout<<path<<endl;
     // compress the store
     const string compressed_store= compress(store_content);
-    cout << compressed_store <<endl;
+    // cout << compressed_store << endl;
 
     // write compressed store
-    // ofstream my;
-    // my.open ("l.txt");   //change to path
-    // my << compressed_store ;
-    // my.close();
+    ofstream my;
+    my.open(path);   //change to path
+    my << compressed_store ;
+    my.close();
 
     return 0;
 }
