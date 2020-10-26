@@ -43,21 +43,32 @@ string hash_object(string content, string type){
 
 
 
- string compress(string store_content,int len){
+string compress(string store_content, int len){
     char a[5000];
-    strcpy(a, store_content.c_str());
+    // strcpy(a, store_content.c_str());
+    int k=0;
+    while (store_content[k]!='\0'){
+        a[k]= store_content[k];
+        k++;
+    }
+    a[k]= '\0';
+
+    k+=1;
+    while (store_content[k]!='\0'){
+        a[k]= store_content[k];
+        k++;
+    }
     char compressed_store[5000];
-    // compress a into compressed_store
-    //blob 300\0my name is shril
+    printf("Uncompressed string is: %s\n", a);
     // zlib struct
     z_stream defstream;
     defstream.zalloc = Z_NULL;
     defstream.zfree = Z_NULL;
     defstream.opaque = Z_NULL;
-    int totallen=strlen(a)+len+1
-    // setup "a" as the input and "compressed_store" as the compressed output
-    defstream.avail_in = (uInt)totallen+1; // size of input, string + terminator
-    defstream.next_in = (Bytef *)a; // input char array
+
+    int totallen= k; // lenght of header+content
+    defstream.avail_in = (uInt)totallen; // size of input, string + terminator
+    defstream.next_in = (Bytef *)a; // input char arraylen
     defstream.avail_out = (uInt)sizeof(compressed_store); // size of output
     defstream.next_out = (Bytef *)compressed_store; // output char array
 
@@ -65,14 +76,48 @@ string hash_object(string content, string type){
     deflateInit(&defstream, Z_BEST_COMPRESSION);
     deflate(&defstream, Z_FINISH);
     deflateEnd(&defstream);
-
-    // This is one way of getting the size of the output
-    // printf("Compressed size is: %lu\n", strlen(b));
-    // printf("Compressed string is: %s\n", b);
-    // std::cout <<"x\x9CK\xCA\xC9OR04c(\xCFH,Q\xC8,V(-\xD0QH\xC9O\xB6\a\x00_\x1C\a\x9D"<<"\n" << b<< std::endl;
-    // char k[5000]= "x\x9CK\xCA\xC9OR04c(\xCFH,Q\xC8,V(-\xD0QH\xC9O\xB6\a\x00_\x1C\a\x9D";
     return compressed_store;
- }
+}
+
+
+// buggy!
+// string decompress(string compressed_content, int lenCompressed)
+// {
+//     // char b[5000];
+//     char c[5000];  //for decompression
+
+//     char a[5000];
+//     strcpy(a, compressed_content.c_str());
+
+//     // STEP 2.
+//     // inflate b into c
+//     // zlib struct
+//     z_stream infstream;
+//     infstream.zalloc = Z_NULL;
+//     infstream.zfree = Z_NULL;
+//     infstream.opaque = Z_NULL;
+//     // setup "b" as the input and "c" as the compressed output
+//     infstream.avail_in = (uInt)((char*)(Bytef *)a - a); // size of input
+//     infstream.next_in = (Bytef *)a; // input char array
+//     infstream.avail_out = (uInt)sizeof(c); // size of output
+//     infstream.next_out = (Bytef *)c; // output char array
+
+//     // the actual DE-compression work.
+//     inflateInit(&infstream);
+//     inflate(&infstream, Z_NO_FLUSH);
+//     inflateEnd(&infstream);
+
+//     printf("Uncompressed size is: %lu\n", strlen(c));
+//     printf("Uncompressed string is: %s\n", c);
+//     // std::cout<< lenCompressed<<std::endl;
+//     int k=0;
+//     while (k<lenCompressed){
+//         cout<< c[k];
+//         k++;
+//     }
+//     cout << "asdasdsad" << endl;
+//     return c;
+// }
 
 
 
@@ -95,8 +140,8 @@ int add(string file_name){
     string path=".git/objects/"+sha1.substr(0,2)+"/"+sha1.substr(2,38);
     cout<<path<<endl;
     string pathDir=".git/objects/"+sha1.substr(0,2);
-    int len=content.length();
-    const string store_content = "blob " +to_string(len)+"\0"+content;
+    int len=content.length(); //length of content
+    const string store_content = "blob " +to_string(len)+'\0'+content;
     cout<<path<<endl;
     //create new blob
     // char pathname[256];
@@ -107,12 +152,29 @@ int add(string file_name){
     // compress the store
     const string compressed_store= compress(store_content,len);
     cout << compressed_store << endl;
+    // cout << "x\x9sCK\xCA\xC9OR04c(\xCFH,Q\xC8,V(-\xD0QH\xC9O\xB6\a\x00_\x1C\a\x9D" <<endl;
 
-    // write compressed store
-    // ofstream my;
-    // my.open(path);   //change to path
-    // my << compressed_store ;
-    // my.close();
+    // string p="t.txt";
+    ofstream fout;
+    fout.open(path);
+    int i=0;
+    while (i<compressed_store.length()-1){
+        fout.put(compressed_store[i]);
+        cout << compressed_store[i];
+        i++;
+    }
+    cout<<"" <<endl;
+    fout.close();
+
+
+    // string original_content= decompress(compressed_store, len+store_content.length());
+    // // cout << original_content<<endl;
+    // int k=0;
+    // while (k<len+store_content.length()){
+    //     cout<< original_content[k];
+    //     k++;
+    // }
+    // cout <<endl;
 
     return 0;
 }
