@@ -43,19 +43,20 @@ string hash_object(string content, string type){
 
 
 
- string compress(string store_content){
+ string compress(string store_content,int len){
     char a[5000];
     strcpy(a, store_content.c_str());
     char compressed_store[5000];
     // compress a into compressed_store
-
+    //blob 300\0my name is shril
     // zlib struct
     z_stream defstream;
     defstream.zalloc = Z_NULL;
     defstream.zfree = Z_NULL;
     defstream.opaque = Z_NULL;
+    int totallen=strlen(a)+len+1
     // setup "a" as the input and "compressed_store" as the compressed output
-    defstream.avail_in = (uInt)strlen(a)+1; // size of input, string + terminator
+    defstream.avail_in = (uInt)totallen+1; // size of input, string + terminator
     defstream.next_in = (Bytef *)a; // input char array
     defstream.avail_out = (uInt)sizeof(compressed_store); // size of output
     defstream.next_out = (Bytef *)compressed_store; // output char array
@@ -70,7 +71,7 @@ string hash_object(string content, string type){
     // printf("Compressed string is: %s\n", b);
     // std::cout <<"x\x9CK\xCA\xC9OR04c(\xCFH,Q\xC8,V(-\xD0QH\xC9O\xB6\a\x00_\x1C\a\x9D"<<"\n" << b<< std::endl;
     // char k[5000]= "x\x9CK\xCA\xC9OR04c(\xCFH,Q\xC8,V(-\xD0QH\xC9O\xB6\a\x00_\x1C\a\x9D";
-     return compressed_store;
+    return compressed_store;
  }
 
 
@@ -92,25 +93,26 @@ int add(string file_name){
     }
     string sha1=hash_object(content,"blob");
     string path=".git/objects/"+sha1.substr(0,2)+"/"+sha1.substr(2,38);
+    cout<<path<<endl;
     string pathDir=".git/objects/"+sha1.substr(0,2);
-    const string store_content = "blob " + std::to_string(content.length())+"\\0";
-
+    int len=content.length();
+    const string store_content = "blob " +to_string(len)+"\0"+content;
     cout<<path<<endl;
     //create new blob
-    char pathname[256];
-    strcpy(pathname, pathDir.c_str());
-    cout <<pathname<< endl;
-    mkdir(pathname,0777);
-    cout<<path<<endl;
+    // char pathname[256];
+    // strcpy(pathname, pathDir.c_str());
+    // cout <<pathname<< endl;
+    // mkdir(pathname,0777);
+    // cout<<path<<endl;
     // compress the store
-    const string compressed_store= compress(store_content);
-    // cout << compressed_store << endl;
+    const string compressed_store= compress(store_content,len);
+    cout << compressed_store << endl;
 
     // write compressed store
-    ofstream my;
-    my.open(path);   //change to path
-    my << compressed_store ;
-    my.close();
+    // ofstream my;
+    // my.open(path);   //change to path
+    // my << compressed_store ;
+    // my.close();
 
     return 0;
 }
