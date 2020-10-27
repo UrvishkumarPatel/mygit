@@ -20,7 +20,21 @@ store = header + data
 // #include <iostream>
 #include <fstream>
 #include <bits/stdc++.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <stdio.h> // removes
+#include <string.h>
+#include <dirent.h>
+#include <sys/stat.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <unistd.h>
+#include "checkDir.h"
 using namespace std;
+
+
+#define MAX_FILE_NAME_LENGTH 1024
+void add_run(string location/*int* flag*/);
 
 string hash_object(string content, string type){
     /*
@@ -38,23 +52,32 @@ string hash_object(string content, string type){
 }
 
 
-
-
-
- string compress(string store_content){
+string compress(string store_content, int len){
     char a[5000];
-    strcpy(a, store_content.c_str());
-    char compressed_store[5000];
-    // compress a into compressed_store
+    // strcpy(a, store_content.c_str());
+    int k=0;
+    while (store_content[k]!='\0'){
+        a[k]= store_content[k];
+        k++;
+    }
+    a[k]= '\0';
 
+    k+=1;
+    while (store_content[k]!='\0'){
+        a[k]= store_content[k];
+        k++;
+    }
+    char compressed_store[5000];
+    printf("Uncompressed string is: %s\n", a);
     // zlib struct
     z_stream defstream;
     defstream.zalloc = Z_NULL;
     defstream.zfree = Z_NULL;
     defstream.opaque = Z_NULL;
-    // setup "a" as the input and "compressed_store" as the compressed output
-    defstream.avail_in = (uInt)strlen(a)+1; // size of input, string + terminator
-    defstream.next_in = (Bytef *)a; // input char array
+
+    int totallen= k; // lenght of header+content
+    defstream.avail_in = (uInt)totallen; // size of input, string + terminator
+    defstream.next_in = (Bytef *)a; // input char arraylen
     defstream.avail_out = (uInt)sizeof(compressed_store); // size of output
     defstream.next_out = (Bytef *)compressed_store; // output char array
 
@@ -62,18 +85,132 @@ string hash_object(string content, string type){
     deflateInit(&defstream, Z_BEST_COMPRESSION);
     deflate(&defstream, Z_FINISH);
     deflateEnd(&defstream);
-
-    // This is one way of getting the size of the output
-    // printf("Compressed size is: %lu\n", strlen(b));
-    // printf("Compressed string is: %s\n", b);
-    // std::cout <<"x\x9CK\xCA\xC9OR04c(\xCFH,Q\xC8,V(-\xD0QH\xC9O\xB6\a\x00_\x1C\a\x9D"<<"\n" << b<< std::endl;
-    // char k[5000]= "x\x9CK\xCA\xC9OR04c(\xCFH,Q\xC8,V(-\xD0QH\xC9O\xB6\a\x00_\x1C\a\x9D";
-     return compressed_store;
- }
+    return compressed_store;
+}
 
 
+// buggy!
+// string decompress(string compressed_content, int lenCompressed)
+// {
+//     // char b[5000];
+//     char c[5000];  //for decompression
 
-int add(string file_name){
+//     char a[5000];
+//     strcpy(a, compressed_content.c_str());
+
+//     // STEP 2.
+//     // inflate b into c
+//     // zlib struct
+//     z_stream infstream;
+//     infstream.zalloc = Z_NULL;
+//     infstream.zfree = Z_NULL;
+//     infstream.opaque = Z_NULL;
+//     // setup "b" as the input and "c" as the compressed output
+//     infstream.avail_in = (uInt)((char*)(Bytef *)a - a); // size of input
+//     infstream.next_in = (Bytef *)a; // input char array
+//     infstream.avail_out = (uInt)sizeof(c); // size of output
+//     infstream.next_out = (Bytef *)c; // output char array
+
+//     // the actual DE-compression work.
+//     inflateInit(&infstream);
+//     inflate(&infstream, Z_NO_FLUSH);
+//     inflateEnd(&infstream);
+
+//     printf("Uncompressed size is: %lu\n", strlen(c));
+//     printf("Uncompressed string is: %s\n", c);
+//     // std::cout<< lenCompressed<<std::endl;
+//     int k=0;
+//     while (k<lenCompressed){
+//         cout<< c[k];
+//         k++;
+//     }
+//     cout << "asdasdsad" << endl;
+//     return c;
+// }
+
+/* return the type of PATH */
+
+
+
+// class blobMetaData{
+//     public:
+//         permission;
+//         path;
+//         sha;
+// }
+
+
+// class tree:
+
+//     def build_tree():
+
+
+//         return root
+
+//     def parse_tree():
+
+
+
+// // - write commit object
+// // - write tree object
+// def commit_():
+//     // build tree using blobMetaData
+//     // create commit object
+//     // add refference to root of tree built, parent commits
+
+
+
+
+
+// addedBlobs= [bolb1, blob2, ...]  //staging area
+
+// file_vs_sha_index=
+
+// void updateBlobMetaData(string sha, string path, string mode ){
+//     // get the file permissions
+
+//     blobMetaData blob_i;
+//     blob_i.sha= sha;
+//     blob_i.mode= mode;
+//     blob_i.path= path
+//     // put this in some other data structure or serialize using json
+//     ofstream myfile; // write to indexfile
+//     myfile.open ("example.txt");
+//     myfile << mode << " " << sha << " " << path;
+//     myfile.close();
+
+// }
+
+void blobDir(char* dirname){
+    /* creates a blob for all the files present in this directory. */
+    DIR* dir = opendir(dirname); // open the directory location to read.
+
+    if (dir == NULL){
+        // handelling error
+        fprintf(stderr, "opendir: '%s': %s\n", dirname, strerror(errno));
+        return;
+    }
+
+    struct dirent* dir_reader; // to read the directory
+    char newlocation[MAX_FILE_NAME_LENGTH] = "";
+    while ((dir_reader = readdir(dir)) !=NULL){
+        if ((!strcmp(dir_reader->d_name, ".")) || (!strcmp(dir_reader->d_name, ".."))){
+            // ignore "." and ".." directories
+        }
+        else{
+            strcpy(newlocation, dirname);
+            strcat(newlocation, "/");
+            strncat(newlocation, dir_reader->d_name, strlen(dir_reader->d_name));
+            // query to blob the directory file/ subdirectory
+            string newLocation(newlocation);
+            add_run(newLocation);
+        }
+    }
+    closedir(dir);
+}
+
+void createBlob(string file_name){
+    /* create a blob for given file*/
     string content="";
     string line;
     // read file content
@@ -90,21 +227,55 @@ int add(string file_name){
     }
     string sha1=hash_object(content,"blob");
     string path=".git/objects/"+sha1.substr(0,2)+"/"+sha1.substr(2,38);
-    const string store_content = "blob " + std::to_string(content.length())+"\\0";
-
-    cout<<path<<endl;
+    // cout<<path<<endl;
+    string pathDir=".git/objects/"+sha1.substr(0,2);
+    int len=content.length(); //length of content
+    const string store_content = "blob " +to_string(len)+'\0'+content;
+    // cout<<"creating blob for  " << file_name<< " " <<path<<endl;
     //create new blob
-    // mkdir(path,"0777");
-
+    char dirPath[MAX_FILE_NAME_LENGTH];
+    strcpy(dirPath, pathDir.c_str());
+    mkdir(dirPath,0777);
+    // cout<<dirPath<<endl;
     // compress the store
-    const string compressed_store= compress(store_content);
-    cout << compressed_store <<endl;
+    const string compressed_store= compress(store_content,len);
+    // cout << compressed_store << endl;
+    // cout << "x\x9sCK\xCA\xC9OR04c(\xCFH,Q\xC8,V(-\xD0QH\xC9O\xB6\a\x00_\x1C\a\x9D" <<endl;
 
-    // write compressed store
-    // ofstream my;
-    // my.open ("l.txt");   //change to path
-    // my << compressed_store ;
-    // my.close();
+    // add metadata
+    // updateBlobMetaData(sha, path);
 
-    return 0;
+    // write compressed content
+    // string p="t.txt";
+    ofstream fout;
+    fout.open(path);
+    int i=0;
+    while (i<compressed_store.length()-1){
+        fout.put(compressed_store[i]);
+        // cout << compressed_store[i]<<endl;
+        i++;
+    }
+    // cout<<"\n" <<endl;
+    fout.close();
+
+}
+
+void add_run(string location){
+    /*
+    checks  if location is file -- create a blob
+            if directory then first look for the files and create blob for all of them
+    */
+    char location_new[MAX_FILE_NAME_LENGTH];
+    strcpy(location_new, location.c_str());
+    int status = isDir(location_new); // location is file or directory
+
+    if (status == 2){
+        //location is file;
+        createBlob(location);
+
+    }
+    else if (status == 1){
+        // location is directory
+            blobDir(location_new);
+    }
 }
