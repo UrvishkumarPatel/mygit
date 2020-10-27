@@ -34,7 +34,12 @@ using namespace std;
 
 
 #define MAX_FILE_NAME_LENGTH 1024
-void add_run(string location/*int* flag*/);
+#define PATH_INDEX "git/index"
+#define git_dir "git"
+// #define PATH_INDEX "p.txt"
+string GIT_DIR(git_dir);
+
+void add_run(string location);
 
 string hash_object(string content, string type){
     /*
@@ -68,7 +73,7 @@ string compress(string store_content, int len){
         k++;
     }
     char compressed_store[5000];
-    printf("Uncompressed string is: %s\n", a);
+    // printf("bl string is: %s\n", a);
     // zlib struct
     z_stream defstream;
     defstream.zalloc = Z_NULL;
@@ -132,24 +137,6 @@ string compress(string store_content, int len){
 
 
 
-// class blobMetaData{
-//     public:
-//         permission;
-//         path;
-//         sha;
-// }
-
-
-// class tree:
-
-//     def build_tree():
-
-
-//         return root
-
-//     def parse_tree():
-
-
 
 // // - write commit object
 // // - write tree object
@@ -160,26 +147,109 @@ string compress(string store_content, int len){
 
 
 
+int decimaltoOctal(int deciNum)
+{
+
+    // initializations
+    int octalNum = 0, countval = 1;
+    int dNo = deciNum;
+
+    while (deciNum != 0) {
+
+        // decimals remainder is calculated
+        int remainder = deciNum % 8;
+
+        // storing the octalvalue
+        octalNum += remainder * countval;
+
+        // storing exponential value
+        countval = countval * 10;
+        deciNum /= 8;
+    }
+    // cout << octalNum << endl;
+    return octalNum;
+}
+
+string mysplit(string inLine){
+    char line[MAX_FILE_NAME_LENGTH];
+    strcpy(line, inLine.c_str());
+    char* tokens[4];
+    int k=0;
+
+    char* token = strtok(line, " ");
+    while (token != NULL){
+        tokens[k]= token;
+        token = strtok(NULL, " ");
+        k+=1;
+    }
+    string curPath(tokens[k-1]);
+    return curPath;
+}
 
 
-// addedBlobs= [bolb1, blob2, ...]  //staging area
 
-// file_vs_sha_index=
+void updateIndexFile(string sha, string pathname){
+    // get the file permissions
 
-// void updateBlobMetaData(string sha, string path, string mode ){
-//     // get the file permissions
+    int isPresent=1;
+    const char* path= pathname.c_str();
+    struct stat fb;
+    if (stat(path, &fb)==-1){ // 0 when file exist
+        // printf("cannot stat on %s location!\n", PATH);  //are you planning to print this?
+        isPresent= 0; // is not present in working dir
+    }
+    if (isPresent){
+        unsigned long var= (unsigned long)fb.st_mode;
 
-//     blobMetaData blob_i;
-//     blob_i.sha= sha;
-//     blob_i.mode= mode;
-//     blob_i.path= path
-//     // put this in some other data structure or serialize using json
-//     ofstream myfile; // write to indexfile
-//     myfile.open ("example.txt");
-//     myfile << mode << " " << sha << " " << path;
-//     myfile.close();
+        int mode= decimaltoOctal(var);
+        string identifier= to_string(mode) + " "+ sha + " " + to_string(0) + " "+ pathname ;
 
-// }
+        string line;
+        // read file content
+        ifstream myfile(PATH_INDEX);
+        if(myfile.is_open()){
+            while(getline(myfile,line)){
+                if (line.compare(identifier)==0){
+                    return;
+                }
+            }
+            myfile.close();
+        }
+        else{
+            cout<<"Error"<<endl;
+            exit(0);
+        }
+
+        // write to the index file
+        fstream f;
+        f.open(PATH_INDEX, fstream::out | fstream::app);
+        f << identifier<<endl;
+        f.close();
+    }
+    else{
+        string line;
+        string content="";
+        // read file content
+        ifstream myfile(PATH_INDEX);
+        if(myfile.is_open()){
+            while(getline(myfile, line)){
+                string curPath= mysplit(line);
+                if (curPath.compare(pathname)){
+                    content+=line;
+                }
+            }
+            myfile.close();
+        }
+        else{
+            cout<<"Error"<<endl;
+            exit(0);
+        }
+        ofstream f;
+        f.open(PATH_INDEX, ofstream::trunc);
+        f << content;
+        f.close();
+    }
+}
 
 void blobDir(char* dirname){
     /* creates a blob for all the files present in this directory. */
@@ -226,9 +296,9 @@ void createBlob(string file_name){
         cout<<"Error"<<endl;
     }
     string sha1=hash_object(content,"blob");
-    string path=".git/objects/"+sha1.substr(0,2)+"/"+sha1.substr(2,38);
+    string path= GIT_DIR+"/objects/"+sha1.substr(0,2)+"/"+sha1.substr(2,38);
     // cout<<path<<endl;
-    string pathDir=".git/objects/"+sha1.substr(0,2);
+    string pathDir=GIT_DIR+"/objects/"+sha1.substr(0,2);
     int len=content.length(); //length of content
     const string store_content = "blob " +to_string(len)+'\0'+content;
     // cout<<"creating blob for  " << file_name<< " " <<path<<endl;
@@ -242,8 +312,9 @@ void createBlob(string file_name){
     // cout << compressed_store << endl;
     // cout << "x\x9sCK\xCA\xC9OR04c(\xCFH,Q\xC8,V(-\xD0QH\xC9O\xB6\a\x00_\x1C\a\x9D" <<endl;
 
-    // add metadata
-    // updateBlobMetaData(sha, path);
+    // update file
+    updateIndexFile(sha1, file_name);
+
 
     // write compressed content
     // string p="t.txt";
@@ -276,6 +347,9 @@ void add_run(string location){
     else if (status == 1){
         // location is directory
         blobDir(location_new);
+    }
+    else{
+        updateIndexFile("", location);
     }
 }
 
