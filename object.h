@@ -272,10 +272,20 @@ void add_run(string location){
     if (status == 2){
         //location is file;
         createBlob(location);
-
     }
     else if (status == 1){
         // location is directory
-            blobDir(location_new);
+        blobDir(location_new);
+    }
+}
+
+void add(int argc,char* argv[]){
+    if(argc==2){
+        printf("No arguments given\n");
+        exit(1);
+    }
+    else{
+        string file_name=argv[2];
+        add_run(file_name);
     }
 }

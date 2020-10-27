@@ -114,8 +114,8 @@ int init(int argc, char* argv[]){
 
 }
         
-int main(int argc, char* argv[]){
-    if(strcmp(argv[1],"init")==0){
-        init(argc,argv);
-    }
-}
+// int main(int argc, char* argv[]){
+//     if(strcmp(argv[1],"init")==0){
+//         init(argc,argv);
+//     }
+// }
