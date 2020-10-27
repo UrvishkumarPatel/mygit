@@ -20,7 +20,7 @@ and helper classes and definations
 int main(int argc, char* argv[]){
     string file_name=argv[1];
     cout<<file_name<<endl;
-    add(file_name);
+    add_run(file_name);
     return 0;
 }
 

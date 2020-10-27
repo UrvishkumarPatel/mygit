@@ -22,7 +22,19 @@ store = header + data
 #include <bits/stdc++.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <stdio.h> // removes
+#include <string.h>
+#include <dirent.h>
+#include <sys/stat.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <unistd.h>
+#include "checkDir.h"
 using namespace std;
+
+
+#define MAX_FILE_NAME_LENGTH 1024
+void add_run(string location/*int* flag*/);
 
 string hash_object(string content, string type){
     /*
@@ -38,9 +50,6 @@ string hash_object(string content, string type){
 
     return hash;
 }
-
-
-
 
 
 string compress(string store_content, int len){
@@ -119,9 +128,89 @@ string compress(string store_content, int len){
 //     return c;
 // }
 
+/* return the type of PATH */
 
 
-int add(string file_name){
+
+// class blobMetaData{
+//     public:
+//         permission;
+//         path;
+//         sha;
+// }
+
+
+// class tree:
+
+//     def build_tree():
+
+
+//         return root
+
+//     def parse_tree():
+
+
+
+// // - write commit object
+// // - write tree object
+// def commit_():
+//     // build tree using blobMetaData
+//     // create commit object
+//     // add refference to root of tree built, parent commits
+
+
+
+
+
+// addedBlobs= [bolb1, blob2, ...]  //staging area
+
+// file_vs_sha_index=
+
+// void updateBlobMetaData(string sha, string path, string mode ){
+//     // get the file permissions
+
+//     blobMetaData blob_i;
+//     blob_i.sha= sha;
+//     blob_i.mode= mode;
+//     blob_i.path= path
+//     // put this in some other data structure or serialize using json
+//     ofstream myfile; // write to indexfile
+//     myfile.open ("example.txt");
+//     myfile << mode << " " << sha << " " << path;
+//     myfile.close();
+
+// }
+
+void blobDir(char* dirname){
+    /* creates a blob for all the files present in this directory. */
+    DIR* dir = opendir(dirname); // open the directory location to read.
+
+    if (dir == NULL){
+        // handelling error
+        fprintf(stderr, "opendir: '%s': %s\n", dirname, strerror(errno));
+        return;
+    }
+
+    struct dirent* dir_reader; // to read the directory
+    char newlocation[MAX_FILE_NAME_LENGTH] = "";
+    while ((dir_reader = readdir(dir)) !=NULL){
+        if ((!strcmp(dir_reader->d_name, ".")) || (!strcmp(dir_reader->d_name, ".."))){
+            // ignore "." and ".." directories
+        }
+        else{
+            strcpy(newlocation, dirname);
+            strcat(newlocation, "/");
+            strncat(newlocation, dir_reader->d_name, strlen(dir_reader->d_name));
+            // query to blob the directory file/ subdirectory
+            string newLocation(newlocation);
+            add_run(newLocation);
+        }
+    }
+    closedir(dir);
+}
+
+void createBlob(string file_name){
+    /* create a blob for given file*/
     string content="";
     string line;
     // read file content
@@ -138,43 +227,55 @@ int add(string file_name){
     }
     string sha1=hash_object(content,"blob");
     string path=".git/objects/"+sha1.substr(0,2)+"/"+sha1.substr(2,38);
-    cout<<path<<endl;
+    // cout<<path<<endl;
     string pathDir=".git/objects/"+sha1.substr(0,2);
     int len=content.length(); //length of content
     const string store_content = "blob " +to_string(len)+'\0'+content;
-    cout<<path<<endl;
+    // cout<<"creating blob for  " << file_name<< " " <<path<<endl;
     //create new blob
-    // char pathname[256];
-    // strcpy(pathname, pathDir.c_str());
-    // cout <<pathname<< endl;
-    // mkdir(pathname,0777);
-    // cout<<path<<endl;
+    char dirPath[MAX_FILE_NAME_LENGTH];
+    strcpy(dirPath, pathDir.c_str());
+    mkdir(dirPath,0777);
+    // cout<<dirPath<<endl;
     // compress the store
     const string compressed_store= compress(store_content,len);
-    cout << compressed_store << endl;
+    // cout << compressed_store << endl;
     // cout << "x\x9sCK\xCA\xC9OR04c(\xCFH,Q\xC8,V(-\xD0QH\xC9O\xB6\a\x00_\x1C\a\x9D" <<endl;
 
+    // add metadata
+    // updateBlobMetaData(sha, path);
+
+    // write compressed content
     // string p="t.txt";
     ofstream fout;
     fout.open(path);
     int i=0;
     while (i<compressed_store.length()-1){
         fout.put(compressed_store[i]);
-        cout << compressed_store[i];
+        // cout << compressed_store[i]<<endl;
         i++;
     }
-    cout<<"" <<endl;
+    // cout<<"\n" <<endl;
     fout.close();
 
+}
 
-    // string original_content= decompress(compressed_store, len+store_content.length());
-    // // cout << original_content<<endl;
-    // int k=0;
-    // while (k<len+store_content.length()){
-    //     cout<< original_content[k];
-    //     k++;
-    // }
-    // cout <<endl;
+void add_run(string location){
+    /*
+    checks  if location is file -- create a blob
+            if directory then first look for the files and create blob for all of them
+    */
+    char location_new[MAX_FILE_NAME_LENGTH];
+    strcpy(location_new, location.c_str());
+    int status = isDir(location_new); // location is file or directory
 
-    return 0;
+    if (status == 2){
+        //location is file;
+        createBlob(location);
+
+    }
+    else if (status == 1){
+        // location is directory
+            blobDir(location_new);
+    }
 }
