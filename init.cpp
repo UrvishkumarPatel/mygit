@@ -1,4 +1,3 @@
-
 #include <bits/stdc++.h>
 #include <iostream>
 #include <sys/stat.h>
@@ -24,25 +23,32 @@ int init(int argc, char* argv[]){
         string path_pack=path_obj+"/"+"pack";
         const char *path_p=path_pack.c_str();
         mkdir(path_p,0777);
+        fstream config;
         string path_config=my_git_name + "/" +"config";
         const char *path_c=path_config.c_str();
-        mkdir(path_c,0777);
+
+        config.open(path_c,ios::out);
         fstream des;
         string my_file=my_git_name+"/"+"description";
         const char *file=my_file.c_str();
-        des.open(file,ios::out);  
+        des.open(file,ios::out);
+        fstream des1;
+        string my_file1=my_git_name+"/"+"index";
+        const char *file1=my_file1.c_str();
+        des1.open(file1,ios::out);
+        fstream Head;
         string path_head=my_git_name + "/" +"Head";
         const char *path_h=path_head.c_str();
-        mkdir(path_h,0777);    
+        Head.open(path_h,ios::out);
         string path_refs=my_git_name + "/" +"refs";
         const char *path_r=path_refs.c_str();
-        mkdir(path_r,0777); 
+        mkdir(path_r,0777);
         string path_heads=path_refs + "/" +"heads";
         const char *path_hs=path_heads.c_str();
-        mkdir(path_hs,0777); 
+        mkdir(path_hs,0777);
         string path_tags=path_refs + "/" +"tags";
         const char *path_t=path_tags.c_str();
-        mkdir(path_t,0777);        
+        mkdir(path_t,0777);
 
     }
     else{
@@ -75,26 +81,33 @@ int init(int argc, char* argv[]){
                 string path_pack=path_obj+"/"+"pack";
                 const char *path_p=path_pack.c_str();
                 mkdir(path_p,0777);
+                fstream config;
                 string path_config=path + "/" +"config";
                 const char *path_c=path_config.c_str();
-                mkdir(path_c,0777);
+                config.open(path_c,ios::out);
+
                 fstream des;
                 string my_file=path+"/"+"description";
-                const char *file=my_file.c_str(); 
+                const char *file=my_file.c_str();
                 des.open(file,ios::out);
+                fstream des1;
+                string my_file1=path+"/"+"index";
+                const char *file1=my_file1.c_str();
+                des1.open(file1,ios::out);
+                fstream Head;
                 string path_head=path + "/" +"Head";
                 const char *path_h=path_head.c_str();
-                mkdir(path_h,0777);    
+                Head.open(path_h,ios::out);
                 string path_refs=path + "/" +"refs";
                 const char *path_r=path_refs.c_str();
-                mkdir(path_r,0777); 
+                mkdir(path_r,0777);
                 string path_heads=path_refs + "/" +"heads";
                 const char *path_hs=path_heads.c_str();
-                mkdir(path_hs,0777); 
+                mkdir(path_hs,0777);
                 string path_tags=path_refs + "/" +"tags";
                 const char *path_t=path_tags.c_str();
-                mkdir(path_t,0777); 
-                
+                mkdir(path_t,0777);
+
             }
         }
         else{
@@ -119,27 +132,34 @@ int init(int argc, char* argv[]){
             string path_pack=path_obj+"/"+"pack";
             const char *path_p=path_pack.c_str();
             mkdir(path_p,0777);
+            fstream config;
             string path_config=path + "/" +"config";
             const char *path_c=path_config.c_str();
-            mkdir(path_c,0777);
+            config.open(path_c,ios::out);
+
             fstream des;
             string my_file=path+"/"+"description";
-            const char *file=my_file.c_str();  
+            const char *file=my_file.c_str();
             des.open(file,ios::out);
+            fstream des1;
+            string my_file1=path+"/"+"index";
+            const char *file1=my_file1.c_str();
+            des1.open(file1,ios::out);
+            fstream Head;
             string path_head=path + "/" +"Head";
             const char *path_h=path_head.c_str();
-            mkdir(path_h,0777);    
+            Head.open(path_h,ios::out);
             string path_refs=path + "/" +"refs";
             const char *path_r=path_refs.c_str();
-            mkdir(path_r,0777); 
+            mkdir(path_r,0777);
             string path_heads=path_refs + "/" +"heads";
             const char *path_hs=path_heads.c_str();
-            mkdir(path_hs,0777); 
+            mkdir(path_hs,0777);
             string path_tags=path_refs + "/" +"tags";
             const char *path_t=path_tags.c_str();
             mkdir(path_t,0777);
         }
-    }        
+    }
 
 }
         

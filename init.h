@@ -36,9 +36,10 @@ int init(int argc, char* argv[]){
         string my_file1=my_git_name+"/"+"index";
         const char *file1=my_file1.c_str();
         des1.open(file1,ios::out);
+        fstream Head;
         string path_head=my_git_name + "/" +"Head";
         const char *path_h=path_head.c_str();
-        mkdir(path_h,0777);
+        Head.open(path_h,ios::out);
         string path_refs=my_git_name + "/" +"refs";
         const char *path_r=path_refs.c_str();
         mkdir(path_r,0777);
@@ -93,9 +94,10 @@ int init(int argc, char* argv[]){
                 string my_file1=path+"/"+"index";
                 const char *file1=my_file1.c_str();
                 des1.open(file1,ios::out);
+                fstream Head;
                 string path_head=path + "/" +"Head";
                 const char *path_h=path_head.c_str();
-                mkdir(path_h,0777);
+                Head.open(path_h,ios::out);
                 string path_refs=path + "/" +"refs";
                 const char *path_r=path_refs.c_str();
                 mkdir(path_r,0777);
@@ -143,9 +145,10 @@ int init(int argc, char* argv[]){
             string my_file1=path+"/"+"index";
             const char *file1=my_file1.c_str();
             des1.open(file1,ios::out);
+            fstream Head;
             string path_head=path + "/" +"Head";
             const char *path_h=path_head.c_str();
-            mkdir(path_h,0777);
+            Head.open(path_h,ios::out);
             string path_refs=path + "/" +"refs";
             const char *path_r=path_refs.c_str();
             mkdir(path_r,0777);
