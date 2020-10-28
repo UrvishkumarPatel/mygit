@@ -1,4 +1,3 @@
-
 #include <bits/stdc++.h>
 #include <iostream>
 #include <sys/stat.h>
@@ -24,9 +23,11 @@ int init(int argc, char* argv[]){
         string path_pack=path_obj+"/"+"pack";
         const char *path_p=path_pack.c_str();
         mkdir(path_p,0777);
+        fstream config;
         string path_config=my_git_name + "/" +"config";
         const char *path_c=path_config.c_str();
-        mkdir(path_c,0777);
+
+        config.open(path_c,ios::out);
         fstream des;
         string my_file=my_git_name+"/"+"description";
         const char *file=my_file.c_str();
@@ -79,9 +80,11 @@ int init(int argc, char* argv[]){
                 string path_pack=path_obj+"/"+"pack";
                 const char *path_p=path_pack.c_str();
                 mkdir(path_p,0777);
+                fstream config;
                 string path_config=path + "/" +"config";
                 const char *path_c=path_config.c_str();
-                mkdir(path_c,0777);
+                config.open(path_c,ios::out);
+
                 fstream des;
                 string my_file=path+"/"+"description";
                 const char *file=my_file.c_str();
@@ -127,9 +130,11 @@ int init(int argc, char* argv[]){
             string path_pack=path_obj+"/"+"pack";
             const char *path_p=path_pack.c_str();
             mkdir(path_p,0777);
+            fstream config;
             string path_config=path + "/" +"config";
             const char *path_c=path_config.c_str();
-            mkdir(path_c,0777);
+            config.open(path_c,ios::out);
+
             fstream des;
             string my_file=path+"/"+"description";
             const char *file=my_file.c_str();
