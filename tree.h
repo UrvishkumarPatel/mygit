@@ -6,24 +6,15 @@
 using namespace std;
 
 ////////
-
-  write_tree: function(_) {
-    files.assertInRepo();
-    return objects.writeTree(files.nestFlatTree(index.toc()));
-  },
-  def write_tree(){
+//todo
+  dict write_tree(){
       return writeTree(nestFlatTree(index_toc()));
   }
 
 //////////////  
-
-toc: function() {
-    var idx = index.read();
-    return Object.keys(idx)
-      .reduce(function(obj, k) { return util.setIn(obj, [k.split(",")[0], idx[k]]); }, {});
-  },
-
-obj index_toc(){
+//todo
+//function that returns an dict that maps file paths to hashes of their content
+dict index_toc(){
     std::vector<string> keys, values;
     for(std::map<std::string, std::string>::iterator it = m.begin(); it != m.end(); ++it) {
         keys.push_back(it->first);
@@ -34,14 +25,12 @@ obj index_toc(){
 }
 
 /////////////
- nestFlatTree: function(obj) {
-    return Object.keys(obj).reduce(function(tree, wholePath) {
-      return util.setIn(tree, wholePath.split(nodePath.sep).concat(obj[wholePath]));
-    }, {});
-  },
 
-  def nestFlatTree(obj){
+//todo pseudo
+// function for { "a/b": "me" } => { a: { b: "me" }  conversion
 
+  def nestFlatTree(dict){
+    return dict
   }
 /////////////
 //////////////////////////
@@ -55,15 +44,6 @@ string key(string path, string stage){
     return path+","+stage;
 }
 
-// read: function() {
-//     var indexFilePath = files.gitletPath("index");
-//     return util.lines(fs.existsSync(indexFilePath) ? files.read(indexFilePath) : "\n")
-//       .reduce(function(idx, blobStr) {
-//         var blobData = blobStr.split(/ /);
-//         idx[index.key(blobData[0], blobData[1])] = blobData[2];
-//         return idx;
-//       }, {});
-//   },
 std::map<std::string, std::string> idx;
 std::map<std::string, std::string> read_index() {
     // ifstream inFile;
@@ -97,16 +77,11 @@ std::map<std::string, std::string> read_index() {
 }
 ///////
 
-setIn: function(obj, arr) {
-    if (arr.length === 2) {
-      obj[arr[0]] = arr[1];
-    } else if (arr.length > 2) {
-      obj[arr[0]] = obj[arr[0]] || {};
-      util.setIn(obj[arr[0]], arr.slice(1));
-    }
-
-    return obj;
-  },
+//todo pseudo
+// function for ["a", "b", "me"] => { a: { b: "me" }  conversion
+  def setIn(arr){
+    return nested dictionary
+  }
 
 
 //////////////////
@@ -131,3 +106,4 @@ setIn: function(obj, arr) {
 
 // };
 
+// https://RealisticVioletPoint.patel-urvishkum.repl.run
