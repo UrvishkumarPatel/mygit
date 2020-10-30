@@ -72,7 +72,7 @@ string compress(string store_content, int len){
         a[k]= store_content[k];
         k++;
     }
-    char compressed_store[5000];
+    char compressed_store[5000]; //change this
     // printf("bl string is: %s\n", a);
     // zlib struct
     z_stream defstream;
@@ -147,8 +147,7 @@ string compress(string store_content, int len){
 
 
 
-int decimaltoOctal(int deciNum)
-{
+int decimaltoOctal(int deciNum){
 
     // initializations
     int octalNum = 0, countval = 1;

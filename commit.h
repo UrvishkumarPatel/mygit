@@ -32,6 +32,16 @@ class treeNode{
         string type;
         string name;
         vector<treeNode> pointers;
+
+
+        void print_attributes(){
+            cout<<"mode: "<< mode <<endl;
+            cout<<"type: "<< type <<endl;
+            cout<<"sha: "<< sha <<endl;
+            cout<<"name: "<< name <<endl;
+            cout<<"-----------------"<<endl;
+
+        }
 };
 
 
@@ -68,120 +78,120 @@ char** split_index_line(char* line_){
     return tokens;  // check this
 }
 
-// class Graph
-// {
-//     int V;    // No. of vertices
 
-//     // Pointer to an array containing
-//     // adjacency lists
-//     list<int> *adj;
-
-//     // A recursive function used by DFS
-//     void DFSUtil(int v, bool visited[]);
-// public:
-//     Graph(int V);   // Constructor
-
-//     // function to add an edge to graph
-//     void addEdge(int v, int w);
-
-//     // DFS traversal of the vertices
-//     // reachable from v
-//     void DFS(int v);
-// };
 class tree{
     public:
+        treeNode root; //"."
+        map<string, treeNode*> hashSet;
+
       tree(){
-        treeNode root;
+
         root.name= "root";
         root.type = "tree";
-        map<string, treeNode> hashSet;
-        hashSet[ROOT_PATH]=root;
+        hashSet[ROOT_PATH]=&root;
         }
-        treeNode root; //"."
-        map<string, treeNode> hashSet;
 
         void build_tree(string path_, char** blob_data){
-            /* call strtok each time and check if the node with that name exists
-                if yes then verify type also
-                if not then make the node
-            */
-            //    a.txt
-            // temp points to root
 
-            // loop over childrens of temp:
-                // if a exists: (check for name(must be a) and type(must be tree))
-                //  temp = a
-                // else:
-                //  create node a (define type as tree, name as a, mode appropriately, sha null, no pointers yet)
-            // []->[]->[]->[]
-            // a/b/c.txt
-            // a/b.txt
-
+            // 0- MODE
+            // 1- SHA
+            // 2- STAGE
+            // 3- path
             string present_path= ROOT_PATH;
-            treeNode iterator= root;
+
+            treeNode* iterator= &root;
             char* token;
             char path[MAX_FILE_NAME_LENGTH];
-            strcpy(path,path_.c_str());
+            strcpy(path, path_.c_str());
             int type_file;
 
             token=strtok(path,"/");
-            string token_(token);
-            present_path= present_path+"/"+token_;
-            char present_path_[MAX_FILE_NAME_LENGTH];
-            strcpy(present_path_,present_path.c_str());
 
             while (token!=NULL){
 
+                string token_(token);
+                present_path= present_path+"/"+token_;
+                char present_path_[MAX_FILE_NAME_LENGTH];
+                strcpy(present_path_,present_path.c_str());
+
+
                 type_file=isDir(present_path_);
-                if (hashSet.find(present_path) != hashSet.end()){
-                    iterator.pointers.push_back(hashSet[present_path]);
+                if (hashSet.find(present_path) != hashSet.end()){ //is present
+                    iterator->pointers.push_back(*hashSet[present_path]);
                     iterator= hashSet[present_path];
                 }
                 else{
-                    treeNode newTree;
-                    newTree.name= token_;
-                    newTree.mode= blob_data[1];
+                    // treeNode newTree; //todo reinitialization issue
+                    treeNode* newTree= new treeNode;
+                    newTree->name= token_;
 
                     if(type_file==1){
                         /* create tree node */
-                        newTree.type= "tree";
-                        iterator.pointers.push_back(newTree);
+                        newTree->mode= "04000";
+                        newTree->type= "tree";
+                        iterator->pointers.push_back(*newTree);
                         hashSet[present_path]= newTree;
                         iterator= newTree;
+
+
                     }
                     else if(type_file==2){
                         /* create blob object */
-                        newTree.type= "blob";
+                        newTree->mode= blob_data[0];
+                        newTree->type= "blob";
                         string blob_data_(blob_data[1]);
-
-                        newTree.sha= blob_data_;
-                        iterator.pointers.push_back(newTree);
+                        newTree->sha= blob_data_;
+                        iterator->pointers.push_back(*newTree);
                         hashSet[present_path]=newTree;
-                        iterator=newTree;
                         break;
                     }
-
-
                 }
+
                 token= strtok(NULL, "/");
-                string token_(token);
-                present_path= present_path+"/"+token_;
-                present_path_[MAX_FILE_NAME_LENGTH];
-                strcpy(present_path_,present_path.c_str());
+                // cout<<iterator->name<<" after update and else "<<endl;
+
+
+                // cout<<"   adsfsadf"<<endl;
+                // string token_(token);
+                // present_path= present_path+"/"+token_;
+                // present_path_[MAX_FILE_NAME_LENGTH];
+                // strcpy(present_path_,present_path.c_str());
             }
+            // ;
+            // cout<<"   "<<endl;
+            // cout<<iterator->name<< " ignore"<<endl;
+
+
+            // dfs(root);
+            // print_hash();
         }
 
-        void print_tree(){
+        void print_hash(){
             for(auto x: hashSet){
-                cout<<x.first<<"    "<< x.second.type<< endl;
+                cout<< x.first<<endl;
+                if (x.second->type!="blob"){
+                    x.second->pointers[0].print_attributes();
+                    if (x.second->name=="demo"){
+                        x.second->pointers[1].print_attributes();
+                    }
+                }
+            cout<<" --- done --- "<<endl;
+
             }
         }
 
-        void compute_hash(/*treeNode root*/){
-            // use root node and index files to compute hash
-            // write each object to .git/objects
 
+        void dfs(treeNode curNode){
+            curNode.print_attributes();
+            for (auto ptr = curNode.pointers.begin(); ptr <curNode.pointers.end(); ptr++)
+                dfs(*ptr);
         }
+
+        // void compute_hash(/*treeNode root*/){
+        //     // use root node and index files to compute hash
+        //     // write each object to .git/objects
+
+        // }
 
 
         void read_index(){
@@ -197,7 +207,6 @@ class tree{
                     strcpy(line_, line.c_str());
                     char** blob_data= split_index_line(line_);
                     build_tree(curPath, blob_data);
-                    // cout<<blob_data[0]<<blob_data[1]<< blob_data[2]<< endl;
 
                 }
                 myfile.close();
@@ -226,9 +235,12 @@ void run_commit(string flag, string message){
         // compute the hash
         tree myTree;
         myTree.read_index();
-        commit commit_obj;
-        commit_obj.root= myTree.root;
-        myTree.print_tree();
+        // cout<<myTree.root.name<<endl;
+        // commit commit_obj;
+        // commit_obj.root= myTree.root;
+        // myTree.print_hash();
+        myTree.dfs(myTree.root);
+        // myTree.root.print_attributes();
         // (root.ref_objects_sha)
         // create commit object
         // update head
@@ -241,8 +253,6 @@ void run_commit(string flag, string message){
 
 
 }
-
-
 
 
 void commit(int argc, char* argv[]){
