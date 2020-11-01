@@ -28,10 +28,11 @@ class treeNode{
         // vector<string> ref_objects_type; // list of object names
         // vector<string> ref_objects_sha;
         // vector<string> ref_objects_name;
-        string sha;
+        string sha="";
         string type;
         string name;
         vector<treeNode> pointers;
+        vector<string> childpaths;
 
 
         void print_attributes(){
@@ -127,9 +128,10 @@ class tree{
 
                     if(type_file==1){
                         /* create tree node */
-                        newTree->mode= "04000";
+                        newTree->mode= "040000";
                         newTree->type= "tree";
                         iterator->pointers.push_back(*newTree);
+                        iterator->childpaths.push_back(present_path);
                         hashSet[present_path]= newTree;
                         iterator= newTree;
 
@@ -142,6 +144,7 @@ class tree{
                         string blob_data_(blob_data[1]);
                         newTree->sha= blob_data_;
                         iterator->pointers.push_back(*newTree);
+                        iterator->childpaths.push_back(present_path);
                         hashSet[present_path]=newTree;
                         break;
                     }
@@ -181,17 +184,38 @@ class tree{
         }
 
 
-        void dfs(treeNode curNode){
+
+        string dfs(treeNode curNode){
+            // when leaf content
+            if (curNode.type=="blob"){
+                return curNode.mode+" "+ "blob" + " "+ curNode.sha+ "\t"+ curNode.name;
+            }
+
             curNode.print_attributes();
-            for (auto ptr = curNode.pointers.begin(); ptr <curNode.pointers.end(); ptr++)
-                dfs(*ptr);
+            // craeate object
+            string content;
+            for (auto ptr = curNode.childpaths.begin(); ptr <curNode.childpaths.end(); ptr++){
+                content += dfs(*hashSet[*ptr]);
+                if (ptr!= curNode.childpaths.end()-1)
+                    content += "\n";
+            }
+
+            cout<<"content of -- "<<curNode.name<<"\n"<< content<<"\n----------------" <<endl;
+            // exit();
+            // pass content to compute hash function
+            curNode.sha= hash_object(content, curNode.type);
+            // compress
+            // make and write file
+            write_object(curNode.sha, content, "tree");
+            // fstream f;
+            // f.open("p.txt", fstream::out | fstream::app);
+            // f << content<<endl;
+            // f.close();
+            return curNode.mode+" "+ "tree" + " "+ curNode.sha+  "\t"+ curNode.name;
+            // return curNode.mode+" "+ curNode.name +"\0" + curNode.sha;
+
         }
 
-        // void compute_hash(/*treeNode root*/){
-        //     // use root node and index files to compute hash
-        //     // write each object to .git/objects
-
-        // }
 
 
         void read_index(){
@@ -202,6 +226,7 @@ class tree{
             if(myfile.is_open()){
                 while(getline(myfile, line)){
                     // 100644 e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 0       asjdk.txt
+
                     string curPath= mysplit(line);
                     char line_[MAX_FILE_NAME_LENGTH];
                     strcpy(line_, line.c_str());
@@ -239,7 +264,9 @@ void run_commit(string flag, string message){
         // commit commit_obj;
         // commit_obj.root= myTree.root;
         // myTree.print_hash();
-        myTree.dfs(myTree.root);
+
+        string root_content = myTree.dfs(myTree.root);
+
         // myTree.root.print_attributes();
         // (root.ref_objects_sha)
         // create commit object

@@ -278,6 +278,39 @@ void blobDir(char* dirname){
     closedir(dir);
 }
 
+
+void write_object(string sha1, string content, string type){
+    string path= GIT_DIR+"/objects/"+sha1.substr(0,2)+"/"+sha1.substr(2,38);
+    // cout<<path<<endl;
+    string pathDir=GIT_DIR+"/objects/"+sha1.substr(0,2);
+    int len=content.length(); //length of content
+    const string store_content = type +to_string(len)+'\0'+content;
+    // cout<<"creating blob for  " << file_name<< " " <<path<<endl;
+    //create new blob
+    char dirPath[MAX_FILE_NAME_LENGTH];
+    strcpy(dirPath, pathDir.c_str());
+    mkdir(dirPath,0777);
+    // cout<<dirPath<<endl;
+    // compress the store
+    const string compressed_store= compress(store_content,len);
+    // cout << compressed_store << endl;
+    // cout << "x\x9sCK\xCA\xC9OR04c(\xCFH,Q\xC8,V(-\xD0QH\xC9O\xB6\a\x00_\x1C\a\x9D" <<endl;
+
+    // write compressed content
+    // string p="t.txt";
+    ofstream fout;
+    fout.open(path);
+    int i=0;
+    while (i<compressed_store.length()-1){
+        fout.put(compressed_store[i]);
+        // cout << compressed_store[i]<<endl;
+        i++;
+    }
+    // cout<<"\n" <<endl;
+    fout.close();
+}
+
+
 void createBlob(string file_name){
     /* create a blob for given file*/
     string content="";
@@ -295,38 +328,10 @@ void createBlob(string file_name){
         cout<<"Error"<<endl;
     }
     string sha1=hash_object(content,"blob");
-    string path= GIT_DIR+"/objects/"+sha1.substr(0,2)+"/"+sha1.substr(2,38);
-    // cout<<path<<endl;
-    string pathDir=GIT_DIR+"/objects/"+sha1.substr(0,2);
-    int len=content.length(); //length of content
-    const string store_content = "blob " +to_string(len)+'\0'+content;
-    // cout<<"creating blob for  " << file_name<< " " <<path<<endl;
-    //create new blob
-    char dirPath[MAX_FILE_NAME_LENGTH];
-    strcpy(dirPath, pathDir.c_str());
-    mkdir(dirPath,0777);
-    // cout<<dirPath<<endl;
-    // compress the store
-    const string compressed_store= compress(store_content,len);
-    // cout << compressed_store << endl;
-    // cout << "x\x9sCK\xCA\xC9OR04c(\xCFH,Q\xC8,V(-\xD0QH\xC9O\xB6\a\x00_\x1C\a\x9D" <<endl;
 
+    write_object(sha1, content, "blob");
     // update file
     updateIndexFile(sha1, file_name);
-
-
-    // write compressed content
-    // string p="t.txt";
-    ofstream fout;
-    fout.open(path);
-    int i=0;
-    while (i<compressed_store.length()-1){
-        fout.put(compressed_store[i]);
-        // cout << compressed_store[i]<<endl;
-        i++;
-    }
-    // cout<<"\n" <<endl;
-    fout.close();
 
 }
 

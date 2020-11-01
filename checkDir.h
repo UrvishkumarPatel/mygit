@@ -13,5 +13,6 @@ int isDir(char* PATH){
     }
     if (S_ISDIR(check_file.st_mode)) return 1;
     if (S_ISREG(check_file.st_mode)) return 2;
+    return -1;
 
 }
