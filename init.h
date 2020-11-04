@@ -160,5 +160,5 @@ int init(int argc, char* argv[]){
             mkdir(path_t,0777);
         }
     }
-
+    return 0;
 }

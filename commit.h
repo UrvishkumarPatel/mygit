@@ -16,6 +16,7 @@ form a tree
 #define PATH_INDEX "git/index"
 #define ROOT_PATH "."
 #define MAX_FILE_NAME_LENGTH 1024
+#define PATH "git/refs/heads/master"
 
 
 using namespace std;
@@ -52,8 +53,8 @@ class commit{
         string author;
         string commiter;
         string sha1;
-        treeNode root;
-        vector<commit> parent_commit;
+        string root_sha;
+        vector<string> parent_commit;
         //etc
 };
 
@@ -62,17 +63,17 @@ class commit{
 
 
 
-char** split_index_line(char* line_){
-    // char line_[MAX_FILE_NAME_LENGTH];
-    // strcpy(line_, line.c_str());
+char** split_index_line(char* line_, string delimiter_){
+    char delimiter[MAX_FILE_NAME_LENGTH];
+    strcpy(delimiter, delimiter_.c_str());
 
     char** tokens= (char**)malloc(4*sizeof(char*));
     int k=0;
 
-    char* token = strtok(line_, " ");
+    char* token = strtok(line_, delimiter);
     while (token != NULL){
         tokens[k]= token;
-        token = strtok(NULL, " ");
+        token = strtok(NULL, delimiter);
         k+=1;
     }
     tokens[k]=NULL;
@@ -200,7 +201,7 @@ class tree{
                     content += "\n";
             }
 
-            cout<<"content of -- "<<curNode.name<<"\n"<< content<<"\n----------------" <<endl;
+            // cout<<"content of -- "<<curNode.name<<"\n"<< content<<"\n----------------" <<endl;
             // exit();
             // pass content to compute hash function
             curNode.sha= hash_object(content, curNode.type);
@@ -211,6 +212,9 @@ class tree{
             // f.open("p.txt", fstream::out | fstream::app);
             // f << content<<endl;
             // f.close();
+            // cout<<"upar"<<endl;
+            cout << curNode.mode+" "+ "tree" + " "+ curNode.sha+  "\t"+ curNode.name << endl;
+            // cout<<"niche"<<endl;
             return curNode.mode+" "+ "tree" + " "+ curNode.sha+  "\t"+ curNode.name;
             // return curNode.mode+" "+ curNode.name +"\0" + curNode.sha;
 
@@ -230,7 +234,11 @@ class tree{
                     string curPath= mysplit(line);
                     char line_[MAX_FILE_NAME_LENGTH];
                     strcpy(line_, line.c_str());
-                    char** blob_data= split_index_line(line_);
+                    // char delimiter_[MAX_FILE_NAME_LENGTH];
+                    // strcpy(delimiter, delimiter_.c_str());
+                    
+                    // char space[]= " ";
+                    char** blob_data= split_index_line(line_, " ");
                     build_tree(curPath, blob_data);
 
                 }
@@ -246,6 +254,40 @@ class tree{
 };
 
 // blob object is the created file itself, instance of the object present physically
+
+
+
+string get_content_commit(string root_sha, string commit_msg){
+    /* TODO- adding parent pointers */
+    // char PATH_[MAX_FILE_NAME_LENGTH];
+    // strcpy(PATH_, PATH.c_str());
+    string parent_content="";
+    // loop over all the parents
+    char PATH_[]= PATH;
+    if (isDir(PATH_)==2){  //2 -- PATH is a regular file
+        // create a new file at ref
+        parent_content+="parent ";
+        string parent_sha;
+        ifstream myfile(PATH);
+        if(myfile.is_open()){
+            while(getline(myfile,parent_sha)){
+                // cout<<line<<endl;
+            }
+            myfile.close();
+        }
+        else{
+            cout<<"Error"<<endl;
+            // exit();
+        }
+        parent_content+= parent_sha+"\n";
+    }
+    string author= "imp_git";
+    string commiter= "imp_git";
+    // vector<string> parent_commit;  # get the parent sha from ref/heads
+
+    string content= parent_content+"tree "+root_sha + "\n"+ "author "+ author + "\n" + "committer "+commiter+"\n\n"+ commit_msg;
+    return content;
+}
 
 
 
@@ -267,18 +309,40 @@ void run_commit(string flag, string message){
 
         string root_content = myTree.dfs(myTree.root);
 
-        // myTree.root.print_attributes();
-        // (root.ref_objects_sha)
-        // create commit object
-        // update head
-        // if isDir(head_path)==0{
+        char root_content_[MAX_FILE_NAME_LENGTH];
+        strcpy(root_content_, root_content.c_str());
+        char** tokens_root_hash_= split_index_line(root_content_, " ");
+        char** tokens_root_hash= split_index_line(tokens_root_hash_[1], "\t");
+        // cout<<tokens_root_hash[0]<<endl;
+        string root_sha(tokens_root_hash[0]);
 
+        ///////////////////////////////////
+        // todo 
+        // if (root_sha== "decompress file of content of PATH"){
+        //     cout<<"nothing  to commit"<<endl;
+        //     return;
         // }
+        // commit object
+        //////////////////////////////////
+
+        string commit_content= get_content_commit(root_sha, message);
+        // write the object
+        string commit_sha=hash_object(commit_content,"commit");
+        cout<<"\n"<< commit_content<< "\n"<< commit_sha<<endl;
+
+        /* tree 9b5a3d2570f0b61a9aca5188cc4e33c3a0b3f84b
+           author imp_git
+           committer imp_git
+
+           first commit
+        */
+        write_object(commit_sha, commit_content, "commit");
+        // overwrite commit at head ////////
+        ofstream MyFile(PATH);
+        MyFile << commit_sha;
+        MyFile.close();
+        
     }
-
-
-
-
 }
 
 
@@ -288,8 +352,7 @@ void commit(int argc, char* argv[]){
         exit(1);
     }
     else{
-        string file_name=argv[2];
-        run_commit("-m", "first commit");
+        run_commit(argv[2], argv[3]);
         cout<< "some print"<<endl;
     }
 }
