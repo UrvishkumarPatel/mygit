@@ -148,6 +148,38 @@ string mysplit(string inLine){
 }
 
 
+void update_size_store(string sha1,int secret_code,int store_len){
+    // update store size
+    string line;
+    int isPresent= 0;
+    ofstream fout_3;
+    fout_3.open(SIZE_STORE);
+    fout_3.close(); 
+    const string content= sha1+ " "+ to_string(secret_code)+ " "+ to_string(store_len);
+    ifstream size_store(SIZE_STORE);
+    if(size_store.is_open()){
+        while(getline(size_store, line)){
+            // cout << line.comconontentpare(content)<< " "<<line<<" "<< content<<endl;
+            if (line.compare(content)==0){ // 
+                isPresent= 1;
+                break;
+            }
+        }
+        size_store.close();
+    }
+    else{
+        cout<<"Error"<<endl;
+        exit(0);
+    }
+
+    if(!isPresent){
+        ofstream fout_size;
+        fout_size.open(SIZE_STORE, ios::app);
+        fout_size << content;
+        fout_size<<"\n";
+        fout_size.close();
+    }
+}
 
 void updateIndexFile(string sha, string pathname){
     // get the file permissions
@@ -277,6 +309,39 @@ char* decompress(string compress_string, int secret_code,int len){
 }
 
 
+auto get_compressed_store_data(string sha){
+    string line;
+    ifstream size_store(SIZE_STORE);
+    int flag=0;
+    pair<int,int> compressed_store_data;
+    if(size_store.is_open()){
+        while(getline(size_store, line)){
+            char line_[MAX_FILE_NAME_LENGTH];
+            strcpy(line_, line.c_str());
+            char** data=split_index_line(line_," ");
+            // cout<< data[0]<<" "<<data[1]<<" "<<data[2]<<endl;
+            string sha1(data[0]);
+            if (sha1.compare(sha)==0){ // 
+                flag=1;
+                compressed_store_data.first=atoi(data[1]);
+                compressed_store_data.second=atoi(data[2]);
+                return compressed_store_data;
+            }
+        }
+        size_store.close();
+    }
+    else{
+        cout<<"Error"<<endl;
+        exit(0);
+    }
+    if(flag==0){
+        cout<<"No matching sha found"<<endl;
+        exit(0);
+    }
+    return compressed_store_data;
+}
+// char** split_index_line(char* line_, string delimiter_){
+
 
 void print_string(char* str, int store_len){
     /* prints the string. Deals with "/0" */
@@ -324,13 +389,11 @@ void write_object(string sha1, string content, string type){
     }
     // cout<<"\n" <<endl;
     fout.close();
-
-
-    ofstream fout_size;
-    fout_size.open(SIZE_STORE, ios::app);
-    fout_size<<sha1+ " "+ to_string(compressed_store_.second)+ " "+ to_string(store_len)+"\n"; 
-    fout_size.close();
-
+    // update the store data
+    update_size_store(sha1, compressed_store_.second, store_len);
+    // pair<int,int> get1;
+    // get1 = get_compressed_store_data(sha1);
+    // cout<<get1.first<<" "<<get1.second<<endl;
 }
 
 
