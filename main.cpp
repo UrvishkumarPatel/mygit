@@ -3,6 +3,7 @@
 - fork (optional) the command and execute it
 */
 
+#include "helper.h"
 #include "object.h"
 #include "init.h"
 #include <string>
