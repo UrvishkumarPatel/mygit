@@ -71,7 +71,7 @@ void branch(int argc, char* argv[]){
 
         DIR *pDIR;
         struct dirent *entry;
-        if( pDIR=opendir("git/refs/heads") ){
+        if( pDIR=opendir(REF_HEAD_PATH) ){
                 while(entry = readdir(pDIR)){
                         if( strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0 ){
                             if (strcmp(entry->d_name, paths[2]) == 0){
