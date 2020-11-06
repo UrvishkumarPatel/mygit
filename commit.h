@@ -127,7 +127,7 @@ class tree{
                     treeNode* newTree= new treeNode;
                     newTree->name= token_;
 
-                    if(type_file==1){
+                    if(type_file==1){  // directory
                         /* create tree node */
                         newTree->mode= "040000";
                         newTree->type= "tree";
@@ -138,7 +138,7 @@ class tree{
 
 
                     }
-                    else if(type_file==2){
+                    else if(type_file==2){  // file
                         /* create blob object */
                         newTree->mode= blob_data[0];
                         newTree->type= "blob";

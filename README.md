@@ -17,5 +17,4 @@ To compile use ```g++ main.cpp -lz```
   - Parent sha in commit content creating (multiple parent case remaining)
   - Check for overwriting of commit (decompress necessary)
   - Decorate commit object    
-  - take message argument (make more robust)
 - where is ./git folder

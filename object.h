@@ -36,6 +36,8 @@ using namespace std;
 #define MAX_FILE_NAME_LENGTH 1024
 #define PATH_INDEX "git/index"
 #define git_dir "git"
+#define UPPER_BOUND 2147483647
+#define SIZE_STORE  "git/size_store"
 // #define PATH_INDEX "p.txt"
 string GIT_DIR(git_dir);
 
@@ -57,24 +59,32 @@ string hash_object(string content, string type){
 }
 
 
-string compress(string store_content, int len){
-    char a[5000];
-    // strcpy(a, store_content.c_str());
+int GetMaxCompressedLen( int nLenSrc){  
+    int n16kBlocks = (nLenSrc+16383) / 16384; // round up any fraction of a block
+    return ( nLenSrc + 6 + (n16kBlocks*5) );
+}
+// x= (y+k)/k+1
+// alpha= y+6+(((y+k)/k+1)*5)
+
+
+auto compress(string store_content, int len){
+    //len= type + size + 1 ("\0") + content size
+    char* a=(char *)malloc((len)*sizeof(char));   //dynamically allocate
     int k=0;
     while (store_content[k]!='\0'){
         a[k]= store_content[k];
         k++;
     }
     a[k]= '\0';
-
     k+=1;
     while (store_content[k]!='\0'){
         a[k]= store_content[k];
         k++;
     }
-    char compressed_store[5000]; //change this
-    // printf("bl string is: %s\n", a);
-    // zlib struct
+    int max_compress_len = GetMaxCompressedLen(len);
+    cout<<"secret code"<<max_compress_len<<endl;
+    // cout<<max_compress_len<<endl;
+    char* compressed_store=(char *)malloc((max_compress_len)*sizeof(char));   //change this
     z_stream defstream;
     defstream.zalloc = Z_NULL;
     defstream.zfree = Z_NULL;
@@ -83,68 +93,20 @@ string compress(string store_content, int len){
     int totallen= k; // lenght of header+content
     defstream.avail_in = (uInt)totallen; // size of input, string + terminator
     defstream.next_in = (Bytef *)a; // input char arraylen
-    defstream.avail_out = (uInt)sizeof(compressed_store); // size of output
+    defstream.avail_out = (uInt)max_compress_len; // size of output
     defstream.next_out = (Bytef *)compressed_store; // output char array
 
     // the actual compression work.
     deflateInit(&defstream, Z_BEST_COMPRESSION);
     deflate(&defstream, Z_FINISH);
     deflateEnd(&defstream);
-    return compressed_store;
+
+    pair<char*, int> compressed_info;
+    compressed_info.first= compressed_store;
+    compressed_info.second= defstream.total_out;
+
+    return compressed_info;
 }
-
-
-// buggy!
-// string decompress(string compressed_content, int lenCompressed)
-// {
-//     // char b[5000];
-//     char c[5000];  //for decompression
-
-//     char a[5000];
-//     strcpy(a, compressed_content.c_str());
-
-//     // STEP 2.
-//     // inflate b into c
-//     // zlib struct
-//     z_stream infstream;
-//     infstream.zalloc = Z_NULL;
-//     infstream.zfree = Z_NULL;
-//     infstream.opaque = Z_NULL;
-//     // setup "b" as the input and "c" as the compressed output
-//     infstream.avail_in = (uInt)((char*)(Bytef *)a - a); // size of input
-//     infstream.next_in = (Bytef *)a; // input char array
-//     infstream.avail_out = (uInt)sizeof(c); // size of output
-//     infstream.next_out = (Bytef *)c; // output char array
-
-//     // the actual DE-compression work.
-//     inflateInit(&infstream);
-//     inflate(&infstream, Z_NO_FLUSH);
-//     inflateEnd(&infstream);
-
-//     printf("Uncompressed size is: %lu\n", strlen(c));
-//     printf("Uncompressed string is: %s\n", c);
-//     // std::cout<< lenCompressed<<std::endl;
-//     int k=0;
-//     while (k<lenCompressed){
-//         cout<< c[k];
-//         k++;
-//     }
-//     cout << "asdasdsad" << endl;
-//     return c;
-// }
-
-/* return the type of PATH */
-
-
-
-
-// // - write commit object
-// // - write tree object
-// def commit_():
-//     // build tree using blobMetaData
-//     // create commit object
-//     // add refference to root of tree built, parent commits
-
 
 
 int decimaltoOctal(int deciNum){
@@ -279,12 +241,62 @@ void blobDir(char* dirname){
 }
 
 
+char* decompress(string compress_string, int secret_code,int len){
+    /* perfectly working!*/
+    //secret code .. dunno what it does but very important
+    // size of the input
+    int size_input= len; // 32768
+    char* c;
+    c=(char*)malloc(size_input*sizeof(char));
+    // cout<<sizeof(c)<<endl;
+    char b[size_input]; // compressed string
+    strcpy(b, compress_string.c_str());
+
+    // zlib struct;
+    z_stream infstream;
+    infstream.zalloc = Z_NULL;
+    infstream.zfree = Z_NULL;
+    infstream.opaque = Z_NULL;
+    infstream.avail_in = (uInt)secret_code; // size of input
+
+    infstream.next_in = (Bytef *)b; // input char array
+    infstream.avail_out = (uInt)secret_code; // size of output
+    infstream.next_out = (Bytef *)c; // output char array
+     
+    inflateInit(&infstream);
+    inflate(&infstream, Z_NO_FLUSH);
+    inflateEnd(&infstream);
+    // int i=0;
+    // while (i!=20){
+    //     cout<<c[i];
+    //     i++;
+    // }
+    // cout<<endl;
+
+    return c;
+}
+
+
+
+void print_string(char* str, int store_len){
+    /* prints the string. Deals with "/0" */
+    int indx=0;
+    while (indx!=store_len){
+        cout<< str[indx];
+        indx++;
+    }
+    cout<< endl;
+}
+
 void write_object(string sha1, string content, string type){
     string path= GIT_DIR+"/objects/"+sha1.substr(0,2)+"/"+sha1.substr(2,38);
     // cout<<path<<endl;
     string pathDir=GIT_DIR+"/objects/"+sha1.substr(0,2);
     int len=content.length(); //length of content
-    const string store_content = type +to_string(len)+'\0'+content;
+    const string header= type +to_string(len);
+    const string store_content = header+'\0'+content;
+    // cout<< store_content<< endl;
+    int store_len= header.length() +len+1 ;
     // cout<<"creating blob for  " << file_name<< " " <<path<<endl;
     //create new blob
     char dirPath[MAX_FILE_NAME_LENGTH];
@@ -292,22 +304,33 @@ void write_object(string sha1, string content, string type){
     mkdir(dirPath,0777);
     // cout<<dirPath<<endl;
     // compress the store
-    const string compressed_store= compress(store_content,len);
+    pair<char*, int> compressed_store_= compress(store_content, store_len);
+    cout<< compressed_store_.first<< " " << compressed_store_.second<< endl;
+    char* compressed_store= compressed_store_.first;
     // cout << compressed_store << endl;
     // cout << "x\x9sCK\xCA\xC9OR04c(\xCFH,Q\xC8,V(-\xD0QH\xC9O\xB6\a\x00_\x1C\a\x9D" <<endl;
-
+    char* decompress_string= decompress(compressed_store, compressed_store_.second, store_len);
+    print_string(decompress_string, store_len);
     // write compressed content
     // string p="t.txt";
     ofstream fout;
     fout.open(path);
     int i=0;
-    while (i<compressed_store.length()-1){
+    // while (i<compressed_store.length()-1){
+        while (i< strlen(compressed_store)-1){
         fout.put(compressed_store[i]);
         // cout << compressed_store[i]<<endl;
         i++;
     }
     // cout<<"\n" <<endl;
     fout.close();
+
+
+    ofstream fout_size;
+    fout_size.open(SIZE_STORE, ios::app);
+    fout_size<<sha1+ " "+ to_string(compressed_store_.second)+ " "+ to_string(store_len)+"\n"; 
+    fout_size.close();
+
 }
 
 
