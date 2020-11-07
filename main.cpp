@@ -28,10 +28,16 @@ int main(int argc, char* argv[]){
 	else if(strcmp(argv[1],"add")==0){ add(argc,argv); } //calling add
 	else if(strcmp(argv[1],"commit")==0){commit(argc,argv); } //calling commit
 	else if(strcmp(argv[1],"branch")==0){branch(argc,argv); } //calling branch
-	char** lines= return_split_content_from_sha("b522cff36efe4c57d1e3b1977531fa0dca7f5842");
-	// cout<< sizeof(lines)/sizeof(lines[0])<< endl;
-	// print_string(lines[0], 32);
 	// else if(strcmp(argv[1],"checkout")==0){branch(argc,argv); } //calling checkout
 	// else if(strcmp(argv[1],"exit")==0) exit(1); //exiting the function
+	else{
+		vector<string> lines= return_split_content_from_sha("4c34ad7f94d69e373447d3725cbf6ed68acff4a8");
+		int len=lines.size();
+		for (int i= 0; i<len; i++)
+		{
+			cout<<lines[i]<<endl;
+		}
+	}
+	cout<<"Is it reaching here"<<endl;
     return 0;
 }

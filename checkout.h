@@ -30,13 +30,16 @@ void build_dfs(string tree_sha, string curPath){
     //     else:
     //         // terminate
 
-    char* entries[]= {"100644 blob e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 a.txt",
-                    "100644 blob e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 b.txt"};
+    vector<string> entries= return_split_content_from_sha(tree_sha);
+
+    // char* entries[]= {"100644 blob e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 a.txt",
+    //                 "100644 blob e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 b.txt"};
     
     mkdir(curPath, 0777);
     for (int i=0; i<n; i++){
-        char ** entry = split_index_line(entries[i], " ");
-        if (strcmp(entry[1],"blob") == 0){
+        vector<string> entry = split_index_line(entries[i], " ");
+        // if (strcmp(entry[1],"blob") == 0){
+        if (entry[1].compare("blob") == 0){
             string file_name(entry[3]);
             string path = curPath+"/"+file_name;
             ofstream blob_file(path);
@@ -45,22 +48,30 @@ void build_dfs(string tree_sha, string curPath){
             blob_file.close();
         }
         else{
-            string dir_name(entry[3]);
+            string dir_name= entry[3];
+            // string dir_name(entry[3]);
             string path = curPath+"/"+dir_name;
             build_dfs(entry[2], path);
         }
     }
 }
 
-void update_working_dir(char* commit_sha){
-    
-    ///////// check this first////
-    // string pathname(ROOT_PATH);
-    // remove_dir(char *pathname);
-    /////////
+void update_working_dir(string commit_sha){
+
+    /////// check this first////
+    string pathname(ROOT_PATH);
+    remove_dir(char *pathname);
+    ///////
 
     ///////////////////////
     // extract content of commit object
+    vector<string> entries= return_split_content_from_sha(commit_sha);
+    // split entries[0] and get sha
+// char** split_index_line(char * line_, string delimiter_,  int * n=&DEFAULT){
+    char first_line[MAX_FILE_NAME_LENGTH];
+    strcpy(first_line, entries[0]);
+    char** splitted_line= split_index_line(first_line," ");
+    char* tree_sha=splitted_line[0];
     // get sha of tree node
     // pass it to dfs:
     build_dfs(tree_sha, ROOT_PATH);

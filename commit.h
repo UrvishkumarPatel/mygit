@@ -285,7 +285,7 @@ string get_content_commit(string root_sha, string commit_msg){
     string commiter= "imp_git";
     // vector<string> parent_commit;  # get the parent sha from ref/heads
 
-    string content= parent_content+"tree "+root_sha + "\n"+ "author "+ author + "\n" + "committer "+commiter+"\n\n"+ commit_msg;
+    string content= "tree "+root_sha + "\n"+ parent_content+"author "+ author + "\n" + "committer "+commiter+"\n\n"+ commit_msg;
     return content;
 }
 
