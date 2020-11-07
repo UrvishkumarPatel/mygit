@@ -189,7 +189,7 @@ class tree{
         string dfs(treeNode curNode){
             // when leaf content
             if (curNode.type=="blob"){
-                return curNode.mode+" "+ "blob" + " "+ curNode.sha+ "\t"+ curNode.name;
+                return curNode.mode+" "+ "blob" + " "+ curNode.sha+ " "+ curNode.name;
             }
 
             curNode.print_attributes();
@@ -213,9 +213,9 @@ class tree{
             // f << content<<endl;
             // f.close();
             // cout<<"upar"<<endl;
-            cout << curNode.mode+" "+ "tree" + " "+ curNode.sha+  "\t"+ curNode.name << endl;
+            cout << curNode.mode+" "+ "tree" + " "+ curNode.sha+  " "+ curNode.name << endl;
             // cout<<"niche"<<endl;
-            return curNode.mode+" "+ "tree" + " "+ curNode.sha+  "\t"+ curNode.name;
+            return curNode.mode+" "+ "tree" + " "+ curNode.sha+  " "+ curNode.name;
             // return curNode.mode+" "+ curNode.name +"\0" + curNode.sha;
 
         }

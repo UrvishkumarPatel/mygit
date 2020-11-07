@@ -82,7 +82,6 @@ auto compress(string store_content, int len){
         k++;
     }
     int max_compress_len = GetMaxCompressedLen(len);
-    cout<<"secret code"<<max_compress_len<<endl;
     // cout<<max_compress_len<<endl;
     char* compressed_store=(char *)malloc((max_compress_len)*sizeof(char));   //change this
     z_stream defstream;
@@ -153,8 +152,11 @@ void update_size_store(string sha1,int secret_code,int store_len){
     string line;
     int isPresent= 0;
     ofstream fout_3;
-    fout_3.open(SIZE_STORE);
-    fout_3.close(); 
+    if(isDir((char *)SIZE_STORE)==0){        
+          fout_3.open(SIZE_STORE);
+          fout_3.close();
+    }
+    
     const string content= sha1+ " "+ to_string(secret_code)+ " "+ to_string(store_len);
     ifstream size_store(SIZE_STORE);
     if(size_store.is_open()){
@@ -353,6 +355,27 @@ void print_string(char* str, int store_len){
     cout<< endl;
 }
 
+char** return_split_content_from_sha(string sha){
+    // get secret code and size from indexfile (SIZE_STORE)
+    // decompress 
+    // simply return
+    string content;
+    string path= GIT_DIR+"/objects/"+sha.substr(0,2)+"/"+sha.substr(2,38);
+    // string path= ".git/objects/b5/22cff36efe4c57d1e3b1977531fa0dca7f5842";
+    // const char* path= "/home/ac-optimus/implement_git/copy_sha";
+    // cout<<"before reading"<<path<<endl;
+    ifstream f_reader(path);
+    getline (f_reader, content); // compressed data in content
+    pair<int, int> compressed_data= get_compressed_store_data(sha); //secret code, size_store
+    cout<<"content of path  "<< compressed_data.first<< " "<< compressed_data.second<<" "<< content<< " " << endl;
+
+    char* decompress_string= decompress(content, compressed_data.first, compressed_data.second);
+    print_string(decompress_string, compressed_data.second);
+    // split based on "\n"
+    char** lines= split_index_line(decompress_string, "\n");
+    return lines;
+}
+
 void write_object(string sha1, string content, string type){
     string path= GIT_DIR+"/objects/"+sha1.substr(0,2)+"/"+sha1.substr(2,38);
     // cout<<path<<endl;
@@ -360,7 +383,7 @@ void write_object(string sha1, string content, string type){
     int len=content.length(); //length of content
     const string header= type +to_string(len);
     const string store_content = header+'\0'+content;
-    // cout<< store_content<< endl;
+    cout<< store_content<< endl;    
     int store_len= header.length() +len+1 ;
     // cout<<"creating blob for  " << file_name<< " " <<path<<endl;
     //create new blob
@@ -374,22 +397,60 @@ void write_object(string sha1, string content, string type){
     char* compressed_store= compressed_store_.first;
     // cout << compressed_store << endl;
     // cout << "x\x9sCK\xCA\xC9OR04c(\xCFH,Q\xC8,V(-\xD0QH\xC9O\xB6\a\x00_\x1C\a\x9D" <<endl;
-    char* decompress_string= decompress(compressed_store, compressed_store_.second, store_len);
-    print_string(decompress_string, store_len);
+    // char* decompress_string= decompress(compressed_store, compressed_store_.second, store_len);
+    // print_string(decompress_string, store_len);
     // write compressed content
     // string p="t.txt";
-    ofstream fout;
-    fout.open(path);
-    int i=0;
-    // while (i<compressed_store.length()-1){
-        while (i< strlen(compressed_store)-1){
-        fout.put(compressed_store[i]);
-        // cout << compressed_store[i]<<endl;
-        i++;
+    // cout<<"before printing decompress!! "<<path<< endl;
+    char Path[MAX_FILE_NAME_LENGTH];
+    strcpy(Path, path.c_str());
+    cout<< "writing at- "<<path<<endl;
+    // char sentence[1000];
+    // ofstream fptr;
+    // fptr.open(path ,ios::app);
+    // string p=store_content+"\n";
+    // fptr<<p;
+    // fptr.close();
+    FILE *fptr;
+    fptr = fopen(Path, "w");
+
+    if (fptr == NULL) {;
+    // print_string(decompress_string, stor
+        printf("Error!");
+        exit(1);
     }
+    // printf("Enter a sentence:\n");
+    // fgets(sentence, sizeof(sentence), );
+    fprintf(fptr, "%s", compressed_store);
+    fclose(fptr);
+    // ofstream fout;
+    // fout.open(path);
+    // int i=0;
+    // // while (i<compressed_store.length()-1){
+    //     while (i< strlen(compressed_store)-1){
+    //     fout.put(compressed_store[i]);
+    //     // cout << compressed_store[i]<<endl;
+    //     i++;
+    // }
+    string content1;
+    ifstream f_reader(path);
+    getline (f_reader, content1); // compressed data in content
+    // cout<<"content of path  "<<content1<< " " << compressed_store_.second<< " "<< store_len<< endl;
+    char* decompress_string1;
+    for (int i =0; i<4; i++){
+        // cout<<"content "<<i<<" "<<content1<<endl;
+        decompress_string1= decompress(content1, compressed_store_.second, store_len);
+        print_string(decompress_string1, store_len);
+    }
+    // cout<< "-------compressed content written-------"<<compressed_store<< endl;
+    // char* decompress_string= decompress(compressed_store, compressed_store_.second, store_len);
+    // print_string(decompress_string, store_len);
+
+
     // cout<<"\n" <<endl;
-    fout.close();
+    // fout.close();
     // update the store data
+    // cout<< "updating update store with-- "<< compressed_store_.second << store_len<< endl;
     update_size_store(sha1, compressed_store_.second, store_len);
     // pair<int,int> get1;
     // get1 = get_compressed_store_data(sha1);
