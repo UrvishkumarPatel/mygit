@@ -11,7 +11,7 @@
 #include <bits/stdc++.h>
 #include "commit.h"
 #include "branch.h"
-// #include "checkout.h"
+#include "checkout.h"
 
 using namespace std;
 
@@ -28,7 +28,7 @@ int main(int argc, char* argv[]){
 	else if(strcmp(argv[1],"add")==0){ add(argc,argv); } //calling add
 	else if(strcmp(argv[1],"commit")==0){commit(argc,argv); } //calling commit
 	else if(strcmp(argv[1],"branch")==0){branch(argc,argv); } //calling branch
-	// else if(strcmp(argv[1],"checkout")==0){branch(argc,argv); } //calling checkout
+	else if(strcmp(argv[1],"checkout")==0){checkout(argc,argv); } //calling checkout
 	// else if(strcmp(argv[1],"exit")==0) exit(1); //exiting the function
 	else{
 		vector<string> lines= return_split_content_from_sha("4c34ad7f94d69e373447d3725cbf6ed68acff4a8");

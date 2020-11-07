@@ -11,7 +11,7 @@
 #include <errno.h>
 
 #define STRINGSIZE PATH_MAX
-# define GIT_PATH "git/"
+// # define GIT_PATH "git"
 # define ROOT_PATH "."
 // int remove(const char *pathname);
 // On success, zero is returned.  On error, -1 is returned
@@ -65,7 +65,7 @@ void remove_dir(char *pathname) {
 			strcat(path_string,"/");
 			strcat(path_string,d->d_name);
 			if (is_dir(path_string)){
-                if (strcmp(d->d_name,".git") != 0 && strcmp(d->d_name, GIT_PATH) != 0 ) //added
+                if (strcmp(d->d_name,".git") != 0 && strcmp(d->d_name, "git") != 0 ) //added
 				remove_dir(path_string);
 			}
 			else{

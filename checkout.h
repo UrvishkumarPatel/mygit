@@ -16,7 +16,7 @@ using namespace std;
 # define HEAD_PATH "git/HEAD"
 # define ROOT_PATH "."
 
-void build_dfs(string tree_sha, string curPath){
+void build_dfs(string tree_sha, string curPath_){
     // // args= ["tree", "blobs"]
     // // mkdir
     // for subtree_sha in args:
@@ -34,14 +34,18 @@ void build_dfs(string tree_sha, string curPath){
 
     // char* entries[]= {"100644 blob e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 a.txt",
     //                 "100644 blob e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 b.txt"};
-    
+    char curPath[MAX_FILE_NAME_LENGTH];
+    strcpy(curPath, curPath_.c_str());
     mkdir(curPath, 0777);
-    for (int i=0; i<n; i++){
-        vector<string> entry = split_index_line(entries[i], " ");
-        // if (strcmp(entry[1],"blob") == 0){
-        if (entry[1].compare("blob") == 0){
+    for (int i=0; i< entries.size(); i++){
+        char entries_[MAX_FILE_NAME_LENGTH];
+        strcpy(entries_, entries[i].c_str());
+        char** entry = split_index_line(entries_, " ");
+
+        if (strcmp(entry[1],"blob") == 0){
+        // if (entry[1].compare("blob") == 0){
             string file_name(entry[3]);
-            string path = curPath+"/"+file_name;
+            string path = curPath_+"/"+file_name;
             ofstream blob_file(path);
             // blob_file << commit_sha;
             // add the content
@@ -50,7 +54,7 @@ void build_dfs(string tree_sha, string curPath){
         else{
             string dir_name= entry[3];
             // string dir_name(entry[3]);
-            string path = curPath+"/"+dir_name;
+            string path = curPath_+"/"+dir_name;
             build_dfs(entry[2], path);
         }
     }
@@ -59,8 +63,9 @@ void build_dfs(string tree_sha, string curPath){
 void update_working_dir(string commit_sha){
 
     /////// check this first////
-    string pathname(ROOT_PATH);
-    remove_dir(char *pathname);
+    // string pathname(ROOT_PATH);
+    
+    remove_dir((char*)ROOT_PATH);
     ///////
 
     ///////////////////////
@@ -68,8 +73,13 @@ void update_working_dir(string commit_sha){
     vector<string> entries= return_split_content_from_sha(commit_sha);
     // split entries[0] and get sha
 // char** split_index_line(char * line_, string delimiter_,  int * n=&DEFAULT){
+    char entries_[MAX_FILE_NAME_LENGTH];
+    strcpy(entries_, entries[0].c_str());
+
+
+    
     char first_line[MAX_FILE_NAME_LENGTH];
-    strcpy(first_line, entries[0]);
+    strcpy(first_line, entries_);
     char** splitted_line= split_index_line(first_line," ");
     char* tree_sha=splitted_line[0];
     // get sha of tree node
