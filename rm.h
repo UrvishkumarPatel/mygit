@@ -65,7 +65,8 @@ void remove_dir(char *pathname) {
 			strcat(path_string,"/");
 			strcat(path_string,d->d_name);
 			if (is_dir(path_string)){
-                if (strcmp(d->d_name,".git") != 0 && strcmp(d->d_name, "git") != 0 ) //added
+                // if (strcmp(d->d_name,".git") != 0 && strcmp(d->d_name, "git") != 0 ) //added
+                if (strcmp(d->d_name, "git") != 0) //added			
 				remove_dir(path_string);
 			}
 			else{

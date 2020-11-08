@@ -38,8 +38,11 @@ using namespace std;
 #define git_dir "git"
 #define UPPER_BOUND 2147483647
 #define SIZE_STORE  "git/size_store"
+#define ROOT_PATH "."
+
 // #define PATH_INDEX "p.txt"
 string GIT_DIR(git_dir);
+
 
 void add_run(string location);
 
@@ -259,7 +262,17 @@ void blobDir(char* dirname){
     struct dirent* dir_reader; // to read the directory
     char newlocation[MAX_FILE_NAME_LENGTH] = "";
     while ((dir_reader = readdir(dir)) !=NULL){
-        if ((!strcmp(dir_reader->d_name, ".")) || (!strcmp(dir_reader->d_name, ".."))){
+        // if (strcmp(dir_reader->d_name, "git")){
+        //     // add changes here!
+        //     string root_path(ROOT_PATH);
+        //     string git_path= root_path+"/"+"git";
+        //     string cur_dir(dirname);
+        //     string fullpath= cur_dir+"/"+"git";
+        //     if (fullpath.compare(git_path)== 0){
+        //         continue;
+        //     }
+        // }
+        if ( (!strcmp(dir_reader->d_name, ".")) || (!strcmp(dir_reader->d_name, "..")) || (!strcmp(dir_reader->d_name, git_dir)) ){
             // ignore "." and ".." directories
         }
         else{

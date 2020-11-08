@@ -16,10 +16,26 @@ form a tree
 #define PATH_INDEX "git/index"
 #define ROOT_PATH "."
 #define MAX_FILE_NAME_LENGTH 1024
-#define PATH "git/refs/heads/master"
+// #define PATH "git/refs/heads/master"
+# define HEAD_PATH "git/HEAD"
 
 
 using namespace std;
+
+
+char* get_cur_head(){
+        string head_content;
+        ifstream MyFile(HEAD_PATH);
+        getline (MyFile, head_content);
+        MyFile.close();
+
+        char head_content_[MAX_FILE_NAME_LENGTH];
+        strcpy(head_content_, head_content.c_str());
+        char** tokens_head_content_= split_index_line(head_content_, " ");
+        // string cur_path(tokens_head_content_[1]);
+        // return cur_path;
+        return tokens_head_content_[1];
+}
 
 class treeNode{
 
@@ -263,12 +279,13 @@ string get_content_commit(string root_sha, string commit_msg){
     // strcpy(PATH_, PATH.c_str());
     string parent_content="";
     // loop over all the parents
-    char PATH_[]= PATH;
+    char* PATH_= get_cur_head();
+    string path(PATH_);
     if (isDir(PATH_)==2){  //2 -- PATH is a regular file
         // create a new file at ref
         parent_content+="parent ";
         string parent_sha;
-        ifstream myfile(PATH);
+        ifstream myfile(path);
         if(myfile.is_open()){
             while(getline(myfile,parent_sha)){
                 // cout<<line<<endl;
@@ -316,14 +333,6 @@ void run_commit(string flag, string message){
         // cout<<tokens_root_hash[0]<<endl;
         string root_sha(tokens_root_hash[0]);
 
-        ///////////////////////////////////
-        // todo 
-        // if (root_sha== "decompress file of content of PATH"){
-        //     cout<<"nothing  to commit"<<endl;
-        //     return;
-        // }
-        // commit object
-        //////////////////////////////////
 
         string commit_content= get_content_commit(root_sha, message);
         // write the object
@@ -336,11 +345,37 @@ void run_commit(string flag, string message){
 
            first commit
         */
+
+
+    //     vector<string> entries= return_split_content_from_sha(commit_sha);
+    //     // split entries[0] and get sha
+    // // char** split_index_line(char * line_, string delimiter_,  int * n=&DEFAULT){
+    //     char entries_[MAX_FILE_NAME_LENGTH];
+    //     strcpy(entries_, entries[0].c_str());
+        
+    //     char first_line[MAX_FILE_NAME_LENGTH];
+    //     strcpy(first_line, entries_);
+    //     char** splitted_line= split_index_line(first_line," ");
+    //     char* tree_sha=splitted_line[1];
+    //     string tree_sha_(tree_sha);
+    //     if (tree_sha_.compare(root_sha)==0){
+    //         cout<<"Nothing to commit."<<endl;
+    //         return;
+    //     }
         write_object(commit_sha, commit_content, "commit");
         // overwrite commit at head ////////
-        ofstream MyFile(PATH);
-        MyFile << commit_sha;
-        MyFile.close();
+        char* path_= get_cur_head();
+        cout<<"ending "<<path_<<endl;
+        string PATH(path_);
+        // ofstream MyFile("git/"+PATH);
+        // MyFile << commit_sha;
+        // MyFile.close();
+        ofstream f;
+        f.open("git/"+PATH);
+        f << commit_sha;
+        f.close();
+
+
         
     }
 }
