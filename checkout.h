@@ -54,11 +54,8 @@ void build_dfs(string tree_sha, string curPath_){
             ofstream blob_file(path);
             // blob_file << commit_sha;
             // add the content -- add mode
-            vector<string> blob_content= return_split_content_from_sha(entry[2]);
-            string content="";
-            for (int indx=0; indx< blob_content.size(); indx++)
-                content+=blob_content[indx];
-            blob_file<< content;
+            blob_file<<return_content(entry[2]);
+            // blob_file<< content;
             blob_file.close();
         }
         else{
@@ -134,7 +131,7 @@ void checkout(int argc, char* argv[]){
             index_file.close();
             // remove_file(path_indx);
             // iterate over ROOT_PATH and ignore .git
-            add_run(ROOT_PATH);
+            add_dot();
         }
         else{
             cout<<"Error"<<endl;

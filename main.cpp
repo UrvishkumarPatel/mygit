@@ -4,7 +4,8 @@
 */
 
 #include "helper.h"
-#include "object.h"
+// #include "object.h"
+#include "object2.h"
 #include "init.h"
 #include <string>
 #include <iostream>

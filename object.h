@@ -272,7 +272,7 @@ void blobDir(char* dirname){
         //         continue;
         //     }
         // }
-        if ( (!strcmp(dir_reader->d_name, ".")) || (!strcmp(dir_reader->d_name, "..")) || (!strcmp(dir_reader->d_name, git_dir)) ){
+        if ( (!strcmp(dir_reader->d_name, ".")) || (!strcmp(dir_reader->d_name, "..")) || (!strcmp(dir_reader->d_name, "git")) ){
             // ignore "." and ".." directories
         }
         else{
@@ -435,7 +435,8 @@ void write_object(string sha1, string content, string type){
     cout<< "writing at- "<<path<<endl;
     // char sentence[1000];
     ofstream fptr;
-    fptr.open(path ,ios::app);
+    // fptr.open(path ,ios::app);
+    fptr.open(path ,ios::trunc);
     string p=store_content+"\n";
     fptr<<p;
     fptr.close();
