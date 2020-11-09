@@ -115,7 +115,6 @@ void updateIndexFile(string sha, string pathname){
 
         int mode= decimaltoOctal(var);
         string identifier= to_string(mode) + " "+ sha + " " + to_string(0) + " "+ pathname ;
-        // todo
         cout<<"indetifier "<<identifier<<endl;
         string line;
         // read file content
