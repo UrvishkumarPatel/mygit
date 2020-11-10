@@ -29,6 +29,7 @@ store = header + data
 #include <stdlib.h>
 #include <errno.h>
 #include <unistd.h>
+#include <libgen.h>
 #include "checkDir.h"
 using namespace std;
 
@@ -36,8 +37,6 @@ using namespace std;
 #define MAX_FILE_NAME_LENGTH 1024
 #define PATH_INDEX "git/index"
 #define git_dir "git"
-#define UPPER_BOUND 2147483647
-#define SIZE_STORE  "git/size_store"
 #define ROOT_PATH "."
 
 // #define PATH_INDEX "p.txt"
@@ -340,14 +339,11 @@ void add_dot(){
 }
 
 void add(int argc,char* argv[]){
-    // char * dot= ".";
     if(argc==2){
         printf("No arguments given\n");
         exit(1);
     }
     else if(strcmp(ROOT_PATH, argv[2])==0){
-        // dot_flag=1;
-        // remove_file(PATH_INDEX);
         ofstream f_create;
         f_create.open(PATH_INDEX, ofstream::trunc);
         f_create << "";
@@ -355,7 +351,24 @@ void add(int argc,char* argv[]){
         add_dot();
     }
     else{
-        string file_name=argv[2];
-        add_run(file_name);
+        char* file_name_=argv[2];
+
+        char temp1[MAX_FILE_NAME_LENGTH]="";
+        strcpy(temp1,file_name_);
+        char temp2[MAX_FILE_NAME_LENGTH]="";
+        strcpy(temp2,file_name_);
+        char* dir_name= dirname(temp1);
+        char* filename= basename(temp2);
+        cout<<"after spliting "<<dir_name<< " "<< filename<< endl;
+        char location_new[MAX_FILE_NAME_LENGTH]="";
+        if ((strcmp(dir_name, ".")!=0)) {   
+            strcat(location_new, dir_name);
+            strcat(location_new, "/");
+        }
+
+        strcat(location_new, filename);
+        string location_other(location_new);  
+        cout<<"location_other to pass "<< location_other<<endl;
+        add_run(location_other);
     }
 }
