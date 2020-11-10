@@ -126,6 +126,48 @@ void update_working_dir(string commit_sha){
 
 // }
 
+
+
+
+void run_checkout(char* name_of_branch){
+    char branch_ref_path[MAX_FILE_NAME_LENGTH];
+    strcpy(branch_ref_path,REF_HEAD_PATH);
+    strcat(branch_ref_path, name_of_branch);
+    // cout<<branch_ref_path<<endl;
+    
+    // if(isDir(branch_ref_path)==2){
+    if (branch_exists(name_of_branch)==1){
+    
+        string sha;
+        string branch_ref_path_(branch_ref_path);
+        ifstream branch_file(branch_ref_path_);
+        getline (branch_file, sha);
+        branch_file.close();
+
+        update_working_dir(sha);
+        // update head path
+        ofstream head_file(HEAD_PATH);
+        string branch_name(name_of_branch);
+        head_file<< "ref: refs/heads/"+branch_name;
+        head_file.close();
+        // del indexfile, and create new
+        // char path_indx[MAX_FILE_NAME_LENGTH];
+        // strcpy(path_indx, PATH_INDEX);
+        ofstream index_file(PATH_INDEX, ofstream::trunc);
+        // string branch_name(argv[2]);
+        index_file<< "";
+        index_file.close();
+        // remove_file(path_indx);
+        // iterate over ROOT_PATH and ignore .git
+        add_dot();
+    }
+    else{
+        cout<<"Error: branch doesn't exist"<<endl;
+        exit(0);
+    }
+}
+
+
 void checkout(int argc, char* argv[]){ // argv[2] --  branch name
     if(argc==2) {
         printf("Give branch name\n");
@@ -134,41 +176,7 @@ void checkout(int argc, char* argv[]){ // argv[2] --  branch name
     else if(argc==3){
         // string branch_name(argv[2]);
         
-        char branch_ref_path[MAX_FILE_NAME_LENGTH];
-        strcpy(branch_ref_path,REF_HEAD_PATH);
-        strcat(branch_ref_path, argv[2]);
-        // cout<<branch_ref_path<<endl;
-        
-        // if(isDir(branch_ref_path)==2){
-        if (branch_exists(argv[2])==1){
-        
-            string sha;
-            string branch_ref_path_(branch_ref_path);
-            ifstream branch_file(branch_ref_path_);
-            getline (branch_file, sha);
-            branch_file.close();
-
-            update_working_dir(sha);
-            // update head path
-            ofstream head_file(HEAD_PATH);
-            string branch_name(argv[2]);
-            head_file<< "ref: refs/heads/"+branch_name;
-            head_file.close();
-            // del indexfile, and create new
-            // char path_indx[MAX_FILE_NAME_LENGTH];
-            // strcpy(path_indx, PATH_INDEX);
-            ofstream index_file(PATH_INDEX, ofstream::trunc);
-            // string branch_name(argv[2]);
-            index_file<< "";
-            index_file.close();
-            // remove_file(path_indx);
-            // iterate over ROOT_PATH and ignore .git
-            add_dot();
-        }
-        else{
-            cout<<"Error: branch doesn't exist"<<endl;
-            exit(0);
-        }
+        run_checkout(argv[2]);
         return;
     }
     else{

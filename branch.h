@@ -60,8 +60,9 @@ void update_refs(char* branchname){
 void branch(int argc, char* argv[]){
    if(argc==2){
         // print all branches and highlight the name of checked out branch(pointed by heads)
-        char* cur_branch= get_cur_branch_name();
-
+        char cur_branch[MAX_FILE_NAME_LENGTH];
+        // char* cur_branch= get_cur_branch_name();
+        get_cur_branch_name(cur_branch);
         DIR *pDIR;
         struct dirent *entry;
         if( pDIR=opendir(REF_HEAD_PATH) ){

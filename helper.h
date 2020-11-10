@@ -1,7 +1,4 @@
-
-
 int DEFAULT;
-
 
 int isDir(char* PATH){
     /* Returns
@@ -19,11 +16,6 @@ int isDir(char* PATH){
     return -1;
 
 }
-
-
-
-
-
 
 
 char** split_index_line(char * line_, string delimiter_,  int * n=&DEFAULT){
@@ -86,23 +78,18 @@ string get_sha_of_branch(char* branch_name){
 
 
 
-
-
-
-
-
-
-char* get_cur_branch_name(){
+void get_cur_branch_name(char* branch_name){
     string head_content;
     ifstream MyFile(HEAD_PATH);
     getline (MyFile, head_content);
     MyFile.close();
-
+	// cout<<"header content "<<head_content<<endl;
     char head_content_[MAX_FILE_NAME_LENGTH];
     strcpy(head_content_, head_content.c_str());
     char** tokens_head_content_= split_index_line(head_content_, " ");
     char** paths = split_index_line(tokens_head_content_[1],"/");
-    
-    return paths[2];
+	// cout<<"token header content "<<tokens_head_content_[0]<<" address "<<tokens_head_content_[1] <<endl;
+    // char branch_name[MAX_FILE_NAME_LENGTH];
+	strcpy(branch_name, paths[2]);
+	// return branch_name;
 }
-

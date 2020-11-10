@@ -58,7 +58,8 @@ int is_parent(string target_sha, string cur_sha){
     // get parent of cur_sha
     vector<string> parent_shas_array= parent_shas(cur_sha);
     // if no parent return 0
-    if (parent_shas_array.size()==0)
+
+    if (parent_shas_array.empty())
         return 0;
 
     int anyParent= 0;
@@ -75,20 +76,21 @@ int is_ancestor(char* current_branch, char* branch_name){
     string sha_target= get_sha_of_branch(current_branch);
     string sha_branch= get_sha_of_branch(branch_name);
     int status= is_parent(sha_target, sha_branch);
+
     return status;
 }
 
 void fastforwardmerge(char* current_branch, char* branch_name){
-    string copy_sha= get_sha_of_branch(branch_name);
+    // string copy_sha= get_sha_of_branch(branch_name);
     
     // todo ///////
     // check for stagin area
-    update_working_dir(copy_sha);
+    run_checkout(branch_name);
     ///////////////
     
     string ref_head(REF_HEAD_PATH);
     ofstream ref_file(ref_head+current_branch);//# define REF_HEAD_PATH "git/refs/heads/"
-    ref_file<< copy_sha;
+    // ref_file<< copy_sha;
     ref_file.close();
     
 }
@@ -111,7 +113,10 @@ void merge(int argc, char* argv[]){ // merge branch_name into current_branch(mas
         return;
     } 
     char* branch_name= argv[2];
-    char* current_branch= get_cur_branch_name();
+    char current_branch[MAX_FILE_NAME_LENGTH];
+    // char* current_branch= get_cur_branch_name();
+    get_cur_branch_name(current_branch);
+    cout<<"the current brach is "<<current_branch<<endl;
     
     if (branch_exists(branch_name)==1){
             //check if current branch is linear with branch_name
