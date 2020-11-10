@@ -1,23 +1,23 @@
 
-#include <bits/stdc++.h>
-#include<stdio.h>
-#include<cstdlib>
-#include<iostream>
-#include<string.h>
-#include<fstream>
-#include<dirent.h>
-#include <sys/types.h>
-using namespace std;
+// #include <bits/stdc++.h>
+// #include<stdio.h>
+// #include<cstdlib>
+// #include<iostream>
+// #include<string.h>
+// #include<fstream>
+// #include<dirent.h>
+// #include <sys/types.h>
+// using namespace std;
 
-# define MAX_FILE_NAME_LENGTH 1024
-    //    #include <dirent.h>
-// #define PATH_INDEX "git/index"
-// #define ROOT_PATH "."
-// #define MAX_FILE_NAME_LENGTH 1024
-// #define PATH "git/refs/heads/master"
-# define REF_HEAD_PATH "git/refs/heads/"
-# define GIT_PATH "git/"
-# define HEAD_PATH "git/HEAD"
+// # define MAX_FILE_NAME_LENGTH 1024
+//     //    #include <dirent.h>
+// // #define PATH_INDEX "git/index"
+// // #define ROOT_PATH "."
+// // #define MAX_FILE_NAME_LENGTH 1024
+// // #define PATH "git/refs/heads/master"
+// # define REF_HEAD_PATH "git/refs/heads/"
+// # define GIT_PATH "git/"
+// # define HEAD_PATH "git/HEAD"
 
 void update_refs(char* branchname){
     string head_content;
@@ -54,31 +54,23 @@ void update_refs(char* branchname){
     // cat .git/refs/heads/branchname
 }
 
+
+
+
 void branch(int argc, char* argv[]){
    if(argc==2){
-        //printf("No arguments given\n");
         // print all branches and highlight the name of checked out branch(pointed by heads)
-        string head_content;
-        ifstream MyFile(HEAD_PATH);
-        getline (MyFile, head_content);
-        MyFile.close();
-
-        char head_content_[MAX_FILE_NAME_LENGTH];
-        strcpy(head_content_, head_content.c_str());
-        char** tokens_head_content_= split_index_line(head_content_, " ");
-        char** paths = split_index_line(tokens_head_content_[1],"/");
-        // paths[2];
+        char* cur_branch= get_cur_branch_name();
 
         DIR *pDIR;
         struct dirent *entry;
         if( pDIR=opendir(REF_HEAD_PATH) ){
                 while(entry = readdir(pDIR)){
                         if( strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0 ){
-                            if (strcmp(entry->d_name, paths[2]) == 0){
-                                cout<<"*";
-                            }
+                            if (strcmp(entry->d_name, cur_branch) == 0) {cout<<"*";}
+                            else {cout<<" ";}
                             
-                            cout << entry->d_name << "\n";
+                            cout << " " << entry->d_name << "\n";
                         }
                         
                 }

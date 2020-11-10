@@ -1,25 +1,30 @@
-#include<bits/stdc++.h>
-#define MAX_FILE_NAME_LENGTH 1024
-#define TOKEN_NOS 10
-using namespace std;
+
+
 int DEFAULT;
 
-// char** split_index_line(char* line_, string delimiter_){
-//     char delimiter[MAX_FILE_NAME_LENGTH];
-//     strcpy(delimiter, delimiter_.c_str());
 
-//     char** tokens= (char**)malloc((100)*sizeof(char*));
-//     int k=0;
+int isDir(char* PATH){
+    /* Returns
+            0 -- PATH is not present
+            1 -- PATH is a directory
+            2 -- PATH is a regular file
+    */
+    struct stat check_file; // some other name please
+    if (stat(PATH, &check_file)==-1){ // 0 when file exist
+        // printf("cannot stat on %s location!\n", PATH);  //are you planning to print this?
+        return 0;
+    }
+    if (S_ISDIR(check_file.st_mode)) return 1;
+    if (S_ISREG(check_file.st_mode)) return 2;
+    return -1;
 
-//     char* token = strtok(line_, delimiter);
-//     while (token != NULL){
-//         tokens[k]= token;
-//         token = strtok(NULL, delimiter);
-//         k+=1;
-//     }
-//     tokens[k]=NULL;
-//     return tokens;  // check this
-// }
+}
+
+
+
+
+
+
 
 char** split_index_line(char * line_, string delimiter_,  int * n=&DEFAULT){
 	// https://www.man7.org/linux/man-pages/man3/strsep.3.html
@@ -51,3 +56,53 @@ char** split_index_line(char * line_, string delimiter_,  int * n=&DEFAULT){
 	*n = i;
 	return args;
 }
+
+
+
+int branch_exists(char* branch_name){
+	// checks if branch with branch name branch_name exists
+    char branch_ref_path[MAX_FILE_NAME_LENGTH];
+    strcpy(branch_ref_path,REF_HEAD_PATH);
+    strcat(branch_ref_path, branch_name);
+        // cout<<branch_ref_path<<endl;
+    if(isDir(branch_ref_path)==2) return 1;
+    return 0;
+}
+
+string get_sha_of_branch(char* branch_name){
+    // REF_HEAD_PATH+branch_name
+
+    char branch_ref_path[MAX_FILE_NAME_LENGTH];
+    strcpy(branch_ref_path,REF_HEAD_PATH);
+    strcat(branch_ref_path, branch_name);
+
+    string sha;
+    string branch_ref_path_(branch_ref_path);
+    ifstream branch_file(branch_ref_path_);
+    getline (branch_file, sha);
+    branch_file.close();
+    return sha;
+}
+
+
+
+
+
+
+
+
+
+char* get_cur_branch_name(){
+    string head_content;
+    ifstream MyFile(HEAD_PATH);
+    getline (MyFile, head_content);
+    MyFile.close();
+
+    char head_content_[MAX_FILE_NAME_LENGTH];
+    strcpy(head_content_, head_content.c_str());
+    char** tokens_head_content_= split_index_line(head_content_, " ");
+    char** paths = split_index_line(tokens_head_content_[1],"/");
+    
+    return paths[2];
+}
+

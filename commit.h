@@ -9,19 +9,19 @@ form a tree
 - save the sha1 of the new commit object to .git/objects/refs/head
 
 */
-#include <vector>
-// #include "object.h" //mysplit
-#include <bits/stdc++.h>
+// #include <vector>
+// // #include "object.h" //mysplit
+// #include <bits/stdc++.h>
 
-#define PATH_INDEX "git/index"
-#define ROOT_PATH "."
-#define MAX_FILE_NAME_LENGTH 1024
-// #define PATH "git/refs/heads/master"
-# define HEAD_PATH "git/HEAD"
-# define GIT_PATH "git/"
+// #define PATH_INDEX "git/index"
+// #define ROOT_PATH "."
+// #define MAX_FILE_NAME_LENGTH 1024
+// // #define PATH "git/refs/heads/master"
+// # define HEAD_PATH "git/HEAD"
+// # define GIT_PATH "git/"
 
 
-using namespace std;
+// using namespace std;
 
 string parent_sha="";
 
@@ -355,7 +355,7 @@ void run_commit(string flag, string message){
         if (parent_sha.compare("")!=0){
             vector<string> entries= return_split_content_from_sha(parent_sha);
             // split entries[0] and get sha
-        // char** split_index_line(char * line_, string delimiter_,  int * n=&DEFAULT){
+            // char** split_index_line(char * line_, string delimiter_,  int * n=&DEFAULT){
             char entries_[MAX_FILE_NAME_LENGTH];
             strcpy(entries_, entries[0].c_str());
             

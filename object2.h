@@ -13,31 +13,31 @@ store = header + data
 
 
 
-#include "zlib.h"
+// #include "zlib.h"
 
-#include "sha1.hpp"
-// #include <string>
-// #include <iostream>
-#include <fstream>
-#include <bits/stdc++.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <stdio.h> // removes
-#include <string.h>
-#include <dirent.h>
-#include <sys/stat.h>
-#include <stdlib.h>
-#include <errno.h>
-#include <unistd.h>
-#include <libgen.h>
-#include "checkDir.h"
-using namespace std;
+// #include "sha1.hpp"
+// // #include <string>
+// // #include <iostream>
+// #include <fstream>
+// #include <bits/stdc++.h>
+// #include <sys/stat.h>
+// #include <sys/types.h>
+// #include <stdio.h> // removes
+// #include <string.h>
+// #include <dirent.h>
+// #include <sys/stat.h>
+// #include <stdlib.h>
+// #include <errno.h>
+// #include <unistd.h>
+// #include <libgen.h>
+// #include "checkDir.h"
+// using namespace std;
 
 
-#define MAX_FILE_NAME_LENGTH 1024
-#define PATH_INDEX "git/index"
-#define git_dir "git"
-#define ROOT_PATH "."
+// #define MAX_FILE_NAME_LENGTH 1024
+// #define PATH_INDEX "git/index"
+// #define git_dir "git"
+// #define ROOT_PATH "."
 
 // #define PATH_INDEX "p.txt"
 string GIT_DIR(git_dir);

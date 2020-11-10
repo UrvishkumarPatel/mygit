@@ -1,20 +1,20 @@
-#include <bits/stdc++.h>
-#include<stdio.h>
-#include<cstdlib>
-#include<iostream>
-#include<string.h>
-#include<fstream>
-#include<dirent.h>
-#include <sys/types.h>
+// #include <bits/stdc++.h>
+// #include<stdio.h>
+// #include<cstdlib>
+// #include<iostream>
+// #include<string.h>
+// #include<fstream>
+// #include<dirent.h>
+// #include <sys/types.h>
 
-# include "rm.h"
-using namespace std;
+// # include "rm.h"
+// using namespace std;
 
-# define MAX_FILE_NAME_LENGTH 1024
-# define REF_HEAD_PATH "git/refs/heads/"
-# define GIT_PATH "git/"
-# define HEAD_PATH "git/HEAD"
-# define ROOT_PATH "."
+// # define MAX_FILE_NAME_LENGTH 1024
+// # define REF_HEAD_PATH "git/refs/heads/"
+// # define GIT_PATH "git/"
+// # define HEAD_PATH "git/HEAD"
+// # define ROOT_PATH "."
 
 void build_dfs(string tree_sha, string curPath_){
     // // args= ["tree", "blobs"]
@@ -32,8 +32,8 @@ void build_dfs(string tree_sha, string curPath_){
 
     vector<string> entries= return_split_content_from_sha(tree_sha);
     cout<< " print "<< entries[0]<<endl;
-    for (int idx=0; idx<entries.size(); idx++)
-        entries[idx];
+    // for (int idx=0; idx<entries.size(); idx++)
+    //     entries[idx];
 
     // char* entries[]= {"100644 blob e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 a.txt",
     //                 "100644 blob e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 b.txt"};
@@ -82,7 +82,7 @@ void update_working_dir(string commit_sha){
     // extract content of commit object
     vector<string> entries= return_split_content_from_sha(commit_sha);
     // split entries[0] and get sha
-// char** split_index_line(char * line_, string delimiter_,  int * n=&DEFAULT){
+    // char** split_index_line(char * line_, string delimiter_,  int * n=&DEFAULT){
     char entries_[MAX_FILE_NAME_LENGTH];
     strcpy(entries_, entries[0].c_str());
 
@@ -98,18 +98,50 @@ void update_working_dir(string commit_sha){
 
 }
 
-void checkout(int argc, char* argv[]){
+
+// int branch_exists(char* branch_name){
+//     char branch_ref_path[MAX_FILE_NAME_LENGTH];
+//     strcpy(branch_ref_path,REF_HEAD_PATH);
+//     strcat(branch_ref_path, branch_name);
+//         // cout<<branch_ref_path<<endl;
+//     if(isDir(branch_ref_path)==2) return 1;
+//     return 0;
+// }
+
+
+
+// string get_sha_of_branch(string branch_name){
+//     // REF_HEAD_PATH+branch_name
+
+//     char branch_ref_path[MAX_FILE_NAME_LENGTH];
+//     strcpy(branch_ref_path,REF_HEAD_PATH);
+//     strcat(branch_ref_path, branch_name);
+
+//     string sha;
+//     string branch_ref_path_(branch_ref_path);
+//     ifstream branch_file(branch_ref_path_);
+//     getline (branch_file, sha);
+//     branch_file.close();
+//     return sha;
+
+// }
+
+void checkout(int argc, char* argv[]){ // argv[2] --  branch name
     if(argc==2) {
         printf("Give branch name\n");
         return;
     } 
     else if(argc==3){
+        // string branch_name(argv[2]);
+        
         char branch_ref_path[MAX_FILE_NAME_LENGTH];
         strcpy(branch_ref_path,REF_HEAD_PATH);
         strcat(branch_ref_path, argv[2]);
-        cout<<branch_ref_path<<endl;
+        // cout<<branch_ref_path<<endl;
         
-        if(isDir(branch_ref_path)==2){
+        // if(isDir(branch_ref_path)==2){
+        if (branch_exists(argv[2])==1){
+        
             string sha;
             string branch_ref_path_(branch_ref_path);
             ifstream branch_file(branch_ref_path_);
@@ -125,7 +157,7 @@ void checkout(int argc, char* argv[]){
             // del indexfile, and create new
             // char path_indx[MAX_FILE_NAME_LENGTH];
             // strcpy(path_indx, PATH_INDEX);
-            ofstream index_file(PATH_INDEX);
+            ofstream index_file(PATH_INDEX, ofstream::trunc);
             // string branch_name(argv[2]);
             index_file<< "";
             index_file.close();
@@ -134,7 +166,7 @@ void checkout(int argc, char* argv[]){
             add_dot();
         }
         else{
-            cout<<"Error"<<endl;
+            cout<<"Error: branch doesn't exist"<<endl;
             exit(0);
         }
         return;
