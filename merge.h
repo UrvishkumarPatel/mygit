@@ -41,7 +41,7 @@ vector<string> parent_shas(string cur_commit){
     }
     
     return p_shas;
-// new3           -    
+// new3           -
 // new2          ---
 // master---------------
 // new      --
@@ -81,16 +81,21 @@ int is_ancestor(char* current_branch, char* branch_name){
 }
 
 void fastforwardmerge(char* current_branch, char* branch_name){
-    // string copy_sha= get_sha_of_branch(branch_name);
+    string copy_sha= get_sha_of_branch(branch_name);
     
     // todo ///////
-    // check for stagin area
-    run_checkout(branch_name);
+    // check for staging area
+    update_working_dir(copy_sha);
+    ofstream index_file(PATH_INDEX, ofstream::trunc);
+    index_file<< "";
+    index_file.close();
+    add_dot();
+    // run_checkout(branch_name);
     ///////////////
     
     string ref_head(REF_HEAD_PATH);
     ofstream ref_file(ref_head+current_branch);//# define REF_HEAD_PATH "git/refs/heads/"
-    // ref_file<< copy_sha;
+    ref_file<< copy_sha;
     ref_file.close();
     
 }
@@ -103,6 +108,97 @@ void threewaymerge(char* current_branch, char* branch_name){
 
     // current_branch ka parent upar he branch_name se
     int a=0;
+
+    // git merge new2
+
+    // index_file= new2
+
+    // for line in new
+    //     if  line in index_file:
+    //         check for conflict
+    //     if not present:
+    //         if not present in master:
+    //             add to the index file
+    //         else:
+    //             pass
+
+    // check for conflict:{
+    //     ofstream characters:f1 and f2
+    //     while (f1!=NULL & f1!=NULL){
+    //         if cmp(f1,f2)!=0{
+    //             return 1
+    //         }
+    //     }
+    //     return 0;
+    // }
+
+// {
+//     demo/pp/t.txt : mode askjkdjsdljsflasldfaskd 0,
+
+    
+// }
+// def diff(master_indx, indx):
+//     """
+//     each line will have prefix 
+    
+//         - '+' --> not in master but in branch
+//         - '-' --> not in branch but in master
+//           '#' --> same but edited. (have different sha)
+//     """
+//     paths_= master_indx.key() + indx.key()
+//     for pathi in paths_:
+//         if pathi in master_indx and not in indx:
+//             '-'
+//         elif pathi not in master_indx and in indx:
+//             '+'
+//         elif pathi in master_indx and in indx:
+//             if master_indx[pathi][1]!= indx[pathi][1] or master_indx[pathi][0] != indx[pathi][0]:
+//                 '#'
+        
+
+
+
+// {
+//     demo/pp/t.txt : [+, mode, askjkdjsdljsflasldfaskd, 0],
+
+
+// }
+//     return diff
+
+//     m_index
+//     x_index = 
+//     y_index
+//     d_x= diff(m_index, x_index)
+//     d_y= diff(m_index, y_index)
+
+
+//     paths_= m_index.key()+ d_x.keys() + d_y.keys()
+
+
+//     for pathi in paths_:
+//         if pathi in m_index:
+//             if d_x[0]== '#' or d_y[0]=="#":
+//                 conflict
+//             else if d_x[0]=='-' or d_y[0]=='-':
+//                 pass
+//         else:
+//             if d_x[0]== '+' and d_y[0]== '+':
+//                 conflict
+//             else:
+//                 add to index file
+
+// m-1	dx	dy	
+// 	-	-	-
+// 	#	#	#
+// 	-	#	#
+// 	#	- 	#
+// 	-		-		
+// m-0	
+//     +'	+'	#
+// 	+'		+'
+// 		+'	+'
+
+
 }
 
 
