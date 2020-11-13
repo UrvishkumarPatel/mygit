@@ -31,9 +31,10 @@ void build_dfs(string tree_sha, string curPath_){
     //         // terminate
 
     vector<string> entries= return_split_content_from_sha(tree_sha);
-    cout<< " print "<< entries[0]<<endl;
+    // cout<< " print "<< entries[0]<<endl;
+    // cout<<"entries below:"<<endl;
     // for (int idx=0; idx<entries.size(); idx++)
-    //     entries[idx];
+    //     cout<<entries[idx]<<endl;
 
     // char* entries[]= {"100644 blob e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 a.txt",
     //                 "100644 blob e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 b.txt"};
@@ -70,15 +71,8 @@ void build_dfs(string tree_sha, string curPath_){
     }
 }
 
-void update_working_dir(string commit_sha){
 
-    /////// check this first////
-    // string pathname(ROOT_PATH);
-    
-    remove_dir((char*)ROOT_PATH);
-    ///////
-
-    ///////////////////////
+void write_dir(string commit_sha){
     // extract content of commit object
     vector<string> entries= return_split_content_from_sha(commit_sha);
     // split entries[0] and get sha
@@ -95,7 +89,14 @@ void update_working_dir(string commit_sha){
     // get sha of tree node
     // pass it to dfs:
     build_dfs(tree_sha, ROOT_PATH);
+}
 
+void update_working_dir(string commit_sha){
+    /////// check this first////
+    // string pathname(ROOT_PATH);
+    remove_dir((char*)ROOT_PATH);
+    ///////
+    write_dir(commit_sha);
 }
 
 

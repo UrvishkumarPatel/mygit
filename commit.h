@@ -23,21 +23,7 @@ form a tree
 
 // using namespace std;
 
-string parent_sha="";
-
-char* get_cur_head(){
-        string head_content;
-        ifstream MyFile(HEAD_PATH);
-        getline (MyFile, head_content);
-        MyFile.close();
-
-        char head_content_[MAX_FILE_NAME_LENGTH];
-        strcpy(head_content_, head_content.c_str());
-        char** tokens_head_content_= split_index_line(head_content_, " ");
-        // string cur_path(tokens_head_content_[1]);
-        // return cur_path;
-        return tokens_head_content_[1];
-}
+string PARENT_SHA="";
 
 class treeNode{
 
@@ -156,7 +142,8 @@ class tree{
 
 
                     }
-                    else if(type_file==2){  // file
+                    // else if(type_file==2){  // file
+                    else{
                         /* create blob object */
                         newTree->mode= blob_data[0];
                         newTree->type= "blob";
@@ -205,12 +192,13 @@ class tree{
 
 
         string dfs(treeNode curNode){
+            // curNode.print_attributes();
             // when leaf content
             if (curNode.type=="blob"){
                 return curNode.mode+" "+ "blob" + " "+ curNode.sha+ " "+ curNode.name;
             }
 
-            curNode.print_attributes();
+
             // craeate object
             string content;
             for (auto ptr = curNode.childpaths.begin(); ptr <curNode.childpaths.end(); ptr++){
@@ -273,7 +261,13 @@ class tree{
 
 // blob object is the created file itself, instance of the object present physically
 
-
+string get_content_merge_commit(string root_sha, string commit_msg, string parent_1, string parent_2){
+    string author= "imp_git";
+    string commiter= "imp_git";
+    string parent_content= "parent "+parent_1+"\nparent "+parent_2+"\n";
+    string content= "tree "+root_sha + "\n"+ parent_content+"author "+ author + "\n" + "committer "+commiter+"\n\n"+ commit_msg;
+    return content;
+}
 
 string get_content_commit(string root_sha, string commit_msg){
     /* TODO- adding parent pointers */
@@ -293,8 +287,8 @@ string get_content_commit(string root_sha, string commit_msg){
         string ref_path_(ref_path);
         ifstream myfile(ref_path_);
         if(myfile.is_open()){
-            while(getline(myfile,parent_sha)){
-                cout<<parent_sha<<" is the parent sha"<<endl;
+            while(getline(myfile,PARENT_SHA)){
+                cout<<PARENT_SHA<<" is the parent sha"<<endl;
             }
             myfile.close();
         }
@@ -302,7 +296,7 @@ string get_content_commit(string root_sha, string commit_msg){
             cout<<"Error"<<endl;
             // exit();
         }
-        parent_content+= parent_sha+"\n";
+        parent_content+= PARENT_SHA+"\n";
     }
     string author= "imp_git";
     string commiter= "imp_git";
@@ -314,46 +308,35 @@ string get_content_commit(string root_sha, string commit_msg){
 
 
 
-void run_commit(string flag, string message){
+void run_commit(string message, int merge_flag=0, string parent_1="", string parent_2=""){
 
-    if (flag!= "-m"){
-        cout<< "not supported!"<<endl;
-        exit(1);
+    // read index file and build the tree
+    // compute the hash
+    tree myTree;
+    myTree.read_index();
+    
+    string root_content = myTree.dfs(myTree.root);
+
+    char root_content_[MAX_FILE_NAME_LENGTH];
+    strcpy(root_content_, root_content.c_str());
+    char** tokens_root_hash_= split_index_line(root_content_, " ");
+    // char** tokens_root_hash= split_index_line(tokens_root_hash_[1], "\t");
+    // cout<<tokens_root_hash[0]<<endl;
+    string root_sha(tokens_root_hash_[1]);
+    string commit_sha;
+    string commit_content;
+
+    if (merge_flag){
+        commit_content= get_content_merge_commit(root_sha, message, parent_1, parent_2);
+        commit_sha=hash_object(commit_content,"commit");
+
     }
     else{
-        // read index file and build the tree
-        // compute the hash
-        tree myTree;
-        myTree.read_index();
-        // cout<<myTree.root.name<<endl;
-        // commit commit_obj;
-        // commit_obj.root= myTree.root;
-        // myTree.print_hash();
+        commit_content= get_content_commit(root_sha, message);
+        commit_sha=hash_object(commit_content,"commit");
 
-        string root_content = myTree.dfs(myTree.root);
-
-        char root_content_[MAX_FILE_NAME_LENGTH];
-        strcpy(root_content_, root_content.c_str());
-        char** tokens_root_hash_= split_index_line(root_content_, " ");
-        char** tokens_root_hash= split_index_line(tokens_root_hash_[1], "\t");
-        // cout<<tokens_root_hash[0]<<endl;
-        string root_sha(tokens_root_hash[0]);
-
-
-        string commit_content= get_content_commit(root_sha, message);
-        // write the object
-        string commit_sha=hash_object(commit_content,"commit");
-        cout<<"\n"<<commit_sha<< "\n-----------\n"<<commit_content<<"\n"<<endl;
-
-        /* tree 9b5a3d2570f0b61a9aca5188cc4e33c3a0b3f84b
-           author imp_git
-           committer imp_git
-
-           first commit
-        */
-
-        if (parent_sha.compare("")!=0){
-            vector<string> entries= return_split_content_from_sha(parent_sha);
+        if (PARENT_SHA.compare("")!=0){
+            vector<string> entries= return_split_content_from_sha(PARENT_SHA);
             // split entries[0] and get sha
             // char** split_index_line(char * line_, string delimiter_,  int * n=&DEFAULT){
             char entries_[MAX_FILE_NAME_LENGTH];
@@ -372,23 +355,27 @@ void run_commit(string flag, string message){
                 return;
             }
         }
-        
-        write_object(commit_sha, commit_content, "commit");
-        // overwrite commit at head ////////
-        char* path_= get_cur_head();
-        cout<<"ending "<<path_<<endl;
-        string PATH(path_);
-        // ofstream MyFile("git/"+PATH);
-        // MyFile << commit_sha;
-        // MyFile.close();
-        ofstream f;
-        f.open("git/"+PATH);
-        f << commit_sha;
-        f.close();
-
-
-        
     }
+
+    /* tree 9b5a3d2570f0b61a9aca5188cc4e33c3a0b3f84b
+        author imp_git
+        committer imp_git
+
+        first commit
+    */
+
+    write_object(commit_sha, commit_content, "commit");
+    // overwrite commit at head ////////
+    char* path_= get_cur_head();
+    string PATH(path_);
+    // ofstream MyFile("git/"+PATH);
+    // MyFile << commit_sha;
+    // MyFile.close();
+    ofstream f;
+    f.open("git/"+PATH);
+    f << commit_sha;
+    f.close();
+
 }
 
 
@@ -398,8 +385,15 @@ void commit(int argc, char* argv[]){
         exit(1);
     }
     else{
-        run_commit(argv[2], argv[3]);
-        cout<< "some print"<<endl;
+        string flag(argv[2]);
+        if (flag!= "-m"){
+            cout<< "not supported!"<<endl;
+            exit(1);
+        }
+        else{
+            run_commit(argv[3]);
+            cout<< "some print"<<endl;
+        }
     }
 }
 

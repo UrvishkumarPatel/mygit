@@ -114,7 +114,7 @@ void updateIndexFile(string sha, string pathname){
 
         int mode= decimaltoOctal(var);
         string identifier= to_string(mode) + " "+ sha + " " + to_string(0) + " "+ pathname ;
-        cout<<"indetifier "<<identifier<<endl;
+        // cout<<"indetifier "<<identifier<<endl;
         string line;
         // read file content
         string index_data;
@@ -131,7 +131,6 @@ void updateIndexFile(string sha, string pathname){
                 if(curr_pathname.compare(pathname)!=0){
                     index_data+=line+"\n";
                 }
-                cout<<index_data<<endl;
             }
             index_data+=identifier+"\n"; ///this line
             myfile.close();
@@ -231,6 +230,7 @@ auto return_split_content_from_sha(string sha){
     vector<string> v;
     for(int i=0;i<len;i++){
         v.push_back(string(lines[i]));
+        // cout<<"--------------------------"<<string(lines[i])<<endl;
     }
     return v;
 }
@@ -254,7 +254,7 @@ void write_object(string sha1, string content, string type){
     if (mkdir(dirPath,0777)==-1){
         // cout << "Error: cannot create directory"<< endl;
     }
-    cout<< "writing at- "<<path<<endl;
+    cout<< "writing "<<type<< " object at- "<<path<<endl;
     ofstream fptr;
     fptr.open(path, ofstream::trunc);
     fptr<<content;
@@ -304,7 +304,9 @@ void add_run(string location){
         blobDir(location_new);
     }
     else{
-        updateIndexFile("", location); // why required
+        cout<<"Error: Path does not exist."<<endl;
+        exit(1);
+        // updateIndexFile("", location); // why required
     }
 }
 
@@ -322,10 +324,10 @@ void add_dot(){
     
     while ((dir_reader = readdir(dir)) !=NULL){
         char newlocation[MAX_FILE_NAME_LENGTH] = "";
-        cout<< dir_reader->d_name<<" d_name"<<endl;
+        // cout<< dir_reader->d_name<<" d_name"<<endl;
         if ( (!strcmp(dir_reader->d_name, ".")) || (!strcmp(dir_reader->d_name, "..")) || (!strcmp(dir_reader->d_name, "git")) ){
             // ignore "." and ".." directories
-            cout<< "ignoring git folder\n";
+            // cout<< "ignoring git folder\n";
         }
         else{
             strncat(newlocation, dir_reader->d_name, strlen(dir_reader->d_name));
