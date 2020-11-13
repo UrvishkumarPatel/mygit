@@ -100,6 +100,93 @@ void fastforwardmerge(char* current_branch, char* branch_name){
     
 }
 
+void dummy_checkout(string sha){
+    map<string, vector<string> hashMap;
+    // vector<string> cur_vec;
+
+    update_working_dir(sha);
+    // ofstream head_file(HEAD_PATH);
+    // string branch_name(name_of_branch);
+    // head_file<< "ref: refs/heads/"+branch_name;
+    // head_file.close();
+    ofstream index_file(PATH_INDEX, ofstream::trunc);
+    index_file<< "";
+    index_file.close();
+    add_dot();
+    
+}
+
+
+vector<string> return_string_vector(char** tokens, int * n){
+    vector<string> words;
+    for (int i=0; i<n; i++){
+        string tok(tokens[i]);
+        words.push_back(tok);
+    }
+    return words;
+}
+
+
+map<string, vector<string> return_index_dict(string sha){
+    
+    dummy_checkout(commit_sha);
+    map<string, vector<string> hashMap;
+    // vector<string> cur_vec;
+
+    char** tokens;
+    string line;
+    ifstream index_reader(PATH_INDEX);
+    int n;
+    while(getline(index_reader, line)){
+        tokens= split_index_line(line, " " , &n);
+        vector<string> words= return_string_vector(tokens, &n);
+        hashMap[words[3]].push_back(words[0]);
+        hashMap[words[3]].push_back(words[1]);
+        hashMap[words[3]].push_back(words[2]);
+        // = cur_vec;
+    }
+    return hashMap;
+    // {
+    //     demo/pp/t.txt : mode askjkdjsdljsflasldfaskd 0,
+    // }
+}
+
+
+
+
+map<string, vector<string> diff(map<string, vector<string> master, map<string, vector<string> branch){
+    """
+    each line will have prefix 
+    
+        - '+' --> not in master but in branch
+        - '-' --> not in branch but in master
+            '#' --> same but edited. (have different sha)
+    """
+    // entries= master_indx.key() + indx.key()
+    // int n = entries.length();
+
+    // for pathi in paths_:
+    for(int i=0; i<n; i++){
+        ;
+    }
+        if pathi in master_indx and not in indx:
+            '-'
+        elif pathi not in master_indx and in indx:
+            '+'
+        elif pathi in master_indx and in indx:
+            if master_indx[pathi][1]!= indx[pathi][1] or master_indx[pathi][0] != indx[pathi][0]:
+                '#'
+        
+
+
+
+    // return diff
+    // {
+    //     demo/pp/t.txt : [mode, askjkdjsdljsflasldfaskd, 0, +],
+    // }
+}
+
+
 void threewaymerge(char* current_branch, char* branch_name){
     //create a new merge-commit object
     // iterate in both current_branch and branch_name and create the merged objec
@@ -107,70 +194,51 @@ void threewaymerge(char* current_branch, char* branch_name){
     //update the current working directory according to sha of merged commit/master
 
     // current_branch ka parent upar he branch_name se
-    int a=0;
+    //find sha of lcs  and get the index map
 
-    // git merge new2
+//     m_index = return_index_dict(ancestor_sha);
 
-    // index_file= new2
+    string sha_x= get_sha_of_branch(current_branch);
+    string sha_y= get_sha_of_branch(branch_name);
+    map<string, vector<string> indx_x= return_index_dict(sha_x);
+    map<string, vector<string> indx_y= return_index_dict(sha_y);
 
-    // for line in new
-    //     if  line in index_file:
-    //         check for conflict
-    //     if not present:
-    //         if not present in master:
-    //             add to the index file
-    //         else:
-    //             pass
+    map<string, vector<string> diff_x= diff(indx_master, indx_x);
+    map<string, vector<string> diff_y= diff(indx_master, indx_y);
 
-    // check for conflict:{
-    //     ofstream characters:f1 and f2
-    //     while (f1!=NULL & f1!=NULL){
-    //         if cmp(f1,f2)!=0{
-    //             return 1
-    //         }
-    //     }
-    //     return 0;
-    // }
 
-// {
-//     demo/pp/t.txt : mode askjkdjsdljsflasldfaskd 0,
+//     x_index = return_index_dict(x_sha);
+//     y_index = return_index_dict(y_sha);
+//     d_x= diff(m_index, x_index);
+//     d_y= diff(m_index, y_index);
 
-    
-// }
-// def diff(master_indx, indx):
-//     """
-//     each line will have prefix 
-    
-//         - '+' --> not in master but in branch
-//         - '-' --> not in branch but in master
-//           '#' --> same but edited. (have different sha)
-//     """
-//     paths_= master_indx.key() + indx.key()
-//     for pathi in paths_:
-//         if pathi in master_indx and not in indx:
-//             '-'
-//         elif pathi not in master_indx and in indx:
-//             '+'
-//         elif pathi in master_indx and in indx:
-//             if master_indx[pathi][1]!= indx[pathi][1] or master_indx[pathi][0] != indx[pathi][0]:
-//                 '#'
+//     paths_= m_index.key()+ d_x.keys() + d_y.keys()
+    vector<string> all_paths;
+    HashSet<ValueType> all_paths;
+    for (auto i : indx_x)
+        all_paths.add(i);
+
+    for (auto j : indx_y)
+        all_paths.add(j);
         
+    for (auto k : indx_master)
+        all_paths.add(k);
+    
+    for (auto pathi : all_paths){
+        if (indx_master.find(pathi) != indx_master.find()){
+            if indx_x[pathi]= 
+        }
+    }
+    
+
+    
 
 
-
-// {
-//     demo/pp/t.txt : [+, mode, askjkdjsdljsflasldfaskd, 0],
-
-
-// }
-//     return diff
-
-//     m_index
-//     x_index = 
-//     y_index
-//     d_x= diff(m_index, x_index)
-//     d_y= diff(m_index, y_index)
-
+//     m_index = return_index_dict(ancestor_sha);
+//     x_index = return_index_dict(x_sha);
+//     y_index = return_index_dict(y_sha);
+//     d_x= diff(m_index, x_index);
+//     d_y= diff(m_index, y_index);
 
 //     paths_= m_index.key()+ d_x.keys() + d_y.keys()
 
@@ -197,6 +265,11 @@ void threewaymerge(char* current_branch, char* branch_name){
 //     +'	+'	#
 // 	+'		+'
 // 		+'	+'
+
+
+    //
+
+
 
 
 }
