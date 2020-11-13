@@ -100,8 +100,8 @@ void fastforwardmerge(char* current_branch, char* branch_name){
     
 }
 
-void dummy_checkout(string sha){
-    map<string, vector<string> hashMap;
+void dummy_checkout(string sha){  //beware while using this function
+    map<string, vector<string>> hashMap;
     // vector<string> cur_vec;
 
     update_working_dir(sha);
@@ -117,20 +117,10 @@ void dummy_checkout(string sha){
 }
 
 
-vector<string> return_string_vector(char** tokens, int * n){
-    vector<string> words;
-    for (int i=0; i<n; i++){
-        string tok(tokens[i]);
-        words.push_back(tok);
-    }
-    return words;
-}
-
-
-map<string, vector<string> return_index_dict(string sha){
+map<string, vector<string>> return_index_dict(string sha){
     
     dummy_checkout(commit_sha);
-    map<string, vector<string> hashMap;
+    map<string, vector<string>> hashMap;
     // vector<string> cur_vec;
 
     char** tokens;
@@ -154,14 +144,16 @@ map<string, vector<string> return_index_dict(string sha){
 
 
 
-map<string, vector<string> diff(map<string, vector<string> master, map<string, vector<string> branch){
+map<string, vector<string>> diff(map<string, vector<string>> master, map<string, vector<string>> branch){
     """
-    each line will have prefix 
+    each line will have suffix 
     
         - '+' --> not in master but in branch
         - '-' --> not in branch but in master
-            '#' --> same but edited. (have different sha)
+        - '#' --> same but edited. (have different sha or mode)
     """
+    // todo
+    map<string, vector<string>> diff_map;
     // entries= master_indx.key() + indx.key()
     // int n = entries.length();
 
@@ -169,25 +161,29 @@ map<string, vector<string> diff(map<string, vector<string> master, map<string, v
     for(int i=0; i<n; i++){
         ;
     }
-        if pathi in master_indx and not in indx:
-            '-'
-        elif pathi not in master_indx and in indx:
-            '+'
-        elif pathi in master_indx and in indx:
-            if master_indx[pathi][1]!= indx[pathi][1] or master_indx[pathi][0] != indx[pathi][0]:
-                '#'
-        
+        // if pathi in master_indx and not in indx:
+        //     '-'
+        // elif pathi not in master_indx and in indx:
+        //     '+'
+        // elif pathi in master_indx and in indx:
+        //     if master_indx[pathi][1]!= indx[pathi][1] or master_indx[pathi][0] != indx[pathi][0]:
+        //         '#'
 
-
-
-    // return diff
+    return diff_map;
     // {
     //     demo/pp/t.txt : [mode, askjkdjsdljsflasldfaskd, 0, +],
     // }
 }
 
+string LCA(char* bl, char* b2){
+    string ancestor_sha;
+    // todo
+    return ancestor_sha;
+}
 
 void threewaymerge(char* current_branch, char* branch_name){
+
+    //////////////////////////////////////////////// todo
     //create a new merge-commit object
     // iterate in both current_branch and branch_name and create the merged objec
     //update master to merged object
@@ -195,54 +191,46 @@ void threewaymerge(char* current_branch, char* branch_name){
 
     // current_branch ka parent upar he branch_name se
     //find sha of lcs  and get the index map
+    ////////////////////////////////////////////
 
-//     m_index = return_index_dict(ancestor_sha);
-
-    string sha_x= get_sha_of_branch(current_branch);
+    string ancestor_sha = LCA(branch_name, current_branch);
     string sha_y= get_sha_of_branch(branch_name);
-    map<string, vector<string> indx_x= return_index_dict(sha_x);
-    map<string, vector<string> indx_y= return_index_dict(sha_y);
+    string sha_x= get_sha_of_branch(current_branch);
+    // assume executing "git merge y" being on branch x
+    //     m
+    //    /|
+    //   / |
+    // (y)(x)*
+    //  | /
+    //  |/
+    //  merged
 
-    map<string, vector<string> diff_x= diff(indx_master, indx_x);
-    map<string, vector<string> diff_y= diff(indx_master, indx_y);
+    map<string, vector<string>> indx_m= return_index_dict(ancestor_sha);
+    map<string, vector<string>> indx_y= return_index_dict(sha_y);
+    map<string, vector<string>> indx_x= return_index_dict(sha_x);
 
+    map<string, vector<string>> diff_x= diff(indx_m, indx_x);
+    map<string, vector<string>> diff_y= diff(indx_m, indx_y);
 
-//     x_index = return_index_dict(x_sha);
-//     y_index = return_index_dict(y_sha);
-//     d_x= diff(m_index, x_index);
-//     d_y= diff(m_index, y_index);
+    // paths_= m_index.key()+ d_x.keys() + d_y.keys()
 
-//     paths_= m_index.key()+ d_x.keys() + d_y.keys()
-    vector<string> all_paths;
-    HashSet<ValueType> all_paths;
-    for (auto i : indx_x)
-        all_paths.add(i);
+    // // vector<string> all_paths;
+    // HashSet<ValueType> all_paths;
+    // for (auto i : indx_x)
+    //     all_paths.add(i);
 
-    for (auto j : indx_y)
-        all_paths.add(j);
+    // for (auto j : indx_y)
+    //     all_paths.add(j);
         
-    for (auto k : indx_master)
-        all_paths.add(k);
+    // for (auto k : indx_master)
+    //     all_paths.add(k);
     
-    for (auto pathi : all_paths){
-        if (indx_master.find(pathi) != indx_master.find()){
-            if indx_x[pathi]= 
-        }
-    }
+    // for (auto pathi : all_paths){
+    //     if (indx_m.find(pathi) != indx_m.find()){
+    //         if indx_x[pathi]= 
+    //     }
+    // }
     
-
-    
-
-
-//     m_index = return_index_dict(ancestor_sha);
-//     x_index = return_index_dict(x_sha);
-//     y_index = return_index_dict(y_sha);
-//     d_x= diff(m_index, x_index);
-//     d_y= diff(m_index, y_index);
-
-//     paths_= m_index.key()+ d_x.keys() + d_y.keys()
-
-
 //     for pathi in paths_:
 //         if pathi in m_index:
 //             if d_x[0]== '#' or d_y[0]=="#":
@@ -268,9 +256,6 @@ void threewaymerge(char* current_branch, char* branch_name){
 
 
     //
-
-
-
 
 }
 

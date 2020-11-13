@@ -50,6 +50,14 @@ char** split_index_line(char * line_, string delimiter_,  int * n=&DEFAULT){
 }
 
 
+vector<string> return_string_vector(char** tokens, int * n){
+    vector<string> words;
+    for (int i=0; i<n; i++){
+        string tok(tokens[i]);
+        words.push_back(tok);
+    }
+    return words;
+}
 
 int branch_exists(char* branch_name){
 	// checks if branch with branch name branch_name exists
