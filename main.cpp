@@ -36,6 +36,9 @@ int main(int argc, char* argv[]){
 	else if(strcmp(argv[1],"branch")==0){branch(argc,argv); } //calling branch
 	else if(strcmp(argv[1],"checkout")==0){checkout(argc,argv); } //calling checkout
 	else if(strcmp(argv[1],"merge")==0){merge(argc,argv); } //calling merge
+	// else if(strcmp(argv[1],"log")==0){log(argc,argv); } //calling merge
+	// else if(strcmp(argv[1],"reflog")==0){reflog(argc,argv); } //calling merge
+
 	// else if(strcmp(argv[1],"exit")==0) exit(1); //exiting the function
 	else{
 		vector<string> lines= return_split_content_from_sha("4c34ad7f94d69e373447d3725cbf6ed68acff4a8");

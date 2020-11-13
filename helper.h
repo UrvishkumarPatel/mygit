@@ -50,14 +50,91 @@ char** split_index_line(char * line_, string delimiter_,  int * n=&DEFAULT){
 }
 
 
-vector<string> return_string_vector(char** tokens, int * n){
-    vector<string> words;
-    for (int i=0; i<n; i++){
-        string tok(tokens[i]);
-        words.push_back(tok);
-    }
-    return words;
-}
+// vector<string> return_string_vector(char** tokens, int * n){
+//     vector<string> words;
+//     for (int i=0; i<n; i++){
+//         string tok(tokens[i]);
+//         words.push_back(tok);
+//     }
+//     return words;void threewaymerge(char* current_branch, char* branch_name){
+
+//     //////////////////////////////////////////////// todo
+//     //create a new merge-commit object
+//     // iterate in both current_branch and branch_name and create the merged objec
+//     //update master to merged object
+//     //update the current working directory according to sha of merged commit/master
+
+//     // current_branch ka parent upar he branch_name se
+//     //find sha of lcs  and get the index map
+//     ////////////////////////////////////////////
+
+//     string ancestor_sha = LCA(branch_name, current_branch);
+//     string sha_y= get_sha_of_branch(branch_name);
+//     string sha_x= get_sha_of_branch(current_branch);
+//     // assume executing "git merge y" being on branch x
+//     //     m
+//     //    /|
+//     //   / |
+//     // (y)(x)*
+//     //  | /
+//     //  |/
+//     //  merged
+
+//     map<string, vector<string>> indx_m= return_index_dict(ancestor_sha);
+//     map<string, vector<string>> indx_y= return_index_dict(sha_y);
+//     map<string, vector<string>> indx_x= return_index_dict(sha_x);
+
+//     map<string, vector<string>> diff_x= diff(indx_m, indx_x);
+//     map<string, vector<string>> diff_y= diff(indx_m, indx_y);
+
+//     // paths_= m_index.key()+ d_x.keys() + d_y.keys()
+
+//     // // vector<string> all_paths;
+//     // HashSet<ValueType> all_paths;
+//     // for (auto i : indx_x)
+//     //     all_paths.add(i);
+
+//     // for (auto j : indx_y)
+//     //     all_paths.add(j);
+        
+//     // for (auto k : indx_master)
+//     //     all_paths.add(k);
+    
+//     // for (auto pathi : all_paths){
+//     //     if (indx_m.find(pathi) != indx_m.find()){
+//     //         if indx_x[pathi]= 
+//     //     }
+//     // }
+    
+// //     for pathi in paths_:
+// //         if pathi in m_index:
+// //             if d_x[0]== '#' or d_y[0]=="#":
+// //                 conflict
+// //             else if d_x[0]=='-' or d_y[0]=='-':
+// //                 pass
+// //         else:
+// //             if d_x[0]== '+' and d_y[0]== '+':
+// //                 conflict
+// //             else:
+// //                 add to index file
+
+// // m-1	dx	dy	
+// // 	-	-	-
+// // 	#	#	#
+// // 	-	#	#
+// // 	#	- 	#
+// // 	-		-		
+// // m-0	
+// //     +'	+'	#
+// // 	+'		+'
+// // 		+'	+'
+
+
+//     //
+
+// }
+
+// }
 
 int branch_exists(char* branch_name){
 	// checks if branch with branch name branch_name exists

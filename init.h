@@ -20,14 +20,28 @@ int init(int argc, char* argv[]){
         string path_info=path_obj+"/"+"info";
         const char *path_i=path_info.c_str();
         mkdir(path_i,0777);
+
+
         string path_pack=path_obj+"/"+"pack";
         const char *path_p=path_pack.c_str();
         mkdir(path_p,0777);
+
+        string path_log=my_git_name+"/"+"logs";
+        const char *path_l=path_log.c_str();
+        mkdir(path_l,0777);
+        string path_ref=path_log+"/"+"refs";
+        const char *path_rl=path_ref.c_str();
+        mkdir(path_rl,0777);
+        ofstream master;
+        string path_master=path_ref + "/" +"master";
+        // const char *path_mas=path_master.c_str();
+        master.open(path_master,ofstream::app);
+
         fstream config;
         string path_config=my_git_name + "/" +"config";
         const char *path_c=path_config.c_str();
-
         config.open(path_c,ios::out);
+
         fstream des;
         string my_file=my_git_name+"/"+"description";
         const char *file=my_file.c_str();
@@ -82,6 +96,18 @@ int init(int argc, char* argv[]){
                 string path_pack=path_obj+"/"+"pack";
                 const char *path_p=path_pack.c_str();
                 mkdir(path_p,0777);
+
+                string path_log=path+"/"+"logs";
+                const char *path_l=path_log.c_str();
+                mkdir(path_l,0777);
+                string path_ref=path_log+"/"+"refs";
+                const char *path_rl=path_ref.c_str();
+                mkdir(path_rl,0777);
+                ofstream master;
+                string path_master=path_ref + "/" +"master";
+                // const char *path_mas=path_master.c_str();
+                master.open(path_master,ofstream::app);
+                
                 fstream config;
                 string path_config=path + "/" +"config";
                 const char *path_c=path_config.c_str();
@@ -134,6 +160,18 @@ int init(int argc, char* argv[]){
             string path_pack=path_obj+"/"+"pack";
             const char *path_p=path_pack.c_str();
             mkdir(path_p,0777);
+
+            string path_log=path+"/"+"logs";
+            const char *path_l=path_log.c_str();
+            mkdir(path_l,0777);
+            string path_ref=path_log+"/"+"refs";
+            const char *path_rl=path_ref.c_str();
+            mkdir(path_rl,0777);
+            ofstream master;
+            string path_master=path_ref + "/" +"master";
+            // const char *path_mas=path_master.c_str();
+            master.open(path_master,ofstream::app);
+            
             fstream config;
             string path_config=path + "/" +"config";
             const char *path_c=path_config.c_str();

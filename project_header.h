@@ -26,6 +26,7 @@ using namespace std;
 #define TOKEN_NOS 10
 #define git_dir "git"
 #define ROOT_PATH "."
+#define LOG_PATH "git/logs/refs/"
 
 // #include "checkDir.h"
 #include "helper.h"

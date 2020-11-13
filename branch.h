@@ -81,6 +81,13 @@ void branch(int argc, char* argv[]){
     }
     else{
         update_refs(argv[2]);
+        cout<<"I am here"<<endl;
+        string new_branch(argv[2]);
+        string branch_log_path;
+        branch_log_path=LOG_PATH+'/'+new_branch;
+        ofstream log_file;
+        log_file.open(branch_log_path,ofstream::app);
+        log_file.close();
         // cout<< "some print"<<endl;
     }
 }
