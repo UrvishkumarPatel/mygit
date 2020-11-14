@@ -82,12 +82,26 @@ void branch(int argc, char* argv[]){
     else{
         update_refs(argv[2]);
         cout<<"I am here"<<endl;
+
+        char current_branch[MAX_FILE_NAME_LENGTH];
+        get_cur_branch_name(current_branch);
+        string branch_(current_branch);
+        string sha_curr = get_sha_of_branch(current_branch);
+            
+        //dephining branch content
+        string log_branch_content;
+        log_branch_content=sha_curr+" imp_git imp_git branch: Created from "+branch_;
+
+        //writing in git/logs/refs/current_branch
         string new_branch(argv[2]);
         string branch_log_path;
-        branch_log_path=LOG_PATH+'/'+new_branch;
+        branch_log_path=LOG_PATH+new_branch;
         ofstream log_file;
+        cout<<"Making new file "<<branch_log_path<<endl;
         log_file.open(branch_log_path,ofstream::app);
+        log_file<<log_branch_content<<'\n';
         log_file.close();
+        cout<< "some print"<<endl;
         // cout<< "some print"<<endl;
     }
 }

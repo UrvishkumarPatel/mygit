@@ -376,6 +376,29 @@ void run_commit(string message, int merge_flag=0, string parent_1="", string par
     f << commit_sha;
     f.close();
 
+    //definining commit log content
+    string log_content;
+    log_content+=commit_sha+" imp_git imp_git commit : "+message;
+
+    //writing in git/logs/HEAD
+    ofstream log_head;
+    log_head.open(LOG_HEAD_PATH,ofstream::app);
+    log_head<<log_content<<'\n';
+    log_head.close();
+
+    //writing in git/logs/refs/current_branch
+
+    //get current branch name
+    char current_branch[MAX_FILE_NAME_LENGTH];
+    get_cur_branch_name(current_branch);
+    string branch_(current_branch);
+    string LOG_branch_path= LOG_PATH+branch_;
+
+    ofstream branch_head;
+    branch_head.open(LOG_branch_path,ofstream::app);
+    branch_head<<log_content<<'\n';
+    branch_head.close();
+
 }
 
 

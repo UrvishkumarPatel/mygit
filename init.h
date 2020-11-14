@@ -29,6 +29,12 @@ int init(int argc, char* argv[]){
         string path_log=my_git_name+"/"+"logs";
         const char *path_l=path_log.c_str();
         mkdir(path_l,0777);
+
+        ofstream log_head;
+        string path_log_head=path_log + "/" +"master";
+        // const char *path_mas=path_master.c_str();
+        log_head.open(path_log_head,ofstream::app);
+
         string path_ref=path_log+"/"+"refs";
         const char *path_rl=path_ref.c_str();
         mkdir(path_rl,0777);
@@ -100,6 +106,12 @@ int init(int argc, char* argv[]){
                 string path_log=path+"/"+"logs";
                 const char *path_l=path_log.c_str();
                 mkdir(path_l,0777);
+
+                ofstream log_head;
+                string path_log_head=path_log + "/" +"master";
+                // const char *path_mas=path_master.c_str();
+                log_head.open(path_log_head,ofstream::app);
+
                 string path_ref=path_log+"/"+"refs";
                 const char *path_rl=path_ref.c_str();
                 mkdir(path_rl,0777);
@@ -164,6 +176,12 @@ int init(int argc, char* argv[]){
             string path_log=path+"/"+"logs";
             const char *path_l=path_log.c_str();
             mkdir(path_l,0777);
+
+            ofstream log_head;
+            string path_log_head=path_log + "/" +"master";
+            // const char *path_mas=path_master.c_str();
+            log_head.open(path_log_head,ofstream::app);
+
             string path_ref=path_log+"/"+"refs";
             const char *path_rl=path_ref.c_str();
             mkdir(path_rl,0777);

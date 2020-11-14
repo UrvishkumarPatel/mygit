@@ -176,8 +176,24 @@ void checkout(int argc, char* argv[]){ // argv[2] --  branch name
     } 
     else if(argc==3){
         // string branch_name(argv[2]);
+        char current_branch[MAX_FILE_NAME_LENGTH];
+        get_cur_branch_name(current_branch);
+        string curr_(current_branch);
         
         run_checkout(argv[2]);
+
+        string branch_(argv[2]);
+        string sha_curr = get_sha_of_branch(argv[2]);
+
+        //defining checkout log content
+        string checkout_log_content;
+        checkout_log_content=sha_curr+" imp_git imp_git checkout: moving from "+curr_+" to "+branch_;
+
+        //writing in git/logs/HEAD
+        ofstream log_head;
+        log_head.open(LOG_HEAD_PATH,ofstream::app);
+        log_head<<checkout_log_content<<'\n';
+        log_head.close();
         return;
     }
     else{

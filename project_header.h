@@ -27,7 +27,7 @@ using namespace std;
 #define git_dir "git"
 #define ROOT_PATH "."
 #define LOG_PATH "git/logs/refs/"
-
+#define LOG_HEAD_PATH "git/logs/HEAD"
 // #include "checkDir.h"
 #include "helper.h"
 #include "rm.h"
@@ -40,4 +40,5 @@ using namespace std;
 #include "branch.h"
 #include "checkout.h"
 #include "merge.h"
+#include "log.h"
 
