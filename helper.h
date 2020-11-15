@@ -80,7 +80,7 @@ int branch_exists(char* branch_name){
 
 string get_sha_of_branch(char* branch_name){
     // REF_HEAD_PATH+branch_name
-
+    // branch_name = (char*)realloc(branch_name, sizeof(char)*MAX_FILE_NAME_LENGTH);
     char branch_ref_path[MAX_FILE_NAME_LENGTH];
     strcpy(branch_ref_path,REF_HEAD_PATH);
     strcat(branch_ref_path, branch_name);
@@ -221,4 +221,15 @@ int update_commit_count(){
     f_writer<< to_string(count_int);
     f_writer.close();
     return count_int-1;
+}
+
+string get_commit_message(string sha){
+    string content;
+    string git_dir_(GIT_DIR);
+    string path= git_dir_+"/objects/"+sha.substr(0,2)+"/"+sha.substr(2,38);
+    ifstream f_reader(path);
+    while(getline (f_reader, content)){
+        ;
+    }
+    return content;
 }

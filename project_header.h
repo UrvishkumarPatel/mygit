@@ -42,4 +42,4 @@ using namespace std;
 #include "checkout.h"
 #include "merge.h"
 #include "log.h"
-
+#include "reset.h"

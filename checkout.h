@@ -1,21 +1,3 @@
-// #include <bits/stdc++.h>
-// #include<stdio.h>
-// #include<cstdlib>
-// #include<iostream>
-// #include<string.h>
-// #include<fstream>
-// #include<dirent.h>
-// #include <sys/types.h>
-
-// # include "rm.h"
-// using namespace std;
-
-// # define MAX_FILE_NAME_LENGTH 1024
-// # define REF_HEAD_PATH "git/refs/heads/"
-// # define GIT_PATH "git/"
-// # define HEAD_PATH "git/HEAD"
-// # define ROOT_PATH "."
-
 void build_dfs(string tree_sha, string curPath_){
     // // args= ["tree", "blobs"]
     // // mkdir
@@ -48,7 +30,7 @@ void build_dfs(string tree_sha, string curPath_){
         char** entry = split_index_line(entries_, " ");
 
         if (strcmp(entry[1],"blob") == 0){
-            cout<< "inside if"<<endl;
+            // cout<< "inside if"<<endl;
         // if (entry[1].compare("blob") == 0){
             string file_name(entry[3]);
             string path = curPath_+"/"+file_name;
@@ -60,7 +42,7 @@ void build_dfs(string tree_sha, string curPath_){
             blob_file.close();
         }
         else{
-            cout<< "inside else"<<endl;
+            // cout<< "inside else"<<endl;
             string dir_name= entry[3];
             // string dir_name(entry[3]);
             string path = curPath_+"/"+dir_name;
@@ -130,7 +112,7 @@ void update_working_dir(string commit_sha){
 
 
 
-void run_checkout(char* name_of_branch){
+void run_checkout(char* name_of_branch, int dummy_flag=0){
     char branch_ref_path[MAX_FILE_NAME_LENGTH];
     strcpy(branch_ref_path,REF_HEAD_PATH);
     strcat(branch_ref_path, name_of_branch);
@@ -138,7 +120,9 @@ void run_checkout(char* name_of_branch){
     
     // if(isDir(branch_ref_path)==2){
     if (branch_exists(name_of_branch)==1){
-    
+        char* previous_branch;
+        get_cur_branch_name(previous_branch);
+
         string sha;
         string branch_ref_path_(branch_ref_path);
         ifstream branch_file(branch_ref_path_);
@@ -161,6 +145,15 @@ void run_checkout(char* name_of_branch){
         // remove_file(path_indx);
         // iterate over ROOT_PATH and ignore .git
         add_dot();
+        if (dummy_flag==0){
+            string prev_sha = get_sha_of_branch(previous_branch);
+            string commit_message = get_commit_message(prev_sha);
+            cout<<"Previous HEAD position was "+prev_sha+" "+commit_message<<endl;
+            cout<<"Switched to branch \'"<<name_of_branch<<"\'"<<endl;
+        }
+        else{
+            ;  //reset
+        }
     }
     else{
         cout<<"Error: branch doesn't exist"<<endl;
