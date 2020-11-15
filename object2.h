@@ -36,11 +36,11 @@ store = header + data
 
 // #define MAX_FILE_NAME_LENGTH 1024
 // #define PATH_INDEX "git/index"
-// #define git_dir "git"
+// #define GIT_DIR "git"
 // #define ROOT_PATH "."
 
 // #define PATH_INDEX "p.txt"
-string GIT_DIR(git_dir);
+string git_dir_(GIT_DIR);
 // int dot_flag=0;
 
 void add_run(string location);
@@ -200,44 +200,9 @@ void blobDir(char* dirname){
     closedir(dir);
 }
 
-auto return_split_content_from_sha(string sha){
-    // get secret code and size from indexfile (SIZE_STORE)
-    // decompress 
-    // simply return
-    string content;
-    string path= GIT_DIR+"/objects/"+sha.substr(0,2)+"/"+sha.substr(2,38);
-    // string path= ".git/objects/b5/22cff36efe4c57d1e3b1977531fa0dca7f5842";
-    // const char* path= "/home/ac-optimus/implement_git/copy_sha";
-    // cout<<"before reading"<<path<<endl;
-    ifstream f_reader(path);
-    string final_content;
-    while(getline (f_reader, content)){
-        final_content+=content+"\n";
-     } // compressed data in content
-    // pair<int, int> compressed_data= get_compressed_store_data(sha); //secret code, size_store
-    // cout<<"content of path  "<< compressed_data.first<< " "<< compressed_data.second<<" "<< content<< " " << endl;
-
-    // char* decompress_string= decompress(content, compressed_data.first, compressed_data.second);
-    // print_string(decompress_string, compressed_data.second);
-    // split based on "\n"
-    long long int content_size=final_content.length();
-    char content_[content_size];
-    strcpy(content_,final_content.c_str());
-    // cout<< "blah! "<<content_<<endl;
-    int len=0;
-    char** lines= split_index_line(content_,"\n",&len);
-
-    vector<string> v;
-    for(int i=0;i<len;i++){
-        v.push_back(string(lines[i]));
-        // cout<<"--------------------------"<<string(lines[i])<<endl;
-    }
-    return v;
-}
-
 auto return_content(string sha){
     string content;
-    string path= GIT_DIR+"/objects/"+sha.substr(0,2)+"/"+sha.substr(2,38);
+    string path= git_dir_+"/objects/"+sha.substr(0,2)+"/"+sha.substr(2,38);
     ifstream f_reader(path);
     string final_content;
     while(getline (f_reader, content)){
@@ -247,8 +212,8 @@ auto return_content(string sha){
 }
 
 void write_object(string sha1, string content, string type){
-    string path= GIT_DIR+"/objects/"+sha1.substr(0,2)+"/"+sha1.substr(2,38);
-    string pathDir=GIT_DIR+"/objects/"+sha1.substr(0,2);
+    string path= git_dir_+"/objects/"+sha1.substr(0,2)+"/"+sha1.substr(2,38);
+    string pathDir=git_dir_+"/objects/"+sha1.substr(0,2);
     char dirPath[MAX_FILE_NAME_LENGTH];
     strcpy(dirPath, pathDir.c_str());
     if (mkdir(dirPath,0777)==-1){

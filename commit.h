@@ -261,15 +261,17 @@ class tree{
 
 // blob object is the created file itself, instance of the object present physically
 
-string get_content_merge_commit(string root_sha, string commit_msg, string parent_1, string parent_2){
+string get_content_merge_commit(string root_sha, string commit_msg, string parent_1, string parent_2, time_t cur_time, string count){
     string author= "imp_git";
     string commiter= "imp_git";
     string parent_content= "parent "+parent_1+"\nparent "+parent_2+"\n";
-    string content= "tree "+root_sha + "\n"+ parent_content+"author "+ author + "\n" + "committer "+commiter+"\n\n"+ commit_msg;
+    string t = to_string(cur_time);
+
+    string content= "tree "+root_sha + "\n"+ parent_content+"author "+ author + " " + t + " " + count + "\n" + "committer "+commiter+ " " + t + " " + count +"\n\n"+ commit_msg;
     return content;
 }
 
-string get_content_commit(string root_sha, string commit_msg){
+string get_content_commit(string root_sha, string commit_msg, time_t cur_time, string count){
     /* TODO- adding parent pointers */
     // char PATH_[MAX_FILE_NAME_LENGTH];
     // strcpy(PATH_, PATH.c_str());
@@ -301,8 +303,8 @@ string get_content_commit(string root_sha, string commit_msg){
     string author= "imp_git";
     string commiter= "imp_git";
     // vector<string> parent_commit;  # get the parent sha from ref/heads
-
-    string content= "tree "+root_sha + "\n"+ parent_content+"author "+ author + "\n" + "committer "+commiter+"\n\n"+ commit_msg;
+    string t = to_string(cur_time);
+    string content= "tree "+root_sha + "\n"+ parent_content+"author "+ author + " " + t + " " + count + "\n" + "committer "+commiter+ " " + t + " " + count +"\n\n"+ commit_msg;
     return content;
 }
 
@@ -314,7 +316,8 @@ void run_commit(string message, int merge_flag=0, string parent_1="", string par
     // compute the hash
     tree myTree;
     myTree.read_index();
-    
+    time_t cur_time = time_in_sec();
+    string count = to_string(update_commit_count());
     string root_content = myTree.dfs(myTree.root);
 
     char root_content_[MAX_FILE_NAME_LENGTH];
@@ -327,12 +330,12 @@ void run_commit(string message, int merge_flag=0, string parent_1="", string par
     string commit_content;
 
     if (merge_flag){
-        commit_content= get_content_merge_commit(root_sha, message, parent_1, parent_2);
+        commit_content= get_content_merge_commit(root_sha, message, parent_1, parent_2, cur_time, count);
         commit_sha=hash_object(commit_content,"commit");
 
     }
     else{
-        commit_content= get_content_commit(root_sha, message);
+        commit_content= get_content_commit(root_sha, message, cur_time, count);
         commit_sha=hash_object(commit_content,"commit");
 
         if (PARENT_SHA.compare("")!=0){
@@ -357,7 +360,9 @@ void run_commit(string message, int merge_flag=0, string parent_1="", string par
         }
     }
 
-    /* tree 9b5a3d2570f0b61a9aca5188cc4e33c3a0b3f84b
+    /*  tree 9b5a3d2570f0b61a9aca5188cc4e33c3a0b3f84b
+        parent ahs
+        parent sha
         author imp_git
         committer imp_git
 

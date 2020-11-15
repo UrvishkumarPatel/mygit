@@ -17,6 +17,15 @@ int isDir(char* PATH){
 
 }
 
+time_t time_in_sec(){
+    time_t result = time(nullptr);
+    return result;
+}
+
+auto print_proper_time(time_t result){
+    // cout << asctime(localtime(&result));
+    return asctime(localtime(&result));
+}
 
 char** split_index_line(char * line_, string delimiter_,  int * n=&DEFAULT){
 	// https://www.man7.org/linux/man-pages/man3/strsep.3.html
@@ -124,4 +133,92 @@ char* get_cur_head(){
         // string cur_path(tokens_head_content_[1]);
         // return cur_path;
         return tokens_head_content_[1];
+}
+
+
+
+auto return_split_content_from_sha(string sha){
+    // get secret code and size from indexfile (SIZE_STORE)
+    // decompress 
+    // simply return
+    string content;
+    string git_dir_(GIT_DIR);
+    string path= git_dir_+"/objects/"+sha.substr(0,2)+"/"+sha.substr(2,38);
+    // string path= ".git/objects/b5/22cff36efe4c57d1e3b1977531fa0dca7f5842";
+    // const char* path= "/home/ac-optimus/implement_git/copy_sha";
+    // cout<<"before reading"<<path<<endl;
+    ifstream f_reader(path);
+    string final_content;
+    while(getline (f_reader, content)){
+        final_content+=content+"\n";
+     } // compressed data in content
+    // pair<int, int> compressed_data= get_compressed_store_data(sha); //secret code, size_store
+    // cout<<"content of path  "<< compressed_data.first<< " "<< compressed_data.second<<" "<< content<< " " << endl;
+
+    // char* decompress_string= decompress(content, compressed_data.first, compressed_data.second);
+    // print_string(decompress_string, compressed_data.second);
+    // split based on "\n"
+    long long int content_size=final_content.length();
+    char content_[content_size];
+    strcpy(content_,final_content.c_str());
+    // cout<< "blah! "<<content_<<endl;
+    int len=0;
+    char** lines= split_index_line(content_,"\n",&len);
+
+    vector<string> v;
+    for(int i=0;i<len;i++){
+        v.push_back(string(lines[i]));
+        // cout<<"--------------------------"<<string(lines[i])<<endl;
+    }
+    return v;
+}
+
+
+auto get_time_from_commit(string cur_commit){
+    // return_split_content_from_sha(string sha);
+    vector<string> entries= return_split_content_from_sha(cur_commit);
+    char entries_[MAX_FILE_NAME_LENGTH];
+
+    int commit_time_=0;
+
+
+    for (int i=2; i<entries.size(); i++){
+        strcpy(entries_, entries[i].c_str());
+        char** splitted_line= split_index_line(entries_," ");
+        
+
+        if ((strcmp(splitted_line[0],"author")==0) || (strcmp(splitted_line[0],"committer")==0)){
+            char* commit_time=splitted_line[3]; //considering "author rakesh 1653230490 <count>"
+            commit_time_ = stoi(commit_time);
+            // for (auto i: entries)
+            //      cout<<"....................."<<i<<endl;
+            break;
+        }
+    }
+    if (commit_time_==0){
+        // for (auto i: entries)
+        //      cout<<"....................."<<i<<endl;
+
+        cout<<"Debug: no time found in commit_object"<<endl;
+    }
+    
+    return commit_time_;
+}
+
+int update_commit_count(){
+    // update commit and return the updated count
+    string count;
+    int count_int;
+    fstream f_reader(PATH_COMMIT_COUNT);
+    getline(f_reader, count);
+    f_reader.close();
+    if (count.compare("")==0)
+        count_int=1;
+    else
+        count_int= stoi(count);
+    count_int+=1;
+    ofstream f_writer(PATH_COMMIT_COUNT);
+    f_writer<< to_string(count_int);
+    f_writer.close();
+    return count_int-1;
 }

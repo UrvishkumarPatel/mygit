@@ -50,7 +50,7 @@ int is_parent(string target_sha, string cur_sha){
 
 
 int is_ancestor(char* current_branch, char* branch_name){
-    //checks if the current_branch is the ancenstor of the branch_name
+    //checks if the current_branch is the ancestor of the branch_name
     //returns 1 if yes else 0
     string sha_target= get_sha_of_branch(current_branch);
     string sha_branch= get_sha_of_branch(branch_name);
@@ -182,15 +182,64 @@ map<string, vector<string>> diff(map<string, vector<string>> lca, map<string, ve
     // }
 }
 
+void get_ancestors(unordered_set<string>* ancestor_set, string cur_commit){
+    // read the parent sha
+    vector<string> cur_parents= parent_shas(cur_commit);
+    if (cur_parents.size()==0)
+        return; // recurssion termination
+    else{
+        for (auto parent_i: cur_parents)
+            ancestor_set->insert(parent_i);// parent sha appended
+        for (auto parent_i: cur_parents)
+            get_ancestors(ancestor_set, parent_i);
+    }
+}
+
 string LCA(char* b1, char* b2){
-    string ancestor_sha;
+    // unordered_set<string> ancestor_sha;
     // todo
     ////////////
-    string cur_commit = get_sha_of_branch(b1);
-    vector<string> p = parent_shas(cur_commit);
-    ancestor_sha = p[0];
+    string sha_b1 = get_sha_of_branch(b1);
+    string sha_b2 = get_sha_of_branch(b2);
+
+    unordered_set<string> ancestor_b1;
+    get_ancestors(&ancestor_b1, sha_b1);
+
+    unordered_set<string> ancestor_b2;
+    get_ancestors(&ancestor_b2, sha_b2);
+    // parent sets ready
+
+    unordered_set<string> common_ancestor;
+    for (auto parent_i : ancestor_b1){
+        if (ancestor_b2.find(parent_i)!=ancestor_b2.end())
+            common_ancestor.insert(parent_i);
+    }
+    for (auto parent_j : ancestor_b2){
+        if (ancestor_b1.find(parent_j)!=ancestor_b1.end())
+            common_ancestor.insert(parent_j);
+    }
+    // lca set ready till here
+    for (auto i: common_ancestor)
+        cout<< "------------ "<<i<<endl;
+
+    string lca;
+    int max= 0;
+    int cur;
+    for (auto ancestor_i : common_ancestor){
+        cur= get_time_from_commit(ancestor_i);
+        if (cur> max){
+            max= cur;
+            lca= ancestor_i;
+        }
+    }
+    cout<<"least common ancestor"<<lca<<endl;
+    // ---------------todo--------------get lca from sets
+
+    // string cur_commit = get_sha_of_branch(b1);
+    // vector<string> p = parent_shas(cur_commit);
+    // ancestor_sha = p[0];
     ////////////
-    return ancestor_sha;
+    return lca;
 }
 
 vector<string> conflict(string pathname, vector<string> diff_x_indx, vector<string> diff_y_indx, char* current_branch, char* branch_name){
@@ -237,7 +286,10 @@ void threewaymerge(char* current_branch, char* branch_name){
     ////////////////////////////////////////////
 
     string ancestor_sha = LCA(branch_name, current_branch);
+    cout<<"here"<<"lca--"<<ancestor_sha<< endl;
     string sha_y= get_sha_of_branch(branch_name);
+    cout<<"here2"<<endl;
+    
     string sha_x= get_sha_of_branch(current_branch);
     // assume executing "git merge y" being on branch x
     //     m

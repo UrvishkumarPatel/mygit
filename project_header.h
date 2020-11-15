@@ -13,10 +13,11 @@
 #include <stdlib.h>
 #include <vector>
 #include <stdio.h>
+#include <ctime>
 
 using namespace std;
 
-
+#define PATH_COMMIT_COUNT "git/commit_count"
 #define MAX_FILE_NAME_LENGTH 1024
 #define REF_HEAD_PATH "git/refs/heads/"
 #define GIT_PATH "git/"
@@ -24,7 +25,7 @@ using namespace std;
 #define ROOT_PATH "."
 #define PATH_INDEX "git/index"
 #define TOKEN_NOS 10
-#define git_dir "git"
+#define GIT_DIR "git"
 #define ROOT_PATH "."
 #define LOG_PATH "git/logs/refs/"
 #define LOG_HEAD_PATH "git/logs/HEAD"
