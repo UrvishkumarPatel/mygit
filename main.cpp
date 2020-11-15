@@ -4,28 +4,9 @@
 */
 
 #include "project_header.h"
-// #include "helper.h"
 
-
-// #include "helper.h"
-// // #include "object.h"
-// #include "object2.h"
-// #include "init.h"
-// #include <string>
-// #include <iostream>
-// #include <bits/stdc++.h>
-// #include "commit.h"
-// #include "branch.h"
-// #include "checkout.h"
-// #include "merge.h"
-
-// using namespace std;
-
-//test hash_object
 int main(int argc, char* argv[]){
-    // string file_name=argv[1];
-    // cout<<file_name<<endl;
-    // add_run(file_name);
+
     if(argc==1){
 		printf("No arguements given\n");
 		exit(1);
@@ -38,6 +19,7 @@ int main(int argc, char* argv[]){
 	else if(strcmp(argv[1],"merge")==0){merge(argc,argv); } //calling merge
 	else if(strcmp(argv[1],"log")==0){log(argc,argv); } //calling log
 	else if(strcmp(argv[1],"reflog")==0){reflog(argc,argv); } //calling reflog
+	else if(strcmp(argv[1],"reset")==0){reset(argc,argv); } //calling reset
 
 	// else if(strcmp(argv[1],"exit")==0) exit(1); //exiting the function
 	cout<<"Is it reaching here"<<endl;
