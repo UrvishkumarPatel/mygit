@@ -50,7 +50,7 @@ string sort_content(string content_){
     for (int i=0; i< n; i++){
         string entry(lines_[i]);
         tokens_= split_index_line(lines_[i], " ");
-        string name(tokens_[2]); // sorting based on sha
+        string name(tokens_[3]); // sorting based on sha
         hashMap[name]= entry;
     }
 
@@ -170,7 +170,7 @@ class tree{
         root.type = "tree";
         hashSet[ROOT_PATH]=&root;
         // alphaNumeric_order; 
-        string str = "abcdefghijklmnopqrstuvwxyz0123456789"; 
+        string str = "_AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789./-"; 
         for (int i=0; i< str.size(); i++)  
                 alphaNumeric_order[str[i]] = i;
         }

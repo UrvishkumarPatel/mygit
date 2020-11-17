@@ -233,11 +233,15 @@ void createBlob(string file_name){
     string line;
     // read file content
     ifstream myfile(file_name);
+    char c;
     if(myfile.is_open()){
-        while(getline(myfile,line)){
-            // cout<<line<<endl;
-            content+=line+"\n";// remove "\n" when compression in use
+        while(myfile.get(c)){
+            content+=c;
         }
+        // while(getline(myfile,line)){
+        //     // cout<<line<<endl;
+        //     content+=line+"\n";// remove "\n" when compression in use
+        // }
         myfile.close();
     }
     else{
