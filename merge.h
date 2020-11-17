@@ -226,7 +226,7 @@ string LCA(char* b1, char* b2){
     int max= 0;
     int cur;
     for (auto ancestor_i : common_ancestor){
-        cur= get_time_from_commit(ancestor_i);
+        cur= get_time_from_commit(ancestor_i, 3);
         if (cur> max){
             max= cur;
             lca= ancestor_i;

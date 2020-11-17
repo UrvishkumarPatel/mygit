@@ -363,8 +363,8 @@ void run_commit(string message, int merge_flag=0, string parent_1="", string par
     /*  tree 9b5a3d2570f0b61a9aca5188cc4e33c3a0b3f84b
         parent ahs
         parent sha
-        author imp_git
-        committer imp_git
+        author imp_git 12312311233 <count>
+        committer imp_git 161238123 <count>
 
         first commit
     */

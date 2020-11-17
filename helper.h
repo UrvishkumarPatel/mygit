@@ -174,7 +174,7 @@ auto return_split_content_from_sha(string sha){
 }
 
 
-auto get_time_from_commit(string cur_commit){
+auto get_time_from_commit(string cur_commit, int param=2){ //param= 2 for time; 3 for <count>
     // return_split_content_from_sha(string sha);
     vector<string> entries= return_split_content_from_sha(cur_commit);
     char entries_[MAX_FILE_NAME_LENGTH];
@@ -188,7 +188,7 @@ auto get_time_from_commit(string cur_commit){
         
 
         if ((strcmp(splitted_line[0],"author")==0) || (strcmp(splitted_line[0],"committer")==0)){
-            char* commit_time=splitted_line[3]; //considering "author rakesh 1653230490 <count>"
+            char* commit_time=splitted_line[param]; //considering "author drStrange 1653230490 <count>"
             commit_time_ = stoi(commit_time);
             // for (auto i: entries)
             //      cout<<"....................."<<i<<endl;
