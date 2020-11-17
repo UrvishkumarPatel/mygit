@@ -6,14 +6,16 @@ void reset(int argc, char* argv[]){
     if(argc==2) {
         // run_reset();
         char branch_name[MAX_FILE_NAME_LENGTH];
+        cout<<"hey...."<<endl;
         get_cur_branch_name(branch_name);
         string sha= get_sha_of_branch(branch_name);
-        string branch_name_(branch_name);
+        // string branch_name_(branch_name);
+        cout<<"about to checkout!"<<endl;
         if (sha.compare("")==0)
             remove_dir((char*)ROOT_PATH);
         else{
             run_checkout(branch_name,1);
-            // cout<<"reset done!"<<endl;
+            cout<<"reset done!"<<endl;
         }
     } 
     else{

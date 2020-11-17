@@ -120,7 +120,7 @@ void run_checkout(char* name_of_branch, int dummy_flag=0){
     
     // if(isDir(branch_ref_path)==2){
     if (branch_exists(name_of_branch)==1){
-        char* previous_branch;
+        char previous_branch[MAX_FILE_NAME_LENGTH];
         get_cur_branch_name(previous_branch);
 
         string sha;
