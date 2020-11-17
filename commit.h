@@ -24,6 +24,76 @@ form a tree
 // using namespace std;
 
 string PARENT_SHA="";
+unordered_map<char, int> alphaNumeric_order;
+
+
+bool compare(pair<string, string> x, pair<string, string> y){ 
+    for (int i = 0; i < min(x.first.size(), y.first.size()); i++){ 
+        if (alphaNumeric_order[x.first[i]] == alphaNumeric_order[y.first[i]]) 
+            continue; 
+        return alphaNumeric_order[x.first[i]] < alphaNumeric_order[y.first[i]]; 
+    } 
+    return x.first.size() < y.first.size(); 
+}
+
+
+string sort_content(string content_){
+    //  split_index_line(char * line_, string delimiter_,  int * n=&DEFAULT){
+    // vector<string> return_string_vector(char** line, int * n)
+    char content[MAX_FILE_NAME_LENGTH];
+    strcpy(content, content_.c_str());
+    int n;
+    char** lines_= split_index_line(content, "\n", &n);
+    char** tokens_;
+    // char line[MAX_FILE_NAME_LENGTH];
+    map<string, string> hashMap;
+    for (int i=0; i< n; i++){
+        string entry(lines_[i]);
+        tokens_= split_index_line(lines_[i], " ");
+        string name(tokens_[2]); // sorting based on sha
+        hashMap[name]= entry;
+    }
+
+    vector<pair<string, string>> key_val;
+    for (auto& i: hashMap){
+        key_val.push_back(i);
+    }
+
+    // for (auto i:key_val)
+    //     cout<<i.first<<" paired with "<<i.second<<endl;
+
+    // vector<string> keys;
+    // for (auto i: hashMap){
+    //     keys.push_back(i.first())
+    // }
+
+
+    
+    // cout<<"..............................................."<<endl;
+    // cout<<"before sorting"<<endl;
+    // for (auto i: key_val){
+    //     cout<< i.second<<endl;
+    // }
+    
+    sort(key_val.begin(), key_val.end(), compare);
+
+    string sorted_content;
+    // cout<<"after sorting----"<<endl;
+    for (auto i: key_val){
+        sorted_content+=i.second+"\n";
+        // cout<< i.second<<endl;
+    }            
+    // cout<<"................................."<<endl;
+
+    return sorted_content;
+}
+
+
+
+
+
+
+
 
 class treeNode{
 
@@ -62,6 +132,10 @@ class commit{
         //etc
 };
 
+
+
+
+
 	// char **args = malloc(tok_nos * sizeof(char*));
 	// int i = 0;
 
@@ -95,6 +169,10 @@ class tree{
         root.name= "root";
         root.type = "tree";
         hashSet[ROOT_PATH]=&root;
+        // alphaNumeric_order; 
+        string str = "abcdefghijklmnopqrstuvwxyz0123456789"; 
+        for (int i=0; i< str.size(); i++)  
+                alphaNumeric_order[str[i]] = i;
         }
 
         void build_tree(string path_, char** blob_data){
@@ -210,10 +288,11 @@ class tree{
             // cout<<"content of -- "<<curNode.name<<"\n"<< content<<"\n----------------" <<endl;
             // exit();
             // pass content to compute hash function
-            curNode.sha= hash_object(content, curNode.type);
+            string sorted_content= sort_content(content);
+            curNode.sha= hash_object(sorted_content, curNode.type);
             // compress
             // make and write file
-            write_object(curNode.sha, content, "tree");
+            write_object(curNode.sha, sorted_content, "tree");
             // fstream f;
             // f.open("p.txt", fstream::out | fstream::app);
             // f << content<<endl;
