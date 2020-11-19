@@ -1,4 +1,5 @@
 int DEFAULT;
+int write_object_flag=1;
 
 int isDir(char* PATH){
     /* Returns

@@ -292,7 +292,8 @@ class tree{
             curNode.sha= hash_object(sorted_content, curNode.type);
             // compress
             // make and write file
-            write_object(curNode.sha, sorted_content, "tree");
+            if (write_object_flag)
+                write_object(curNode.sha, sorted_content, "tree");
             // fstream f;
             // f.open("p.txt", fstream::out | fstream::app);
             // f << content<<endl;
@@ -387,7 +388,19 @@ string get_content_commit(string root_sha, string commit_msg, time_t cur_time, s
     return content;
 }
 
+string return_root_sha_from_index(){
+    // read index file and build the tree
+    // compute the hash
+    tree myTree;
+    myTree.read_index();
+    string root_content = myTree.dfs(myTree.root);
 
+    char root_content_[MAX_FILE_NAME_LENGTH];
+    strcpy(root_content_, root_content.c_str());
+    char** tokens_root_hash_= split_index_line(root_content_, " ");
+    string root_sha(tokens_root_hash_[1]);
+    return root_sha;
+}
 
 void run_commit(string message, int merge_flag=0, string parent_1="", string parent_2=""){
 
@@ -447,8 +460,8 @@ void run_commit(string message, int merge_flag=0, string parent_1="", string par
 
         first commit
     */
-
-    write_object(commit_sha, commit_content, "commit");
+    if (write_object_flag)
+        write_object(commit_sha, commit_content, "commit");
     // overwrite commit at head ////////
     char* path_= get_cur_head();
     string PATH(path_);

@@ -161,6 +161,53 @@ void run_checkout(char* name_of_branch, int dummy_flag=0){
     }
 }
 
+int is_working_dir_updated(){
+
+    write_object_flag=0;
+    // read index file
+    string index_data = "";
+    string line;
+    ifstream myfile(PATH_INDEX);
+    if(myfile.is_open()){
+        while(getline(myfile,line)){
+            index_data+=line+"\n";
+        }
+        myfile.close();
+    }
+    /////////////////
+
+    add_dot();
+
+    char current_branch[MAX_FILE_NAME_LENGTH];
+    get_cur_branch_name(current_branch);
+    string commit_sha = get_sha_of_branch(current_branch);
+
+    vector<string> entries= return_split_content_from_sha(commit_sha);
+    char entries_[MAX_FILE_NAME_LENGTH];
+    strcpy(entries_, entries[0].c_str());
+    char** splitted_line= split_index_line(entries_," ");
+    char* tree_sha=splitted_line[1];
+    string old_root(tree_sha);
+
+    string new_root = return_root_sha_from_index();
+
+    // write index file
+    ofstream fptr;
+    fptr.open(PATH_INDEX, ofstream::trunc);
+    fptr<< index_data;
+    fptr.close();
+    ///////////////
+
+    write_object_flag=1;
+    
+    if (new_root.compare(old_root)==0){
+        // cout<<"Nothing to commit."<<endl;
+        return 0;
+    }
+    else{
+        return 1;
+    }
+}
 
 void checkout(int argc, char* argv[]){ // argv[2] --  branch name
     if(argc==2) {
@@ -169,6 +216,11 @@ void checkout(int argc, char* argv[]){ // argv[2] --  branch name
     } 
     else if(argc==3){
         // string branch_name(argv[2]);
+        if (is_working_dir_updated()){
+            cout<< "error: Your changes to the files would be overwritten by checkout:" << endl;
+            cout<< "Please commit your changes or stash them before you switch branches.\nAborting"<< endl;
+            return;
+        }
         char current_branch[MAX_FILE_NAME_LENGTH];
         get_cur_branch_name(current_branch);
         string curr_(current_branch);

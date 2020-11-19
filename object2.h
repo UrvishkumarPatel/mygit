@@ -12,34 +12,6 @@ store = header + data
 */
 
 
-
-// #include "zlib.h"
-
-// #include "sha1.hpp"
-// // #include <string>
-// // #include <iostream>
-// #include <fstream>
-// #include <bits/stdc++.h>
-// #include <sys/stat.h>
-// #include <sys/types.h>
-// #include <stdio.h> // removes
-// #include <string.h>
-// #include <dirent.h>
-// #include <sys/stat.h>
-// #include <stdlib.h>
-// #include <errno.h>
-// #include <unistd.h>
-// #include <libgen.h>
-// #include "checkDir.h"
-// using namespace std;
-
-
-// #define MAX_FILE_NAME_LENGTH 1024
-// #define PATH_INDEX "git/index"
-// #define GIT_DIR "git"
-// #define ROOT_PATH "."
-
-// #define PATH_INDEX "p.txt"
 string git_dir_(GIT_DIR);
 // int dot_flag=0;
 
@@ -248,8 +220,8 @@ void createBlob(string file_name){
         cout<<"Error"<<endl;
     }
     string sha1=hash_object(content,"blob");
-
-    write_object(sha1, content, "blob");
+    if (write_object_flag)
+        write_object(sha1, content, "blob");
     // update file
     updateIndexFile(sha1, file_name);
 
