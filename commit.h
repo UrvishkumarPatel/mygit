@@ -269,7 +269,7 @@ class tree{
 
 
 
-        string dfs(treeNode curNode){
+        string dfs(treeNode curNode){ // evaluates sha for each node (bottom up) and writes contents in corresponding object files
             // curNode.print_attributes();
             // when leaf content
             if (curNode.type=="blob"){
@@ -308,7 +308,7 @@ class tree{
 
 
 
-        void read_index(){
+        void read_index(){ // calls build_tree for each line
             // read index file line by line
             string line;
             // read file content

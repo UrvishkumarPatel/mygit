@@ -59,7 +59,7 @@ int is_ancestor(char* current_branch, char* branch_name){
     return status;
 }
 
-void fastforwardmerge(char* current_branch, char* branch_name){
+void fastforwardmerge(char* current_branch, char* branch_name){ // the current_branch will also point to the branch_name
     string copy_sha= get_sha_of_branch(branch_name);
     
     // todo ///////
@@ -115,11 +115,11 @@ map<string, vector<string>> return_index_dict(string sha){
         hashMap[words[3]].push_back(words[0]);
         hashMap[words[3]].push_back(words[1]);
         hashMap[words[3]].push_back(words[2]);
-        // = cur_vec;
+        // mode sha stage path
     }
     return hashMap;
     // {
-    //     demo/pp/t.txt : mode askjkdjsdljsflasldfaskd 0,
+    //     "<path>" : {"<mode>" "<sha>" "<stage>"},
     // }
 }
 
@@ -134,7 +134,9 @@ map<string, vector<string>> diff(map<string, vector<string>> lca, map<string, ve
         - '-' --> not in branch but in master
         - '#' --> same but edited. (have different sha or mode)
     */
-    // todo
+    // {
+    //     "<path>" : {"<mode>" "<sha>" "<stage>" "+/-/#"},
+    // }
 
     map<string, vector<string>> diff_map;
     // HashSet<string> entries;

@@ -144,7 +144,7 @@ void updateIndexFile(string sha, string pathname){
     }
 }
 
-void blobDir(char* dirname){
+void blobDir(char* dirname){ // recursive function calling add_run
     /* creates a blob for all the files present in this directory. */
     DIR* dir = opendir(dirname); // open the directory location to read.
 
@@ -199,7 +199,7 @@ void write_object(string sha1, string content, string type){
 }
 
 
-void createBlob(string file_name){
+void createBlob(string file_name){ // write_object and updateIndexFile
     /* create a blob for given file*/
     string content="";
     string line;

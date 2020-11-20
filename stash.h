@@ -1,10 +1,23 @@
 
 void stash_pop(){
+    // stashlog=file.open(logs/ref/stash)
+    // if stashlog==empty{
+    //     return 
+    // }
+    // vector<string> getstash;
+    // getstash=stashlog.readlastline;
+    // delete lastline;
+    // checkout(getstash[1]) \\manage conflicts also
     ;
 
 }
 
 void run_stash(){
+
+    if (!is_working_dir_updated()){
+        cout<<"no changes to stash"<< endl;
+        return;
+    }
 
     char master_ref_path[MAX_FILE_NAME_LENGTH];
     strcpy(master_ref_path,REF_HEAD_PATH);
@@ -18,6 +31,11 @@ void run_stash(){
     get_cur_branch_name(branch_name);
     string cur_sha = get_sha_of_branch(branch_name);
     // co=head->next->next
+
+    // c1=commit(parent=c0,name="index on <current branch> : c0_hash c0_name");
+
+    // add_dot();
+    // c2=commit(parent= c0, c1,name=name="WIP on <current branch> : c0_hash c0_name");
 
 // //////////////////////////
 //     add_dot(); // not sure
@@ -37,12 +55,25 @@ void run_stash(){
 //         //     string content= "tree "+root_sha + "\n"+ parent_content+"author "+ author + " " + t + " " + count + "\n" + "committer "+commiter+ " " + t + " " + count +"\n\n"+ commit_msg;
 //         //     return content;
 //         // }
-//     // write(hash(c2), ./refs/stash);
-//     // checkout (previous commit);
-//     // f  
+//   write(hash(c2), ./refs/stash);
+//   stashlog=file.open(logs/ref/stash)
 
-// ////////////////////////////  
+//   vector<string> savestash
+    
+//     if (num_stashes==1){
+//         savestash[0]="0"*40
 
+//     }
+//     else {
+//        savestash[0]=stashlog_lastline[1]
+//     }
+    
+//     savestash[1]=c2_hash;
+//     savestash[2]=userID;
+//     savestash[3]=c2_name;
+  
+
+// checkout (previous commit);
 }
 
 

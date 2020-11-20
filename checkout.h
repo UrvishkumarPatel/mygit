@@ -18,7 +18,7 @@ void build_dfs(string tree_sha, string curPath_){
     // for (int idx=0; idx<entries.size(); idx++)
     //     cout<<entries[idx]<<endl;
 
-    // char* entries[]= {"100644 blob e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 a.txt",
+    // char* entries[]= {"100644 tree e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 demo",
     //                 "100644 blob e69de29bb2d1d6434b8b29ae775ad8c2e48c5391 b.txt"};
     char curPath[MAX_FILE_NAME_LENGTH];
     strcpy(curPath, curPath_.c_str());
@@ -54,7 +54,7 @@ void build_dfs(string tree_sha, string curPath_){
 }
 
 
-void write_dir(string commit_sha){
+void write_dir(string commit_sha){ // runs build_dfs
     // extract content of commit object
     vector<string> entries= return_split_content_from_sha(commit_sha);
     // split entries[0] and get sha
@@ -112,7 +112,7 @@ void update_working_dir(string commit_sha){
 
 
 
-void run_checkout(char* name_of_branch, int dummy_flag=0){
+void run_checkout(char* name_of_branch, int dummy_flag=0){ // runs update_working_dir
     char branch_ref_path[MAX_FILE_NAME_LENGTH];
     strcpy(branch_ref_path,REF_HEAD_PATH);
     strcat(branch_ref_path, name_of_branch);

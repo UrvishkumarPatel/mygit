@@ -81,7 +81,7 @@ void branch(int argc, char* argv[]){
     }
     else{
         update_refs(argv[2]);
-        cout<<"I am here"<<endl;
+        // cout<<"I am here"<<endl;
 
         char current_branch[MAX_FILE_NAME_LENGTH];
         get_cur_branch_name(current_branch);

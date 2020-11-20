@@ -18,7 +18,7 @@ int isDir(char* PATH){
 
 }
 
-time_t time_in_sec(){
+time_t time_in_sec(){ // time in sec since epoch
     time_t result = time(nullptr);
     return result;
 }
@@ -28,7 +28,7 @@ auto print_proper_time(time_t result){
     return asctime(localtime(&result));
 }
 
-char** split_index_line(char * line_, string delimiter_,  int * n=&DEFAULT){
+char** split_index_line(char * line_, string delimiter_,  int * n=&DEFAULT){ // 1 2 3 4
 	// https://www.man7.org/linux/man-pages/man3/strsep.3.html
 	// char *strsep(char **stringp, const char *delim);
     char delimiter[MAX_FILE_NAME_LENGTH];
@@ -79,7 +79,7 @@ int branch_exists(char* branch_name){
     return 0;
 }
 
-string get_sha_of_branch(char* branch_name){
+string get_sha_of_branch(char* branch_name){ //  cat git/refs/heads/branch_name
     // REF_HEAD_PATH+branch_name
     // branch_name = (char*)realloc(branch_name, sizeof(char)*MAX_FILE_NAME_LENGTH);
     char branch_ref_path[MAX_FILE_NAME_LENGTH];
@@ -96,7 +96,7 @@ string get_sha_of_branch(char* branch_name){
 
 
 
-void get_cur_branch_name(char* branch_name){
+void get_cur_branch_name(char* branch_name){ // cat git/HEAD >> ref: refs/heads/branch_name >> branch_name
     string head_content;
     ifstream MyFile(HEAD_PATH);
     getline (MyFile, head_content);
@@ -122,7 +122,7 @@ void print_hash_map(map<string, vector<string>> mapp, string label){
     }
 }
 
-char* get_cur_head(){
+char* get_cur_head(){ // cat git/HEAD >> ref: refs/heads/branch_name
         string head_content;
         ifstream MyFile(HEAD_PATH);
         getline (MyFile, head_content);
@@ -138,7 +138,7 @@ char* get_cur_head(){
 
 
 
-auto return_split_content_from_sha(string sha){
+auto return_split_content_from_sha(string sha){ // returns vector of string of contents of object file with given sha
     // get secret code and size from indexfile (SIZE_STORE)
     // decompress 
     // simply return
@@ -206,7 +206,7 @@ auto get_time_from_commit(string cur_commit, int param=2){ //param= 2 for time; 
     return commit_time_;
 }
 
-int update_commit_count(){
+int update_commit_count(){ // update counter at git/commit_count
     // update commit and return the updated count
     string count;
     int count_int;
