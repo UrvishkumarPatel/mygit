@@ -402,6 +402,91 @@ string return_root_sha_from_index(){
     return root_sha;
 }
 
+
+// string stash_commits(string message, int merge_flag=0, string parent_1="", string parent_2=""){
+
+//     tree myTree;
+//     myTree.read_index();
+//     time_t cur_time = time_in_sec();
+//     string count = to_string(update_commit_count());
+//     string root_content = myTree.dfs(myTree.root);
+
+//     char root_content_[MAX_FILE_NAME_LENGTH];
+//     strcpy(root_content_, root_content.c_str());
+//     char** tokens_root_hash_= split_index_line(root_content_, " ");
+//     // char** tokens_root_hash= split_index_line(tokens_root_hash_[1], "\t");
+//     // cout<<tokens_root_hash[0]<<endl;
+//     string root_sha(tokens_root_hash_[1]);
+//     string commit_sha;
+//     string commit_content;
+
+//     if (merge_flag){
+//         commit_content= get_content_merge_commit(root_sha, message, parent_1, parent_2, cur_time, count);
+//         commit_sha=hash_object(commit_content,"commit");
+
+//     }
+//     else{
+//         commit_content= get_content_commit(root_sha, message, cur_time, count);
+//         commit_sha=hash_object(commit_content,"commit");
+
+//         if (PARENT_SHA.compare("")!=0){
+//             vector<string> entries= return_split_content_from_sha(PARENT_SHA);
+//             // split entries[0] and get sha
+//             // char** split_index_line(char * line_, string delimiter_,  int * n=&DEFAULT){
+//             char entries_[MAX_FILE_NAME_LENGTH];
+//             strcpy(entries_, entries[0].c_str());
+            
+//             // char first_line[MAX_FILE_NAME_LENGTH];
+//             // strcpy(first_line, entries_);
+//             char** splitted_line= split_index_line(entries_," ");
+//             char* tree_sha=splitted_line[1];
+//             string tree_sha_(tree_sha);
+//             // cout <<"----------"<<endl;
+//             // cout<<tree_sha_<<"\n"<<root_sha<<endl;
+//             // cout <<"----------"<<endl;
+//             if (tree_sha_.compare(root_sha)==0){
+//                 cout<<"Nothing to commit."<<endl;
+//                 return;
+//             }
+//         }
+//     }
+
+//     /*  tree 9b5a3d2570f0b61a9aca5188cc4e33c3a0b3f84b
+//         parent ahs
+//         parent sha
+//         author imp_git 12312311233 <count>
+//         committer imp_git 161238123 <count>
+
+//         first commit
+//     */
+//     if (write_object_flag)
+//         write_object(commit_sha, commit_content, "commit");
+
+//     // //definining commit log content
+//     // string log_content;
+//     // log_content+=commit_sha+" imp_git imp_git commit : "+message;
+
+//     // //writing in git/logs/HEAD
+//     // ofstream log_head;
+//     // log_head.open(LOG_HEAD_PATH,ofstream::app);
+//     // log_head<<log_content<<'\n';
+//     // log_head.close();
+
+//     //writing in git/logs/refs/current_branch
+
+//     // //get current branch name
+//     // char current_branch[MAX_FILE_NAME_LENGTH];
+//     // get_cur_branch_name(current_branch);
+//     // string branch_(current_branch);
+//     // string LOG_branch_path= LOG_PATH+branch_;
+
+//     // ofstream branch_head;
+//     // branch_head.open(LOG_branch_path,ofstream::app);
+//     // branch_head<<log_content<<'\n';
+//     // branch_head.close();
+
+// }
+
 void run_commit(string message, int merge_flag=0, string parent_1="", string parent_2=""){
 
     // read index file and build the tree

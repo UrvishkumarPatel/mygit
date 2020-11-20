@@ -43,3 +43,4 @@ using namespace std;
 #include "merge.h"
 #include "log.h"
 #include "reset.h"
+#include "stash.h"

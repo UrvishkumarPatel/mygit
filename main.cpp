@@ -20,6 +20,7 @@ int main(int argc, char* argv[]){
 	else if(strcmp(argv[1],"log")==0){log(argc,argv); } //calling log
 	else if(strcmp(argv[1],"reflog")==0){reflog(argc,argv); } //calling reflog
 	else if(strcmp(argv[1],"reset")==0){reset(argc,argv); } //calling reset
+	else if(strcmp(argv[1],"stash")==0){stash(argc,argv); } //calling stash
 
 	// else if(strcmp(argv[1],"exit")==0) exit(1); //exiting the function
 	cout<<"Is it reaching here"<<endl;

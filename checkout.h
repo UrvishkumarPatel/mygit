@@ -215,12 +215,16 @@ void checkout(int argc, char* argv[]){ // argv[2] --  branch name
         return;
     } 
     else if(argc==3){
-        // string branch_name(argv[2]);
-        if (is_working_dir_updated()){
-            cout<< "error: Your changes to the files would be overwritten by checkout:" << endl;
-            cout<< "Please commit your changes or stash them before you switch branches.\nAborting"<< endl;
-            return;
-        }
+
+        /////////////////////////
+        // making checkout more robust // incomplete testing //todo
+        // if (is_working_dir_updated()){
+        //     cout<< "error: Your changes to the files would be overwritten by checkout:" << endl;
+        //     cout<< "Please commit your changes or stash them before you switch branches.\nAborting"<< endl;
+        //     return;
+        // }
+        ///////////////////////
+
         char current_branch[MAX_FILE_NAME_LENGTH];
         get_cur_branch_name(current_branch);
         string curr_(current_branch);
