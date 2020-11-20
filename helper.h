@@ -234,3 +234,33 @@ string get_commit_message(string sha){
     }
     return content;
 }
+
+auto return_commitlog_content(string sha){
+    string content;
+    string path= "git/objects/"+sha.substr(0,2)+"/"+sha.substr(2,38);
+    ifstream f_reader(path);
+    string final_content;
+    final_content+="Time : "+ to_string(get_time_from_commit(sha))+"\n";
+    while(getline (f_reader, content)){
+        if(content.compare("")!=0){
+            char commit_content[MAX_FILE_NAME_LENGTH];
+            strcpy(commit_content, content.c_str());
+            int len;
+            char** splitted = split_index_line(commit_content," ",&len);
+            vector<string> v;
+            v=return_string_vector(splitted,&len);
+            // cout<<"Vector "<<v[0]<<"length "<<len<<endl;
+            if(v[0].compare("tree")!=0 && v[0].compare("parent")!=0){
+                if(len>1){
+                    final_content+=v[0]+" "+v[1]+"\n";
+                }
+                else{
+                    final_content+=v[0]+"\n";
+                }
+            }
+            // cout<<final_content<<endl;
+        }
+    }
+    // cout<<final_content<<endl;
+    return final_content;
+}

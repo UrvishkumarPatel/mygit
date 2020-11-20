@@ -445,10 +445,12 @@ void merge(int argc, char* argv[]){ // merge branch_name into current_branch(mas
     cout<<"the current brach is "<<current_branch<<endl;
     
     if (branch_exists(branch_name)==1){
-            //check if current branch is linear with branch_name
-            //if at any point both shas are equal of branches 
+        //check if current branch is linear with branch_name
+        //if at any point both shas are equal of branches 
+        int merge=-1;
         if (is_ancestor(current_branch, branch_name)){
             fastforwardmerge(current_branch,branch_name);
+            merge=1;
         }
         
         else if(is_ancestor(branch_name, current_branch)){
@@ -457,6 +459,37 @@ void merge(int argc, char* argv[]){ // merge branch_name into current_branch(mas
         
         else{
             threewaymerge(current_branch,branch_name);
+            merge=2;
+        }
+        if(merge!=-1){
+            // string branch_(argv[2]);
+
+            string sha_curr = get_sha_of_branch(current_branch);
+
+            //defining merge log content
+            string merge_log_content;
+            if(merge==1){
+                string new_branch(argv[2]);
+                merge_log_content=sha_curr+" Merge :"+new_branch+" Fast Forward Merge";
+            }
+            if(merge==2){
+                string new_branch(argv[2]);
+                merge_log_content=sha_curr+" Merge :"+new_branch+" Three Way Merge";
+            }
+            //writing in git/logs/HEAD
+            ofstream log_head;
+            log_head.open(LOG_HEAD_PATH,ofstream::app);
+            log_head<<merge_log_content<<'\n';
+            log_head.close();
+            
+            string branch_(current_branch);
+            string LOG_branch_path= LOG_PATH+branch_;
+            
+             //writing in git/logs/refs/current_branch
+            ofstream branch_head;
+            branch_head.open(LOG_branch_path,ofstream::app);
+            branch_head<<merge_log_content<<'\n';
+            branch_head.close();
         }
     }
     

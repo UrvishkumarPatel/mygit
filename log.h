@@ -1,7 +1,7 @@
 
 
 void iter_ancestor(string cur_sha){
-    string log_content=return_content(cur_sha);
+    string log_content=return_commitlog_content(cur_sha);
     cout<<"commit : "+cur_sha<<endl;
     cout<<log_content<<endl;
 
