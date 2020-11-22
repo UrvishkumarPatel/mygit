@@ -16,6 +16,7 @@ string git_dir_(GIT_DIR);
 // int dot_flag=0;
 
 void add_run(string location);
+unordered_set<string> ignore_entries;
 
 string hash_object(string content, string type){
     /*
@@ -238,11 +239,13 @@ void add_run(string location){
     cout<<"status "<< status<<"--"<<location<<endl;
     if (status == 2){
         //location is file;
-        createBlob(location);
+        if (ignore_entries.find(location)==ignore_entries.end())
+            createBlob(location);
     }
     else if (status == 1){
         // location is directory
-        blobDir(location_new);
+        if (ignore_entries.find(location+"/")==ignore_entries.end())
+            blobDir(location_new);
     }
     else{
         cout<<"Error: Path does not exist."<<endl;
@@ -265,23 +268,43 @@ void add_dot(){
     
     while ((dir_reader = readdir(dir)) !=NULL){
         char newlocation[MAX_FILE_NAME_LENGTH] = "";
+        
+        string dname(dir_reader->d_name);
         // cout<< dir_reader->d_name<<" d_name"<<endl;
-        if ( (!strcmp(dir_reader->d_name, ".")) || (!strcmp(dir_reader->d_name, "..")) || (!strcmp(dir_reader->d_name, "git")) ){
-            // ignore "." and ".." directories
-            // cout<< "ignoring git folder\n";
+        int status = isDir(dir_reader->d_name); // location is file or directory
+        cout<<"status "<< status<<"--"<<dname<<endl;
+        if (status == 2){
+            //location is file;
+            if (ignore_entries.find(dname)!=ignore_entries.end())
+                continue;
+        }
+        else if (status == 1){
+            // location is directory
+            if ( (!strcmp(dir_reader->d_name, ".")) || (!strcmp(dir_reader->d_name, "..")) || (!strcmp(dir_reader->d_name, "git")) || (!strcmp(dir_reader->d_name, ".git")) )
+                continue;
+            if (ignore_entries.find(dname+"/")!=ignore_entries.end())
+                continue;
         }
         else{
-            strncat(newlocation, dir_reader->d_name, strlen(dir_reader->d_name));
-            // query to blob the directory file/ subdirectory
-            string newLocation(newlocation);
-            
-            add_run(newLocation);
+            cout<<"Error: Path does not exist."<<endl;
+            exit(1);
+            // updateIndexFile("", location); // why required
         }
+
+        strncat(newlocation, dir_reader->d_name, strlen(dir_reader->d_name));
+        // query to blob the directory file/ subdirectory
+        string newLocation(newlocation);
+        
+        add_run(newLocation);
+
     }
     closedir(dir);
 }
 
 void add(int argc,char* argv[]){
+	// ignore_entries.insert("i.txt");
+	// ignore_entries.insert("test.sh");
+	// ignore_entries.insert(".vscode/");
     if(argc==2){
         printf("No arguments given\n");
         exit(1);

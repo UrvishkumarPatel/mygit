@@ -27,6 +27,14 @@ string PARENT_SHA="";
 unordered_map<char, int> alphaNumeric_order;
 
 
+// bool compare(string x, string y){ 
+//     for (int i = 0; i < min(x.size(), y.size()); i++){ 
+//         if (alphaNumeric_order[x[i]] == alphaNumeric_order[y[i]]) 
+//             continue; 
+//         return alphaNumeric_order[x[i]] < alphaNumeric_order[y[i]]; 
+//     } 
+//     return x.size() < y.size(); 
+// }
 bool compare(pair<string, string> x, pair<string, string> y){ 
     for (int i = 0; i < min(x.first.size(), y.first.size()); i++){ 
         if (alphaNumeric_order[x.first[i]] == alphaNumeric_order[y.first[i]]) 
@@ -44,6 +52,7 @@ string sort_content(string content_){
     strcpy(content, content_.c_str());
     int n;
     char** lines_= split_index_line(content, "\n", &n);
+    // vector<string> key_val = return_string_vector(lines_, &n);
     char** tokens_;
     // char line[MAX_FILE_NAME_LENGTH];
     map<string, string> hashMap;
@@ -80,6 +89,7 @@ string sort_content(string content_){
     string sorted_content;
     // cout<<"after sorting----"<<endl;
     for (auto i: key_val){
+        // sorted_content+=i+"\n";
         sorted_content+=i.second+"\n";
         // cout<< i.second<<endl;
     }            
