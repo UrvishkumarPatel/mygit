@@ -176,11 +176,22 @@ void blobDir(char* dirname){ // recursive function calling add_run
 auto return_content(string sha){
     string content;
     string path= git_dir_+"/objects/"+sha.substr(0,2)+"/"+sha.substr(2,38);
-    ifstream f_reader(path);
     string final_content;
-    while(getline (f_reader, content)){
-        final_content+=content+"\n";
-     }
+    // ifstream f_reader(path);
+    // while(getline (f_reader, content)){
+    //     final_content+=content+"\n";
+    //  }
+    ifstream myfile(path);
+    char c;
+    if(myfile.is_open()){
+        while(myfile.get(c)){
+            final_content+=c;
+        }
+        myfile.close();
+    }
+    else{
+        cout<<"Error: no such file present: "<< path <<endl;
+    }
     return final_content;
 }
 
@@ -218,7 +229,7 @@ void createBlob(string file_name){ // write_object and updateIndexFile
         myfile.close();
     }
     else{
-        cout<<"Error"<<endl;
+        cout<<"Error: no such file present"<<endl;
     }
     string sha1=hash_object(content,"blob");
     if (write_object_flag)
