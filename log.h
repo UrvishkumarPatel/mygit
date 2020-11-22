@@ -21,6 +21,13 @@ void iter_ancestor(string cur_sha){
 void log(int argc, char* argv[]){ 
     if(argc==2) {
         // check where the current HEAD is pointing
+        char master_ref_path[MAX_FILE_NAME_LENGTH];
+        strcpy(master_ref_path,REF_HEAD_PATH);
+        strcat(master_ref_path, "master");       
+        if (isDir(master_ref_path)==0){ // git/refs/heads/master
+            cout<<"Initial commit not done"<<endl;
+            return;
+        }
         char current_branch[MAX_FILE_NAME_LENGTH];
         get_cur_branch_name(current_branch);
         string curr_(current_branch);

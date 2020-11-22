@@ -89,7 +89,7 @@ void stash(int argc, char* argv[]){ // ./got.out stash pop
             cout<< "stash pop"<<endl;
         }
         else{
-            cout<< "stash" << flag <<"is not supported by out git implementation"<<endl;
+            cout<< "stash" << flag <<"is not supported by our git implementation"<<endl;
             exit(1);
         }
     }

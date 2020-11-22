@@ -16,7 +16,7 @@ string git_dir_(GIT_DIR);
 // int dot_flag=0;
 
 void add_run(string location);
-unordered_set<string> ignore_entries;
+unordered_set<string> IGNORE_ENTRIES;
 
 string hash_object(string content, string type){
     /*
@@ -112,7 +112,7 @@ void updateIndexFile(string sha, string pathname){
             cout<<"Error: cannot find index file"<<endl;
             exit(0);
         }
-        cout<<"time to<< write in index file"<<endl;
+        // cout<<"time to<< write in index file"<<endl;
         // write to the index file
         ofstream fapp;
         fapp.open(PATH_INDEX, ofstream::trunc);
@@ -228,24 +228,68 @@ void createBlob(string file_name){ // write_object and updateIndexFile
 
 }
 
+void read_gitignore(){
+    // get all files that matches the regx in .gitignore
+    // hashset --> string o
+    int ignore_flag=0;
+    char gitignore_path[MAX_FILE_NAME_LENGTH];
+    strcpy(gitignore_path, IGNORE_PATH);
+    string entry;
+    if (isDir(gitignore_path)==2){
+        ignore_flag=1;
+        ifstream ignore_reader(IGNORE_PATH);
+        while(getline(ignore_reader, entry)){
+            if ((!entry.compare("")))
+                continue;
+            if ((entry[0]=='#') || (entry[0]=='!'))
+                continue;
+            IGNORE_ENTRIES.insert(entry);
+        }
+    }
+}
+
+int regex_match(string file_path, string regx_){
+    string regx= regex_replace(regx_, regex("\\."),"\\\.");   //.sh
+    regx= regex_replace(regx, regex("\\*"),".*");   //.sh
+    smatch m; // 1 if matches else 0
+    // regex_search(i, m, r); 
+    regex r(regx); 
+    regex_search(file_path, m, r); 
+    return m.size();
+} 
+
+int matches_an_expr(string file_path){
+    // check if file_path is one of the expression in .gitignore
+    for (auto expr_i: IGNORE_ENTRIES){
+        if (regex_match(file_path, expr_i)==1){
+            return 1;
+        }
+    }
+    return 0;
+}
+
 void add_run(string location){
     /*
     checks  if location is file -- create a blob
             if directory then first look for the files and create blob for all of them
     */
+    read_gitignore();
     char location_new[MAX_FILE_NAME_LENGTH];
     strcpy(location_new, location.c_str());
     int status = isDir(location_new); // location is file or directory
-    cout<<"status "<< status<<"--"<<location<<endl;
+
     if (status == 2){
         //location is file;
-        if (ignore_entries.find(location)==ignore_entries.end())
+        if(matches_an_expr(location)== 0){
             createBlob(location);
+        }
     }
     else if (status == 1){
         // location is directory
-        if (ignore_entries.find(location+"/")==ignore_entries.end())
+        if (matches_an_expr(location)==0){
+            cout<<"hi i am here "<< location<<endl;
             blobDir(location_new);
+        }
     }
     else{
         cout<<"Error: Path does not exist."<<endl;
@@ -256,7 +300,7 @@ void add_run(string location){
 
 void add_dot(){
     // char* dirname=;
-    cout<< "running add_dot\n";
+    // cout<< "running add_dot\n";
     DIR* dir = opendir(ROOT_PATH); // open the directory location to read.
     if (dir == NULL){
         // handling error
@@ -272,18 +316,18 @@ void add_dot(){
         string dname(dir_reader->d_name);
         // cout<< dir_reader->d_name<<" d_name"<<endl;
         int status = isDir(dir_reader->d_name); // location is file or directory
-        cout<<"status "<< status<<"--"<<dname<<endl;
+        // cout<<"status "<< status<<"--"<<dname<<endl;
         if (status == 2){
             //location is file;
-            if (ignore_entries.find(dname)!=ignore_entries.end())
-                continue;
+            // if (IGNORE_ENTRIES.find(dname)!=IGNORE_ENTRIES.end())
+                // continue;
         }
         else if (status == 1){
             // location is directory
             if ( (!strcmp(dir_reader->d_name, ".")) || (!strcmp(dir_reader->d_name, "..")) || (!strcmp(dir_reader->d_name, "git")) || (!strcmp(dir_reader->d_name, ".git")) )
                 continue;
-            if (ignore_entries.find(dname+"/")!=ignore_entries.end())
-                continue;
+            // if (IGNORE_ENTRIES.find(dname+"/")!=IGNORE_ENTRIES.end())
+                // continue;
         }
         else{
             cout<<"Error: Path does not exist."<<endl;
@@ -302,9 +346,6 @@ void add_dot(){
 }
 
 void add(int argc,char* argv[]){
-	// ignore_entries.insert("i.txt");
-	// ignore_entries.insert("test.sh");
-	// ignore_entries.insert(".vscode/");
     if(argc==2){
         printf("No arguments given\n");
         exit(1);
@@ -325,7 +366,7 @@ void add(int argc,char* argv[]){
         strcpy(temp2,file_name_);
         char* dir_name= dirname(temp1);
         char* filename= basename(temp2);
-        cout<<"after spliting "<<dir_name<< " "<< filename<< endl;
+        // cout<<"after spliting "<<dir_name<< " "<< filename<< endl;
         char location_new[MAX_FILE_NAME_LENGTH]="";
         if ((strcmp(dir_name, ".")!=0)) {   
             strcat(location_new, dir_name);
@@ -334,7 +375,7 @@ void add(int argc,char* argv[]){
 
         strcat(location_new, filename);
         string location_other(location_new);  
-        cout<<"location_other to pass "<< location_other<<endl;
+        // cout<<"location_other to pass "<< location_other<<endl;
         add_run(location_other);
     }
 }

@@ -14,6 +14,7 @@
 #include <vector>
 #include <stdio.h>
 #include <ctime>
+#include <regex> 
 
 using namespace std;
 
@@ -29,6 +30,7 @@ using namespace std;
 #define ROOT_PATH "."
 #define LOG_PATH "git/logs/refs/"
 #define LOG_HEAD_PATH "git/logs/HEAD"
+#define IGNORE_PATH ".gitignore"
 // #include "checkDir.h"
 #include "helper.h"
 #include "rm.h"

@@ -182,7 +182,7 @@ class tree{
         // alphaNumeric_order; 
         string str = "_AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789./-"; 
         for (int i=0; i< str.size(); i++)  
-                alphaNumeric_order[str[i]] = i;
+            alphaNumeric_order[str[i]] = i;
         }
 
         void build_tree(string path_, char** blob_data){
