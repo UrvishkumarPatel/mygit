@@ -224,6 +224,35 @@ int update_commit_count(){ // update counter at git/commit_count
     return count_int-1;
 }
 
+int update_stash_count(){ // update counter at git/commit_count
+    // update commit and return the updated count
+    string count;
+    int count_int;
+    
+    ifstream file;
+    file.open(PATH_STASH_COUNT);
+    getline(file, count);
+    file.close();
+    
+    if (count.compare("")==0){
+
+        count_int=1;}
+    else{
+       
+        count_int= stoi(count);
+        count_int=count_int+1;}
+    
+    
+    ofstream fptr;
+    fptr.open(PATH_STASH_COUNT,ios::trunc);
+    fptr<< to_string(count_int);
+
+    fptr.close();
+    
+
+    return count_int;
+}
+
 string get_commit_message(string sha){
     string content;
     string git_dir_(GIT_DIR);
@@ -263,4 +292,84 @@ auto return_commitlog_content(string sha){
     }
     // cout<<final_content<<endl;
     return final_content;
+}
+
+void delete_line(string file, int n) 
+{ 
+    // open file in read mode or in mode 
+    const char* file_name;
+    file_name=file.c_str();
+    ifstream is(file_name); 
+  
+    // open file in write mode or out mode 
+    ofstream ofs; 
+    ofs.open("temp.txt", ofstream::out); 
+  
+    // loop getting single characters 
+    char c; 
+    int line_no = 1; 
+    while (is.get(c)) 
+    { 
+        // if a newline character 
+        if (c == '\n') 
+        line_no++; 
+  
+        // file content not to be deleted 
+        if (line_no != n) 
+            ofs << c; 
+    } 
+  
+    // closing output file 
+    ofs.close(); 
+  
+    // closing input file 
+    is.close(); 
+  
+    // remove the original file 
+    remove(file_name); 
+  
+    // rename the file 
+    rename("temp.txt", file_name); 
+} 
+  
+
+
+string getanddeletesha()
+{
+    string logpath(LOG_PATH);
+string path2 =logpath+"stash";
+    ifstream input( path2);
+    int n=0;
+    string lastline;
+    for( string line; getline( input, line ); )
+{
+    lastline=line;
+    n=n+1;
+
+    
+}
+    
+    delete_line(path2, n);
+
+    return lastline;
+}
+
+string getsha()
+{
+    string logpath(LOG_PATH);
+string path2 =logpath+"stash";
+    ifstream input( path2);
+    int n=0;
+    string lastline;
+    for( string line; getline( input, line ); )
+{
+    lastline=line;
+    n=n+1;
+
+    
+}
+    
+
+
+    return lastline;
 }

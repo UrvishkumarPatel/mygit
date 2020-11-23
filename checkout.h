@@ -109,7 +109,28 @@ void update_working_dir(string commit_sha){
 
 // }
 
+void stash_checkout(string commit_sha){ // runs update_working_dir
+    
 
+     
+
+        update_working_dir(commit_sha);
+        
+        // update head path
+        
+        // del indexfile, and create new
+        // char path_indx[MAX_FILE_NAME_LENGTH];
+        // strcpy(path_indx, PATH_INDEX);
+        ofstream index_file(PATH_INDEX, ofstream::trunc);
+        // string branch_name(argv[2]);
+        index_file<< "";
+        index_file.close();
+        // remove_file(path_indx);
+        // iterate over ROOT_PATH and ignore .git
+        add_dot();
+        
+    
+}
 
 
 void run_checkout(char* name_of_branch, int dummy_flag=0){ // runs update_working_dir

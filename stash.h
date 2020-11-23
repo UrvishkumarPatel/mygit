@@ -1,25 +1,33 @@
 
 void stash_pop(){
-    // stashlog=file.open(logs/ref/stash)
-    // if stashlog==empty{
-    //     return 
-    // }
-    // vector<string> getstash;
-    // getstash=stashlog.readlastline;
-    // delete lastline;
+string stashsha;
+stashsha=getanddeletesha();
+cout<<stashsha.substr(0,40)<<endl;
     // checkout(getstash[1]) \\manage conflicts also
-    ;
+string curr_sha;
+curr_sha=getsha();
+string gitdir(GIT_DIR);
+string path =gitdir+"/refs/"+"stash";
+ofstream fptr;
+fptr.open(path ,ios::trunc);
+string p=curr_sha+"\n";
+fptr<<p;
+fptr.close();
+if (stashsha.compare("")==0){
+    cout<<"No stash available"<<endl;
+    return;
+}
+cout<<"POP:"<<stashsha<<endl;
+
+stash_checkout(stashsha);
+
+
 
 }
 
-void run_stash(){
+void run_stash(string message){
 
-    if (!is_working_dir_updated()){
-        cout<<"no changes to stash"<< endl;
-        return;
-    }
-
-    char master_ref_path[MAX_FILE_NAME_LENGTH];
+        char master_ref_path[MAX_FILE_NAME_LENGTH];
     strcpy(master_ref_path,REF_HEAD_PATH);
     strcat(master_ref_path, "master");       
     if (isDir(master_ref_path)==0){ // git/refs/heads/master
@@ -27,70 +35,92 @@ void run_stash(){
         return;
     }
 
+     if (!is_working_dir_updated()){ //not working
+         cout<<"no changes to stash"<< endl;
+         return;
+     }
+
+
+
+
     char branch_name[MAX_FILE_NAME_LENGTH];
     get_cur_branch_name(branch_name);
     string cur_sha = get_sha_of_branch(branch_name);
     // co=head->next->next
-
-    // c1=commit(parent=c0,name="index on <current branch> : c0_hash c0_name");
-
-    // add_dot();
-    // c2=commit(parent= c0, c1,name=name="WIP on <current branch> : c0_hash c0_name");
-
-// //////////////////////////
-//     add_dot(); // not sure
-
-//     c1=commit(parent=c0);
-
-//     // c1: "index on <branch> : co_hash co_name
-//     // Saved working directory and index state 
-//     // WIP on newb: 5d2a6fa dff 
-//     c2=commit(parent= c0, c1);
-//         // string get_content_merge_commit(string root_sha, string commit_msg, string parent_1, string parent_2, time_t cur_time, string count){
-//         //     string author= "imp_git";
-//         //     string commiter= "imp_git";
-//         //     string parent_content= "parent "+parent_1+"\nparent "+parent_2+"\n";
-//         //     string t = to_string(cur_time);
-
-//         //     string content= "tree "+root_sha + "\n"+ parent_content+"author "+ author + " " + t + " " + count + "\n" + "committer "+commiter+ " " + t + " " + count +"\n\n"+ commit_msg;
-//         //     return content;
-//         // }
-//   write(hash(c2), ./refs/stash);
-//   stashlog=file.open(logs/ref/stash)
-
-//   vector<string> savestash
     
-//     if (num_stashes==1){
-//         savestash[0]="0"*40
-
-//     }
-//     else {
-//        savestash[0]=stashlog_lastline[1]
-//     }
     
-//     savestash[1]=c2_hash;
-//     savestash[2]=userID;
-//     savestash[3]=c2_name;
-  
+    
 
-// checkout (previous commit);
+    string bn(branch_name);    
+    string msg="Stashing on "+bn+" : "+message;
+    cout<<msg<<endl;
+
+    add_dot();
+    
+    string stash_hash;
+    stash_hash=stash_commit(msg);
+
+    int stash_cnt;
+    
+    stash_cnt=update_stash_count();
+    
+    
+
+
+string gitdir(GIT_DIR);
+string path =gitdir+"/refs/"+"stash";
+ofstream fptr;
+fptr.open(path ,ios::trunc);
+string p=stash_hash+"\n";
+fptr<<p;
+fptr.close();
+
+string logpath(LOG_PATH);
+string path2 =logpath+"stash";
+string savestashcontent=stash_hash+" "+message+" "+"Stash count= "+to_string(stash_cnt)+"\n";
+
+ofstream sth {path2, std::ios_base::app};
+
+
+sth << savestashcontent;
+sth.close();
+
+cout<<"Getting back to"<<cur_sha<<endl;
+stash_checkout (cur_sha);
 }
 
 
 
 void stash(int argc, char* argv[]){ // ./got.out stash pop
-   if(argc==2){
-        run_stash();
+    
+
+   if(argc<3){
+        cout<<"Usage: stash -m <message> OR stash pop"<<endl;
+        exit(1);
     }
  
     if (argc==3){
         string flag(argv[2]);
         if (flag == "pop"){
             cout<< "stash pop"<<endl;
+            stash_pop();
         }
         else{
             cout<< "stash" << flag <<"is not supported by out git implementation"<<endl;
             exit(1);
         }
     }
+    else{
+        string flag(argv[2]);
+        if (flag!= "-m"){
+            cout<< "not supported!"<<endl;
+            exit(1);
+        }
+        else{
+            
+            run_stash(argv[3]);
+            cout<< "stashing"<<endl;
+        }
+    }
+
 }
