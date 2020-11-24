@@ -269,7 +269,9 @@ auto return_commitlog_content(string sha){
     string path= "git/objects/"+sha.substr(0,2)+"/"+sha.substr(2,38);
     ifstream f_reader(path);
     string final_content;
-    final_content+="Time : "+ to_string(get_time_from_commit(sha))+"\n";
+    time_t times = get_time_from_commit(sha);
+    string print_time(print_proper_time(times));
+    final_content+="Time : "+ print_time+"\n";
     while(getline (f_reader, content)){
         if(content.compare("")!=0){
             char commit_content[MAX_FILE_NAME_LENGTH];
