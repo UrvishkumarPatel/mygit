@@ -375,3 +375,44 @@ string path2 =logpath+"stash";
 
     return lastline;
 }
+
+int regex_match(string file_path, string regx_){
+    string regx= regex_replace(regx_, regex("\\."),"\\\.");   //.sh
+    regx= regex_replace(regx, regex("\\*"),".*");   //.sh
+    smatch m; // 1 if matches else 0
+    // regex_search(i, m, r); 
+    regex r(regx); 
+    regex_search(file_path, m, r); 
+    return m.size();
+} 
+
+int matches_an_expr(string file_path){
+    // check if file_path is one of the expression in .gitignore
+    for (auto expr_i: IGNORE_ENTRIES){
+        if (regex_match(file_path, expr_i)==1){
+            return 1;
+        }
+    }
+    return 0;
+}
+
+
+void read_gitignore(){
+    // get all files that matches the regx in .gitignore
+    // hashset --> string o
+    int ignore_flag=0;
+    char gitignore_path[MAX_FILE_NAME_LENGTH];
+    strcpy(gitignore_path, IGNORE_PATH);
+    string entry;
+    if (isDir(gitignore_path)==2){
+        ignore_flag=1;
+        ifstream ignore_reader(IGNORE_PATH);
+        while(getline(ignore_reader, entry)){
+            if ((!entry.compare("")))
+                continue;
+            if ((entry[0]=='#') || (entry[0]=='!'))
+                continue;
+            IGNORE_ENTRIES.insert(entry);
+        }
+    }
+}

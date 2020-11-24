@@ -6,6 +6,7 @@
 #include "project_header.h"
 
 int main(int argc, char* argv[]){
+    read_gitignore();
 
     if(argc==1){
 		printf("No arguements given\n");

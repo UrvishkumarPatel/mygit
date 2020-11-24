@@ -17,6 +17,7 @@
 #include <regex> 
 
 using namespace std;
+unordered_set<string> IGNORE_ENTRIES;
 
 #define PATH_COMMIT_COUNT "git/commit_count"
 #define PATH_STASH_COUNT "git/stash_count"

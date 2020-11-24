@@ -64,14 +64,19 @@ void remove_dir(char *pathname) {
 			strcpy(path_string, pathname);
 			strcat(path_string,"/");
 			strcat(path_string,d->d_name);
-			if (is_dir(path_string)){
-                // if (strcmp(d->d_name,".git") != 0 && strcmp(d->d_name, "git") != 0 ) //added
-                if (strcmp(d->d_name, "git") != 0) //added			
-				remove_dir(path_string);
-			}
-			else{
-                if (strcmp(d->d_name,"a.out") != 0) //added
-				remove_file(path_string);
+			string path_string_(path_string);
+			//
+			if (matches_an_expr(path_string_)==0){
+
+				if (is_dir(path_string)){
+					// if (strcmp(d->d_name,".git") != 0 && strcmp(d->d_name, "git") != 0 ) //added
+					if (strcmp(d->d_name, "git") != 0) //added		
+					remove_dir(path_string);
+				}
+				else{
+					if(!((strcmp(d->d_name,"a.out") == 0) ||  (strcmp(d->d_name,".gitignore") == 0)))//added
+						remove_file(path_string);
+				}
 			}
 		}
 	}
