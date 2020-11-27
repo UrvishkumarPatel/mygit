@@ -9,33 +9,12 @@ form a tree
 - save the sha1 of the new commit object to .git/objects/refs/head
 
 */
-// #include <vector>
-// // #include "object.h" //mysplit
-// #include <bits/stdc++.h>
-
-// #define PATH_INDEX "git/index"
-// #define ROOT_PATH "."
-// #define MAX_FILE_NAME_LENGTH 1024
-// // #define PATH "git/refs/heads/master"
-// # define HEAD_PATH "git/HEAD"
-// # define GIT_PATH "git/"
-
-
-// using namespace std;
 
 string PARENT_SHA="";
 unordered_map<char, int> alphaNumeric_order;
 
-
-// bool compare(string x, string y){ 
-//     for (int i = 0; i < min(x.size(), y.size()); i++){ 
-//         if (alphaNumeric_order[x[i]] == alphaNumeric_order[y[i]]) 
-//             continue; 
-//         return alphaNumeric_order[x[i]] < alphaNumeric_order[y[i]]; 
-//     } 
-//     return x.size() < y.size(); 
-// }
 bool compare(pair<string, string> x, pair<string, string> y){ 
+    // used in sorting strings
     for (int i = 0; i < min(x.first.size(), y.first.size()); i++){ 
         if (alphaNumeric_order[x.first[i]] == alphaNumeric_order[y.first[i]]) 
             continue; 
@@ -46,6 +25,7 @@ bool compare(pair<string, string> x, pair<string, string> y){
 
 
 string sort_content(string content_){
+    // sort the content passed
     //  split_index_line(char * line_, string delimiter_,  int * n=&DEFAULT){
     // vector<string> return_string_vector(char** line, int * n)
     char content[MAX_FILE_NAME_LENGTH];
@@ -68,22 +48,6 @@ string sort_content(string content_){
         key_val.push_back(i);
     }
 
-    // for (auto i:key_val)
-    //     cout<<i.first<<" paired with "<<i.second<<endl;
-
-    // vector<string> keys;
-    // for (auto i: hashMap){
-    //     keys.push_back(i.first())
-    // }
-
-
-    
-    // cout<<"..............................................."<<endl;
-    // cout<<"before sorting"<<endl;
-    // for (auto i: key_val){
-    //     cout<< i.second<<endl;
-    // }
-    
     sort(key_val.begin(), key_val.end(), compare);
 
     string sorted_content;
@@ -141,32 +105,6 @@ class commit{
         vector<string> parent_commit;
         //etc
 };
-
-
-
-
-
-	// char **args = malloc(tok_nos * sizeof(char*));
-	// int i = 0;
-
-
-
-// char** split_index_line(char* line_, string delimiter_){
-//     char delimiter[MAX_FILE_NAME_LENGTH];
-//     strcpy(delimiter, delimiter_.c_str());
-
-//     char** tokens= (char**)malloc(4*sizeof(char*));
-//     int k=0;
-
-//     char* token = strtok(line_, delimiter);
-//     while (token != NULL){
-//         tokens[k]= token;
-//         token = strtok(NULL, delimiter);
-//         k+=1;
-//     }
-//     tokens[k]=NULL;
-//     return tokens;  // check this
-// }
 
 
 class tree{
@@ -309,7 +247,7 @@ class tree{
             // f << content<<endl;
             // f.close();
             // cout<<"upar"<<endl;
-            cout << curNode.mode+" "+ "tree" + " "+ curNode.sha+  " "+ curNode.name << endl;
+            // cout << curNode.mode+" "+ "tree" + " "+ curNode.sha+  " "+ curNode.name << endl;
             // cout<<"niche"<<endl;
             return curNode.mode+" "+ "tree" + " "+ curNode.sha+  " "+ curNode.name;
             // return curNode.mode+" "+ curNode.name +"\0" + curNode.sha;
@@ -368,7 +306,7 @@ string get_content_commit(string root_sha, string commit_msg, time_t cur_time, s
     string parent_content="";
     // loop over all the parents
     char* PATH_= get_cur_head();
-    cout<<"\n"<<PATH_<<" is the get_cur_head()"<<endl;
+    // cout<<"\n"<<PATH_<<" is the get_cur_head()"<<endl;
     string path(PATH_);
     char ref_path[MAX_FILE_NAME_LENGTH];
     strcpy(ref_path, GIT_PATH);
@@ -380,7 +318,7 @@ string get_content_commit(string root_sha, string commit_msg, time_t cur_time, s
         ifstream myfile(ref_path_);
         if(myfile.is_open()){
             while(getline(myfile,PARENT_SHA)){
-                cout<<PARENT_SHA<<" is the parent sha"<<endl;
+                // cout<<PARENT_SHA<<" is the parent sha"<<endl;
             }
             myfile.close();
         }
@@ -587,7 +525,7 @@ void commit(int argc, char* argv[]){
         }
         else{
             run_commit(argv[3]);
-            cout<< "some print"<<endl;
+            // cout<< "some print"<<endl;
         }
     }
 }

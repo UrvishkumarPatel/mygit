@@ -37,7 +37,7 @@ int is_dir(char* pathname){
 void remove_file(char *file_name){
 	if (unlink(file_name)==-1)
 	{
-		perror("rm");
+		// perror("rm");
 	}
 	// else{
 	// 	printf("%sremoved\n", file_name);
@@ -74,7 +74,7 @@ void remove_dir(char *pathname) {
 					remove_dir(path_string);
 				}
 				else{
-					if(!((strcmp(d->d_name,"a.out") == 0) ||  (strcmp(d->d_name,".gitignore") == 0)))//added
+					if(!((strcmp(d->d_name, MY_GIT) == 0) ||  (strcmp(d->d_name,".gitignore") == 0)))//added
 						remove_file(path_string);
 				}
 			}
@@ -82,7 +82,7 @@ void remove_dir(char *pathname) {
 	}
 
 	if (rmdir(dir_name)==-1)		{
-		perror("rm");
+		// perror("rm");
 	}
 	// else{
 	// 	printf("%sremoved\n", dir_name);

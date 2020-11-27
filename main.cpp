@@ -24,6 +24,6 @@ int main(int argc, char* argv[]){
 	else if(strcmp(argv[1],"stash")==0){stash(argc,argv); } //calling stash
 
 	// else if(strcmp(argv[1],"exit")==0) exit(1); //exiting the function
-	cout<<"working fine: reaching end"<<endl;
+	// cout<<"working fine: reaching end"<<endl;
     return 0;
 }

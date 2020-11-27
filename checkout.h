@@ -1,6 +1,6 @@
+/* checkout implementation*/
 void build_dfs(string tree_sha, string curPath_){
     // // args= ["tree", "blobs"]
-    // // mkdir
     // for subtree_sha in args:
     //     if "tree":
     //         dfs(subtree_sha, new_curPath)
@@ -8,9 +8,6 @@ void build_dfs(string tree_sha, string curPath_){
 
     //     if blob:
     //         //  wrwite file
-
-    //     else:
-    //         // terminate
 
     vector<string> entries= return_split_content_from_sha(tree_sha);
     // cout<< " print "<< entries[0]<<endl;
@@ -54,7 +51,8 @@ void build_dfs(string tree_sha, string curPath_){
 }
 
 
-void write_dir(string commit_sha){ // runs build_dfs
+void write_dir(string commit_sha){ 
+    // runs build_dfs
     // extract content of commit object
     vector<string> entries= return_split_content_from_sha(commit_sha);
     // split entries[0] and get sha
@@ -82,58 +80,27 @@ void update_working_dir(string commit_sha){
 }
 
 
-// int branch_exists(char* branch_name){
-//     char branch_ref_path[MAX_FILE_NAME_LENGTH];
-//     strcpy(branch_ref_path,REF_HEAD_PATH);
-//     strcat(branch_ref_path, branch_name);
-//         // cout<<branch_ref_path<<endl;
-//     if(isDir(branch_ref_path)==2) return 1;
-//     return 0;
-// }
-
-
-
-// string get_sha_of_branch(string branch_name){
-//     // REF_HEAD_PATH+branch_name
-
-//     char branch_ref_path[MAX_FILE_NAME_LENGTH];
-//     strcpy(branch_ref_path,REF_HEAD_PATH);
-//     strcat(branch_ref_path, branch_name);
-
-//     string sha;
-//     string branch_ref_path_(branch_ref_path);
-//     ifstream branch_file(branch_ref_path_);
-//     getline (branch_file, sha);
-//     branch_file.close();
-//     return sha;
-
-// }
-
-void stash_checkout(string commit_sha){ // runs update_working_dir
+void stash_checkout(string commit_sha){ 
+    // runs update_working_dir
+    update_working_dir(commit_sha);
     
-
-     
-
-        update_working_dir(commit_sha);
-        
-        // update head path
-        
-        // del indexfile, and create new
-        // char path_indx[MAX_FILE_NAME_LENGTH];
-        // strcpy(path_indx, PATH_INDEX);
-        ofstream index_file(PATH_INDEX, ofstream::trunc);
-        // string branch_name(argv[2]);
-        index_file<< "";
-        index_file.close();
-        // remove_file(path_indx);
-        // iterate over ROOT_PATH and ignore .git
-        add_dot();
-        
+    // update head path
     
+    // del indexfile, and create new
+    // char path_indx[MAX_FILE_NAME_LENGTH];
+    // strcpy(path_indx, PATH_INDEX);
+    ofstream index_file(PATH_INDEX, ofstream::trunc);
+    // string branch_name(argv[2]);
+    index_file<< "";
+    index_file.close();
+    // remove_file(path_indx);
+    // iterate over ROOT_PATH and ignore .git
+    add_dot();
 }
 
 
-void run_checkout(char* name_of_branch, int dummy_flag=0){ // runs update_working_dir
+void run_checkout(char* name_of_branch, int dummy_flag=0){ 
+    // runs update_working_dir
     char branch_ref_path[MAX_FILE_NAME_LENGTH];
     strcpy(branch_ref_path,REF_HEAD_PATH);
     strcat(branch_ref_path, name_of_branch);
@@ -183,7 +150,7 @@ void run_checkout(char* name_of_branch, int dummy_flag=0){ // runs update_workin
 }
 
 int is_working_dir_updated(){
-
+    // check if current working directory is updated
     write_object_flag=0;
     // read index file
     string index_data = "";
@@ -230,15 +197,18 @@ int is_working_dir_updated(){
     }
 }
 
-void checkout(int argc, char* argv[]){ // argv[2] --  branch name
+void checkout(int argc, char* argv[]){ 
+    // checkout to passed branch name
+    // argv[2] --  branch name
     if(argc==2) {
         printf("Give branch name\n");
         return;
     } 
     else if(argc==3){
 
-        /////////////////////////
-        // making checkout more robust // incomplete testing //todo
+        ///////////////////////// WORK UNDER PROGRESS!
+        // update reset after this
+        // making checkout more robust // incomplete testing
         // if (is_working_dir_updated()){
         //     cout<< "error: Your changes to the files would be overwritten by checkout:" << endl;
         //     cout<< "Please commit your changes or stash them before you switch branches.\nAborting"<< endl;
@@ -252,6 +222,7 @@ void checkout(int argc, char* argv[]){ // argv[2] --  branch name
         
         run_checkout(argv[2]);
 
+        //get sha of current branch
         string branch_(argv[2]);
         string sha_curr = get_sha_of_branch(argv[2]);
 

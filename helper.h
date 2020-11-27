@@ -18,7 +18,8 @@ int isDir(char* PATH){
 
 }
 
-time_t time_in_sec(){ // time in sec since epoch
+time_t time_in_sec(){ 
+    // time in sec since epoch
     time_t result = time(nullptr);
     return result;
 }
@@ -113,7 +114,7 @@ void get_cur_branch_name(char* branch_name){ // cat git/HEAD >> ref: refs/heads/
 }
 
 void print_hash_map(map<string, vector<string>> mapp, string label){
-    cout<<label<<endl;
+    // cout<<label<<endl;
     for (auto i1: mapp){
         cout<< "-----iterator ------\nkey- " <<i1.first<<" val-";
         for (auto i: i1.second)
@@ -122,7 +123,8 @@ void print_hash_map(map<string, vector<string>> mapp, string label){
     }
 }
 
-char* get_cur_head(){ // cat git/HEAD >> ref: refs/heads/branch_name
+char* get_cur_head(){ 
+    // cat git/HEAD >> ref: refs/heads/branch_name
         string head_content;
         ifstream MyFile(HEAD_PATH);
         getline (MyFile, head_content);
@@ -138,9 +140,10 @@ char* get_cur_head(){ // cat git/HEAD >> ref: refs/heads/branch_name
 
 
 
-auto return_split_content_from_sha(string sha){ // returns vector of string of contents of object file with given sha
+auto return_split_content_from_sha(string sha){ 
+    // returns vector of string of contents of object file with given sha
     // get secret code and size from indexfile (SIZE_STORE)
-    // decompress 
+    // decompress
     // simply return
     string content;
     string git_dir_(GIT_DIR);
@@ -296,8 +299,7 @@ auto return_commitlog_content(string sha){
     return final_content;
 }
 
-void delete_line(string file, int n) 
-{ 
+void delete_line(string file, int n) { 
     // open file in read mode or in mode 
     const char* file_name;
     file_name=file.c_str();
@@ -320,7 +322,7 @@ void delete_line(string file, int n)
         if (line_no != n) 
             ofs << c; 
     } 
-  
+
     // closing output file 
     ofs.close(); 
   
@@ -336,43 +338,31 @@ void delete_line(string file, int n)
   
 
 
-string getanddeletesha()
-{
+string getanddeletesha(){
     string logpath(LOG_PATH);
-string path2 =logpath+"stash";
+    string path2 =logpath+"stash";
     ifstream input( path2);
     int n=0;
     string lastline;
     for( string line; getline( input, line ); )
 {
     lastline=line;
-    n=n+1;
-
-    
-}
-    
+    n=n+1; 
+}  
     delete_line(path2, n);
-
     return lastline;
 }
 
-string getsha()
-{
+string getsha(){
     string logpath(LOG_PATH);
-string path2 =logpath+"stash";
+    string path2 =logpath+"stash";
     ifstream input( path2);
     int n=0;
     string lastline;
-    for( string line; getline( input, line ); )
-{
-    lastline=line;
-    n=n+1;
-
-    
-}
-    
-
-
+    for( string line; getline( input, line ); ){
+        lastline=line;
+        n=n+1;
+    }
     return lastline;
 }
 

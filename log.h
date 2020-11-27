@@ -1,14 +1,13 @@
-
-
 void iter_ancestor(string cur_sha){
+    //iterate in parents and print all the previous commit
     string log_content=return_commitlog_content(cur_sha);
     cout<<"commit : "+cur_sha<<endl;
     cout<<log_content<<endl;
 
     // get parent of cur_sha
     vector<string> parent_shas_array= parent_shas(cur_sha);
+    
     // if no parent return 0
-
     if (parent_shas_array.empty())
         return;
 
@@ -19,6 +18,7 @@ void iter_ancestor(string cur_sha){
 
 
 void log(int argc, char* argv[]){ 
+    //log without any arguement iterates in the current checkedout branch
     if(argc==2) {
         // check where the current HEAD is pointing
         char master_ref_path[MAX_FILE_NAME_LENGTH];
@@ -36,6 +36,7 @@ void log(int argc, char* argv[]){
         //iterate to the root and print commits on the way till root
         iter_ancestor(sha_curr);
     }
+    //log with branch as arguement iterates in that branch
     else if(argc==3){
         char* branch_name=argv[2];
         //go to the reflog file of given branch name and wherever you find a commit
@@ -53,7 +54,8 @@ void log(int argc, char* argv[]){
 }
 
 void reflog(int argc, char* argv[]){ 
-
+    //reflog prints previous commits, checkouts and merges
+    //without any arguement it prints contents of the git/logs/HEAD file
     if(argc==2) {
         //print git/logs/HEAD
         string line;
@@ -69,8 +71,9 @@ void reflog(int argc, char* argv[]){
         }
 
     }
+    //with branch as arguement it prints data stored in git/logs/refs/branch_name
     else if(argc==3){
-        //print git/logs/refs/heads file
+        //print git/logs/refs/branch_name file
         char* branch_name=argv[2];
         if(branch_exists(branch_name)==1){
             string file_path="";

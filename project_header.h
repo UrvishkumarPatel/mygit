@@ -34,6 +34,7 @@ unordered_set<string> IGNORE_ENTRIES;
 #define LOG_HEAD_PATH "git/logs/HEAD"
 
 #define IGNORE_PATH ".gitignore"
+#define MY_GIT "mygit"
 
 // #include "checkDir.h"
 #include "helper.h"

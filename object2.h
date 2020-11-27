@@ -1,4 +1,5 @@
-/* object defination of:
+/* add implementation
+object defination of:
     - commit
     - blob
         - hash_object
@@ -7,7 +8,6 @@
     - tree
 and helper classes and definations
 
-note: zlib compression and decompression taken from  - https://gist.github.com/arq5x/5315739#file-zlib-example-cpp-L7 8
 store = header + data
 */
 
@@ -35,7 +35,8 @@ string hash_object(string content, string type){
 
 
 int decimaltoOctal(int deciNum){
-
+    // performs decimal to octal conversion
+    // ref: https://www.geeksforgeeks.org/program-decimal-octal-conversion/
     // initializations
     int octalNum = 0, countval = 1;
     int dNo = deciNum;
@@ -57,6 +58,7 @@ int decimaltoOctal(int deciNum){
 }
 
 string mysplit(string inLine){
+    // returns last word of inLine
     char line[MAX_FILE_NAME_LENGTH];
     strcpy(line, inLine.c_str());
     char* tokens[4];
@@ -73,7 +75,7 @@ string mysplit(string inLine){
 }
 
 void updateIndexFile(string sha, string pathname){
-    // get the file permissions
+    // update the index file for staging area based on sha and pathname passed
 
     int isPresent=1;
     const char* path= pathname.c_str();
@@ -174,6 +176,7 @@ void blobDir(char* dirname){ // recursive function calling add_run
 }
 
 auto return_content(string sha){
+    // return conent based on sha passed
     string content;
     string path= git_dir_+"/objects/"+sha.substr(0,2)+"/"+sha.substr(2,38);
     string final_content;
@@ -203,7 +206,7 @@ void write_object(string sha1, string content, string type){
     if (mkdir(dirPath,0777)==-1){
         // cout << "Error: cannot create directory"<< endl;
     }
-    cout<< "writing "<<type<< " object at- "<<path<<endl;
+    // cout<< "writing "<<type<< " object at- "<<path<<endl;
     ofstream fptr;
     fptr.open(path, ofstream::trunc);
     fptr<<content;
@@ -252,6 +255,8 @@ void add_run(string location){
 
     if (status == 2){
         //location is file;
+        if ((!strcmp(location_new, ".gitignore")))
+            return;
         if(matches_an_expr(location)== 0){
             createBlob(location);
         }
@@ -259,7 +264,7 @@ void add_run(string location){
     else if (status == 1){
         // location is directory
         if (matches_an_expr(location)==0){
-            cout<<"hi i am here "<< location<<endl;
+            // cout<<"hi i am here "<< location<<endl;
             blobDir(location_new);
         }
     }
@@ -271,6 +276,7 @@ void add_run(string location){
 }
 
 void add_dot(){
+    // git add .
     // char* dirname=;
     // cout<< "running add_dot\n";
     DIR* dir = opendir(ROOT_PATH); // open the directory location to read.
@@ -291,8 +297,8 @@ void add_dot(){
         // cout<<"status "<< status<<"--"<<dname<<endl;
         if (status == 2){
             //location is file;
-            // if (IGNORE_ENTRIES.find(dname)!=IGNORE_ENTRIES.end())
-                // continue;
+            // if ((!strcmp(dir_reader->d_name, ".gitignore")))
+            //     continue;
         }
         else if (status == 1){
             // location is directory
@@ -318,6 +324,7 @@ void add_dot(){
 }
 
 void add(int argc,char* argv[]){
+    // git add argv[2]
     if(argc==2){
         printf("No arguments given\n");
         exit(1);

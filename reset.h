@@ -1,6 +1,4 @@
-// void run_reset(){
-
-// }
+/* reset implementation*/
 
 void reset(int argc, char* argv[]){
     if(argc==2) {

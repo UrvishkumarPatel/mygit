@@ -1,4 +1,7 @@
+/* merge implementation*/
+
 vector<string> parent_shas(string cur_commit){
+    // return parent shas for given commit sha
     vector<string> p_shas;
     
     vector<string> entries= return_split_content_from_sha(cur_commit);
@@ -59,10 +62,10 @@ int is_ancestor(char* current_branch, char* branch_name){
     return status;
 }
 
-void fastforwardmerge(char* current_branch, char* branch_name){ // the current_branch will also point to the branch_name
+void fastforwardmerge(char* current_branch, char* branch_name){ 
+    // the current_branch will also point to the branch_name
     string copy_sha= get_sha_of_branch(branch_name);
     
-    // todo ///////
     // check for staging area
     update_working_dir(copy_sha);
     ofstream index_file(PATH_INDEX, ofstream::trunc);
@@ -79,7 +82,8 @@ void fastforwardmerge(char* current_branch, char* branch_name){ // the current_b
     
 }
 
-void dummy_checkout(string sha){  //beware while using this function
+void dummy_checkout(string sha){  
+    // 
     map<string, vector<string>> hashMap;
     // vector<string> cur_vec;
 
@@ -133,10 +137,23 @@ map<string, vector<string>> diff(map<string, vector<string>> lca, map<string, ve
         - '+' --> not in master but in branch
         - '-' --> not in branch but in master
         - '#' --> same but edited. (have different sha or mode)
+        
+    entries= master_indx.key() + indx.key()
+    int n = entries.length();
+
+    for pathi in paths_:
+        if pathi in master_indx and not in indx:
+            '-'
+        elif pathi not in master_indx and in indx:
+            '+'
+        elif pathi in master_indx and in indx:
+            if master_indx[pathi][1]!= indx[pathi][1] or master_indx[pathi][0] != indx[pathi][0]:
+                '#'
+                
+    {
+        "<path>" : {"<mode>" "<sha>" "<stage>" "+/-/#"},
+    }
     */
-    // {
-    //     "<path>" : {"<mode>" "<sha>" "<stage>" "+/-/#"},
-    // }
 
     map<string, vector<string>> diff_map;
     // HashSet<string> entries;
@@ -166,17 +183,7 @@ map<string, vector<string>> diff(map<string, vector<string>> lca, map<string, ve
             }
         }
     }
-    // entries= master_indx.key() + indx.key()
-    // int n = entries.length();
 
-    // for pathi in paths_:
-    //     if pathi in master_indx and not in indx:
-    //         '-'
-    //     elif pathi not in master_indx and in indx:
-    //         '+'
-    //     elif pathi in master_indx and in indx:
-    //         if master_indx[pathi][1]!= indx[pathi][1] or master_indx[pathi][0] != indx[pathi][0]:
-    //             '#'
 
     return diff_map;
     // {
@@ -199,8 +206,6 @@ void get_ancestors(unordered_set<string>* ancestor_set, string cur_commit){
 
 string LCA(char* b1, char* b2){
     // unordered_set<string> ancestor_sha;
-    // todo
-    ////////////
     string sha_b1 = get_sha_of_branch(b1);
     string sha_b2 = get_sha_of_branch(b2);
 
@@ -221,8 +226,8 @@ string LCA(char* b1, char* b2){
             common_ancestor.insert(parent_j);
     }
     // lca set ready till here
-    for (auto i: common_ancestor)
-        cout<< "------------ "<<i<<endl;
+    // for (auto i: common_ancestor)
+    //     cout<< "------------ "<<i<<endl;
 
     string lca;
     int max= 0;
@@ -234,8 +239,7 @@ string LCA(char* b1, char* b2){
             lca= ancestor_i;
         }
     }
-    cout<<"least common ancestor"<<lca<<endl;
-    // ---------------todo--------------get lca from sets
+    // cout<<"least common ancestor"<<lca<<endl;
 
     // string cur_commit = get_sha_of_branch(b1);
     // vector<string> p = parent_shas(cur_commit);
@@ -245,6 +249,7 @@ string LCA(char* b1, char* b2){
 }
 
 vector<string> conflict(string pathname, vector<string> diff_x_indx, vector<string> diff_y_indx, char* current_branch, char* branch_name){
+    // handle conflict
     cout<<"There is a conflict in "<<pathname<<endl;
     cout<<"Which branch do you want to consider for this file?"<<endl;
     cout<<"Enter 1 for "<<current_branch<<" (default)"<<endl;
@@ -263,6 +268,7 @@ vector<string> conflict(string pathname, vector<string> diff_x_indx, vector<stri
 }
 
 void make_index(map<string, vector<string>> index_hash_map){
+    // write the merged index file
     string line;
     ofstream f_create;
     f_create.open(PATH_INDEX, ofstream::trunc);
@@ -277,22 +283,13 @@ void make_index(map<string, vector<string>> index_hash_map){
 
 void threewaymerge(char* current_branch, char* branch_name){
 
-    //////////////////////////////////////////////// todo
+    ////////////////////////////////////////////////
     //create a new merge-commit object
     // iterate in both current_branch and branch_name and create the merged objec
     //update master to merged object
     //update the current working directory according to sha of merged commit/master
 
-    // current_branch ka parent upar he branch_name se
     //find sha of lcs  and get the index map
-    ////////////////////////////////////////////
-
-    string ancestor_sha = LCA(branch_name, current_branch);
-    cout<<"here"<<"lca--"<<ancestor_sha<< endl;
-    string sha_y= get_sha_of_branch(branch_name);
-    cout<<"here2"<<endl;
-    
-    string sha_x= get_sha_of_branch(current_branch);
     // assume executing "git merge y" being on branch x
     //     m
     //    /|
@@ -301,6 +298,15 @@ void threewaymerge(char* current_branch, char* branch_name){
     //  | /
     //  |/
     //  merged
+    ////////////////////////////////////////////
+
+    string ancestor_sha = LCA(branch_name, current_branch);
+    // cout<<"here"<<"lca--"<<ancestor_sha<< endl;
+    string sha_y= get_sha_of_branch(branch_name);
+    // cout<<"here2"<<endl;
+    
+    string sha_x= get_sha_of_branch(current_branch);
+
 
     map<string, vector<string>> indx_m= return_index_dict(ancestor_sha);
     map<string, vector<string>> indx_y= return_index_dict(sha_y);
@@ -322,7 +328,7 @@ void threewaymerge(char* current_branch, char* branch_name){
     map<string, vector<string>> index_hash_map;
     
     for (auto pathi : all_paths){
-        cout<<"pathi: "<<pathi<<endl;
+        // cout<<"pathi: "<<pathi<<endl;
         if (indx_m.find(pathi)!= indx_m.end()){ // present in the lca
             if (diff_x.find(pathi)!= diff_x.end()){// present in x
                 if (diff_y.find(pathi)!= diff_y.end()){// present in y 11
@@ -338,7 +344,7 @@ void threewaymerge(char* current_branch, char* branch_name){
                         ; // -    
                     }
                     if (diff_x[pathi][3].compare("#")==0){
-                        cout<<"yaha pe 10"<<endl;
+                        // cout<<"yaha pe 10"<<endl;
                         index_hash_map[pathi]= diff_x[pathi]; // +
                     }
                 }
@@ -349,7 +355,7 @@ void threewaymerge(char* current_branch, char* branch_name){
                         ; // -    
                     }
                     if (diff_y[pathi][3].compare("#")==0){
-                        cout<<"yaha pe 01"<<endl;
+                        // cout<<"yaha pe 01"<<endl;
                         index_hash_map[pathi]= diff_y[pathi]; // +
                     }
                 }
@@ -376,9 +382,9 @@ void threewaymerge(char* current_branch, char* branch_name){
             }
         }
     }
-    print_hash_map(diff_x, "x");
-    print_hash_map(diff_y, "y");
-    print_hash_map(index_hash_map, "final");
+    // print_hash_map(diff_x, "x");
+    // print_hash_map(diff_y, "y");
+    // print_hash_map(index_hash_map, "final");
 
 
     string x_name(current_branch);
@@ -400,7 +406,6 @@ void threewaymerge(char* current_branch, char* branch_name){
     update_working_dir(commit_sha);
 
 
-
     // m-1	dx	dy	
     //     -    -	-   11
     //     #    #	#   11
@@ -417,24 +422,11 @@ void threewaymerge(char* current_branch, char* branch_name){
     //     +       +
     //         +   +
 
-    // for pathi in paths_:
-    //     if pathi in m_index:
-    //         if d_x[0]== '#' or d_y[0]=="#":
-    //             conflict
-    //         else if d_x[0]=='-' or d_y[0]=='-':
-    //             pass
-    //         else if pathi not in both d_x and d_y:
-    //             add m_index to index
-    //     else:
-    //         if d_x[0]== '+' and d_y[0]== '+':
-    //             conflict
-    //         else:
-    //             add to index file
-
 }
 
 
-void merge(int argc, char* argv[]){ // merge branch_name into current_branch(master)
+void merge(int argc, char* argv[]){ 
+    // merge branch_name into current_branch(master)
 
     if(argc==2) {
         printf("Give branch name\n");
@@ -444,7 +436,7 @@ void merge(int argc, char* argv[]){ // merge branch_name into current_branch(mas
     char current_branch[MAX_FILE_NAME_LENGTH];
     // char* current_branch= get_cur_branch_name();
     get_cur_branch_name(current_branch);
-    cout<<"the current brach is "<<current_branch<<endl;
+    // cout<<"the current brach is "<<current_branch<<endl;
     
     if (branch_exists(branch_name)==1){
         //check if current branch is linear with branch_name
