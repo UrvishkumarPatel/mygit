@@ -74,8 +74,11 @@ void remove_dir(char *pathname) {
 					remove_dir(path_string);
 				}
 				else{
-					if(!((strcmp(d->d_name, MY_GIT) == 0) ||  (strcmp(d->d_name,".gitignore") == 0)))//added
+					// if(!((strcmp(d->d_name, MY_GIT) == 0) ||  (strcmp(d->d_name,".gitignore") == 0)))//added
+					// 	remove_file(path_string);
+					if(!  (strcmp(d->d_name,".gitignore") == 0))//added
 						remove_file(path_string);
+
 				}
 			}
 		}
