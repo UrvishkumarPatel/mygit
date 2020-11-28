@@ -444,6 +444,7 @@ void merge(int argc, char* argv[]){
         int merge=-1;
         if (is_ancestor(current_branch, branch_name)){
             fastforwardmerge(current_branch,branch_name);
+            cout<<"Fast-forward merge"<<endl;
             merge=1;
         }
         
@@ -453,6 +454,7 @@ void merge(int argc, char* argv[]){
         
         else{
             threewaymerge(current_branch,branch_name);
+            cout<<"Three-way merge"<<endl;
             merge=2;
         }
         if(merge!=-1){

@@ -1,13 +1,13 @@
 /* checkout implementation*/
 void build_dfs(string tree_sha, string curPath_){
     // // args= ["tree", "blobs"]
-    // for subtree_sha in args:
+    // void build_dfs(string tree_sha, string curPath_):
+    // for line in tree_object:
     //     if "tree":
-    //         dfs(subtree_sha, new_curPath)
-    //         // recurese
-
-    //     if blob:
-    //         //  wrwite file
+    //         mkdir(curPath_)
+    //         build_dfs(subtree_sha, new_curPath)
+    //     if "blob":
+    //         write file
 
     vector<string> entries= return_split_content_from_sha(tree_sha);
     // cout<< " print "<< entries[0]<<endl;
