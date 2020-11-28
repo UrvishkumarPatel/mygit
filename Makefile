@@ -3,8 +3,10 @@ all: git
 ROOT_PATH= $(shell pwd)
 
 git:
-	g++ main.cpp -w -o mygit
-	@export PATH=$$PATH:$(ROOT_PATH)/mygit
+	g++ src/main.cpp -w -o mygit
+
+test:
+	. tests/test_lca.sh
 clean:
 	@echo "Cleaning..."
 	@rm -r mygit git

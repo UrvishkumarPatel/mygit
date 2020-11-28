@@ -1,1 +1,7 @@
-l.txt
+src/
+tests/
+MAKEFILE
+headers/
+README.md
+Makefile
+*.py
