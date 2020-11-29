@@ -1,4 +1,4 @@
-# **mygit** (simple git implementation)
+# *mygit* (simple git implementation)
 
 This is our implementation of git using C and C++. 
 We have implemented the following commands (flags not included):-
@@ -25,11 +25,11 @@ There are mainly 3 types of objects:-
 
 ![Git objects](img/0005.jpg "Git objects")
 
-## **mygit** init
+## *mygit* init
 Initialise a new git repository 
 ![mygit init](img/0007.jpg "mygit init")
 
-## **mygit** add <dir/file>
+## *mygit* add <dir/file>
 Add files to staging area.
 ![mygit add](img/0008.jpg "mygit add")
 
@@ -37,43 +37,44 @@ Add files to staging area.
 File to represent the staging area
 ![Index file](img/0009.jpg "Index file")
 
-## **mygit** commit -m "commit message"
+## *mygit* commit -m "commit message"
 Commit the changes in staging area. A new commit object and tree structure is created accordingly.
 ![mygit commit](img/0012.jpg "mygit commit")
 
-## **mygit** branch <branch_name>
+## *mygit* branch <branch_name>
 Create a new branch, if not specified print all branches
 ![mygit branch](img/0014.jpg "mygit branch")
-## **mygit** checkout <branch_name>
+## *mygit* checkout <branch_name>
 Checkout to the branch_name
 ![mygit checkout](img/0016.jpg "mygit commit")
-## **mygit** stash -m "stash message"
+## *mygit* stash -m "stash message"
 Stash the contents of staging area if we do not want to commit
 ``` stash ```
 ![stash](img/0018.jpg "stash")
 ``` stash pop```
 ![stash pop](img/0019.jpg "stash pop")
 
-## **mygit** merge <branch_name>
+## *mygit* merge <branch_name>
 Merge the contents of current branch with the branch specified
 ```Fast Forward Merge```
 ![fast forward merge](img/0021.jpg "fast forward merge")
 ``` Three Way Merge```
 ![Three way merge](img/0023.jpg "Three way merge")
-## **mygit** log 
+## *mygit* log 
 Gives the information about all the commits done by the user of current branch.
 ![log](img/0025.jpg "log")
-## **mygit** reflog
+## *mygit* reflog
 Gives information about merges, checkouts, commits done by user till that point.
 ![reflog](img/0026.jpg "reflog")
 
 
-### Setup
-#### clone the project --
+## Setup
+
+#### Clone the project --
 ```
 git clone https://github.com/UrvishkumarPatel/mygit.git
 ```
-#### Install **mygit** 
+#### Install *mygit* 
 ```
  make
 ```
