@@ -80,7 +80,7 @@ git clone https://github.com/UrvishkumarPatel/mygit.git
 
 
 ### Usage
-- 
+
 -  [x] **mygit init** :-Initialises the git reposistory
 -  [x] **mygit add <dir/file>**:-Adds the file in the stagging area(Index file)
 -  [x] **mygit commit -m "commit message"**:-Commits the added file with the message given.
