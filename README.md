@@ -1,4 +1,4 @@
-# my_git (simple git implementation)
+# mygit (simple git implementation)
 
 This is our implementation of git using C and C++. 
 We have implemented the following commands (flags not included):-
