@@ -1,4 +1,4 @@
-# mygit (simple git implementation)
+# **mygit** (simple git implementation)
 
 This is our implementation of git using C and C++. 
 We have implemented the following commands (flags not included):-
@@ -57,9 +57,9 @@ Stash the contents of staging area if we do not want to commit
 ## **mygit** merge <branch_name>
 Merge the contents of current branch with the branch specified
 ```Fast Forward Merge```
-![Alt text](img/0021.jpg "fast forward merge")
+![fast forward merge](img/0021.jpg "fast forward merge")
 ``` Three Way Merge```
-![Alt text](img/0023.jpg "Three way merge")
+![Three way merge](img/0023.jpg "Three way merge")
 ## **mygit** log 
 Gives the information about all the commits done by the user of current branch.
 ![log](img/0025.jpg "log")
@@ -75,14 +75,14 @@ git clone https://github.com/UrvishkumarPatel/mygit.git
 ```
 #### Install **mygit** 
 ```
- run make
+ make
 ```
 
 
 ### Usage
 
--  [x] **mygit init** :-Initialises the git reposistory
--  [x] **mygit add <dir/file>**:-Adds the file in the stagging area(Index file)
+-  [x] **mygit init** :-Initialises a new git reposistory.
+-  [x] **mygit add <dir/file>**:-Adds the file in the stagging area(Index file).
 -  [x] **mygit commit -m "commit message"**:-Commits the added file with the message given.
 -  [x] **mygit branch <branch_name>**:- Creates a new branch with branch name.
 -  [x] **mygit checkout <branch_name>**:- Checkouts to the branch specified.
@@ -93,5 +93,5 @@ git clone https://github.com/UrvishkumarPatel/mygit.git
 
 ## Note
 ```
-Files specified in .gitignore are ignored while adding and commiting
+Files specified in .gitignore are ignored while adding and commiting.
 ```
