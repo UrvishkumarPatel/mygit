@@ -1,9 +1,4 @@
 #!/bin/bash
-# cd ../
-# rm -rf git/
-
-# # make 
-# g++ src/main.cpp -w -o mygit
 mygit init
 mygit add test_lca.sh
 mygit commit -m "first"
@@ -25,16 +20,3 @@ mygit commit -m "x_0"
 touch x1.txt
 mygit add x1.txt
 mygit commit -m "x_1"
-
-# - init
-# - commit
-# - add
-# - branch
-# - checkout
-
-# - merge
-# - log
-# - reflog
-# - reset
-# - stash
-# - support for gitignore file
