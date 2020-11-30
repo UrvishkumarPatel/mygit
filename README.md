@@ -92,6 +92,12 @@ git clone https://github.com/UrvishkumarPatel/mygit.git
 -  [x] **mygit reflog <branch_name>**:-Gives information about merges, checkouts, commits done by user till that point.
 -  [x] **mygit stash -m "commit message"**:- Stash the contents of the staging area, commit is not required after that.
 
+
+#### Uninstall *mygit* 
+```
+ make uninstall
+```
+
 ## Note
 ```
 Files specified in .gitignore are ignored while adding and commiting.
